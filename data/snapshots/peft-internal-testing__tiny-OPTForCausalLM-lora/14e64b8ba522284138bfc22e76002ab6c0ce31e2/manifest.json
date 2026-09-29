@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "repository": "peft-internal-testing/tiny-OPTForCausalLM-lora",
+  "requested_revision": null,
+  "resolved_commit_sha": "14e64b8ba522284138bfc22e76002ab6c0ce31e2",
+  "collected_at": "2026-09-29T16:58:44.416759+00:00",
+  "status": "SUCCESS",
+  "max_file_bytes": 1048576,
+  "retrieved": [
+    {
+      "filename": "README.md",
+      "status": "SUCCESS",
+      "category": "model_card",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/peft-internal-testing/tiny-OPTForCausalLM-lora/resolve/14e64b8ba522284138bfc22e76002ab6c0ce31e2/README.md",
+      "size_bytes": 93,
+      "sha256": "5adcf3bab034c257da8bfc845704a02ec3d00903f67d0bbe84925c37b35d6691",
+      "retrieved_at": "2026-09-29T16:58:45.161760+00:00",
+      "error": null
+    },
+    {
+      "filename": "adapter_config.json",
+      "status": "SUCCESS",
+      "category": "adapter",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/peft-internal-testing/tiny-OPTForCausalLM-lora/resolve/14e64b8ba522284138bfc22e76002ab6c0ce31e2/adapter_config.json",
+      "size_bytes": 443,
+      "sha256": "d077d209e1a6d579a1dfbefd6224c86d5831ca968da7d3d2dfe4637d8c51c199",
+      "retrieved_at": "2026-09-29T16:58:45.431027+00:00",
+      "error": null
+    }
+  ],
+  "failed": [],
+  "skipped": [
+    {
+      "filename": ".gitattributes",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 1519,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "adapter_model.bin",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 17261,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    }
+  ],
+  "notes": []
+}
