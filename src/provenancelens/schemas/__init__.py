@@ -25,6 +25,7 @@ from .collection import (
     RetrievedFile,
 )
 from .lineage import DeclaredLineage, Lineage, LineageEntry, Relation
+from .snapshot import SNAPSHOT_SCHEMA_VERSION, SnapshotManifest
 
 __all__ = [
     "AuditDecision",
@@ -45,7 +46,9 @@ __all__ = [
     "Relation",
     "Reliability",
     "RetrievedFile",
+    "SNAPSHOT_SCHEMA_VERSION",
     "SuggestedPatch",
+    "SnapshotManifest",
     "SourceType",
     "is_plausible_model_id",
     "split_by_role",
