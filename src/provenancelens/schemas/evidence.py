@@ -84,6 +84,7 @@ class EvidenceItem(BaseModel):
     relation_raw: str | None = None
     raw_value: str | None = None
     evidence_span: str | None = None
+    key_path: str | None = None
     explicitness: Explicitness = Explicitness.UNKNOWN
     source_url: str | None = None
     note: str | None = None
