@@ -26,6 +26,7 @@ from typing import Any
 from langchain_core.output_parsers import PydanticOutputParser, StrOutputParser
 from langchain_core.runnables import Runnable
 
+from ..llm_runtime import LLMUnavailable
 from .chunking import DEFAULT_MAX_CHUNK_CHARS, DEFAULT_MAX_CHUNKS, ProseChunk, chunk_prose
 from .prompt import (
     PROSE_EXTRACTION_PROMPT,
@@ -42,19 +43,15 @@ from .schema import (
     ProseFailureCode,
     ProseLineageClaim,
     build_llm_evidence_item,
+    unavailable_report,
 )
 from .selection import select_provenance_chunks
 from .validation import validate_claim
 
 __all__ = [
     "LLMProseExtractor",
-    "LLMUnavailable",
     "unavailable_report",
 ]
-
-
-class LLMUnavailable(RuntimeError):
-    """The configured local chat model cannot be used (dependency or runtime)."""
 
 
 class LLMProseExtractor:
@@ -236,20 +233,3 @@ def _final_status(report: ProseExtractionReport) -> ProseExtractionStatus:
     if report.failures:
         return ProseExtractionStatus.PARTIAL
     return ProseExtractionStatus.OK
-
-
-def unavailable_report(
-    source_name: str,
-    reason: str,
-    *,
-    model: str | None = None,
-) -> ProseExtractionReport:
-    """Report an unusable LLM runtime without raising or inventing evidence."""
-    return ProseExtractionReport(
-        status=ProseExtractionStatus.UNAVAILABLE,
-        source_name=source_name,
-        prompt_version=PROSE_EXTRACTION_PROMPT_VERSION,
-        prompt_digest=prompt_digest(),
-        model=model,
-        reason=reason,
-    )

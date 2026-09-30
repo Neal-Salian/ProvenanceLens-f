@@ -13,20 +13,15 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from pydantic import BaseModel, ConfigDict
-
-from .prose import (
-    LLMProseExtractor,
-    ProseExtractionReport,
-    unavailable_report,
-)
 from .reasoning import DEFAULT_POLICY, DecisionPolicy, DecisionResult, decide_lineage
 from .schemas.audit import AuditDecision
 from .schemas.extraction import EvidenceExtraction
 from .snapshots import DEFAULT_SNAPSHOT_ROOT, LoadedSnapshot, load_snapshot
-from .tools import build_readme_prose_tool
+
+if TYPE_CHECKING:  # pragma: no cover - typing only, never imported at runtime
+    from .prose import LLMProseExtractor, ProseExtractionOutcome, ProseExtractionReport
 
 __all__ = [
     "audit_snapshot",
@@ -34,7 +29,7 @@ __all__ = [
     "audit_extraction",
     "audit_repository",
     "audit_repository_with_prose",
-    "ProseExtractionOutcome",
+    "extract_snapshot_prose",
     "DecisionResult",
 ]
 
@@ -119,25 +114,6 @@ def to_audit_decision(result: DecisionResult) -> AuditDecision:
     return result.decision
 
 
-class ProseExtractionOutcome(BaseModel):
-    """Phase E run metadata: LLM status plus the resulting Phase D decision.
-
-    Kept separate from :class:`DecisionResult` so the Phase D schemas stay
-    untouched and every decision is still produced by the Phase D engine.
-    """
-
-    model_config = ConfigDict(extra="forbid")
-
-    report: ProseExtractionReport
-    decision: AuditDecision
-    deterministic_decision: str
-    decision_changed: bool
-
-    @property
-    def llm_evidence_count(self) -> int:
-        return len(self.report.evidence)
-
-
 def extract_snapshot_prose(
     repository: str,
     *,
@@ -153,8 +129,22 @@ def extract_snapshot_prose(
     When no extractor is configured (or the runtime is unavailable) an
     ``UNAVAILABLE`` report is returned and no evidence is fabricated.
     """
-    resolved_tool = tool or build_readme_prose_tool(root=root)
-    reports: list[ProseExtractionReport] = []
+    from .prose import unavailable_report
+
+    reports: list[ProseExtractionReport] = []  # noqa: F821 - TYPE_CHECKING alias
+    try:
+        from .tools import build_readme_prose_tool
+
+        resolved_tool = tool or build_readme_prose_tool(root=root)
+    except ImportError as exc:  # LangChain missing: degrade, never crash
+        return [
+            unavailable_report(
+                source_name,
+                f"LLM prose extraction unavailable: {exc}",
+            )
+            for source_name in sources
+        ]
+
     for source_name in sources:
         raw = resolved_tool.invoke({"repository": repository, "source_name": source_name})
         payload = json.loads(raw if isinstance(raw, str) else raw)
@@ -165,6 +155,7 @@ def extract_snapshot_prose(
             ))
             continue
         if extractor is None:
+            # Deterministic-only mode: report the state, invent nothing.
             reports.append(unavailable_report(
                 source_name, "no LLM extractor configured (deterministic-only mode)"
             ))
@@ -186,6 +177,7 @@ def audit_repository_with_prose(
     policy: DecisionPolicy = DEFAULT_POLICY,
     extractor: LLMProseExtractor | None = None,
     sources: tuple[str, ...] = ("README.md",),
+    tool: Any = None,
 ) -> ProseExtractionOutcome:
     """Audit a frozen snapshot deterministically, then add validated LLM prose.
 
@@ -193,10 +185,12 @@ def audit_repository_with_prose(
     deterministic auditing. Phase D remains the only decision maker, so the
     outcome reports both decisions and whether the added prose changed them.
     """
+    from .prose.outcome import ProseExtractionOutcome
+
     deterministic = audit_repository(repository, commit, root=root, policy=policy)
     commit_sha = commit or _latest_commit(root, repository)
     reports = extract_snapshot_prose(
-        repository, root=root, extractor=extractor, sources=sources
+        repository, root=root, extractor=extractor, sources=sources, tool=tool
     )
     llm_evidence = [item for report in reports for item in report.evidence]
     combined = audit_repository(
@@ -223,8 +217,10 @@ def _latest_commit(root: Path, repository: str) -> str:
     return commits[-1]
 
 
-def _merge_reports(reports: list[ProseExtractionReport]) -> ProseExtractionReport:
+def _merge_reports(reports: list[ProseExtractionReport]) -> ProseExtractionReport:  # noqa: F821
     """Combine per-source reports into one (deterministic, order-stable)."""
+    from .prose import ProseExtractionReport, unavailable_report
+
     if len(reports) == 1:
         return reports[0]
     if not reports:  # pragma: no cover - defensive

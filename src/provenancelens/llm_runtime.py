@@ -21,6 +21,7 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict
 
 __all__ = [
+    "LLMUnavailable",
     "DEFAULT_LLM_MODEL",
     "DEFAULT_LLM_BASE_URL",
     "DEFAULT_LLM_NUM_CTX",
@@ -47,6 +48,10 @@ IMPORT_HINT = (
     "install the optional dependency with: "
     "pip install 'provenancelens[llm]'"
 )
+
+
+class LLMUnavailable(RuntimeError):
+    """The configured local chat model cannot be used (dependency or runtime)."""
 
 
 class LLMAvailability(BaseModel):
@@ -165,9 +170,7 @@ def build_default_chat_model(
     num_ctx: int | None = None,
     temperature: float = 0.0,
 ) -> Any:
-    """Build the default local chat model, or raise ``LLMUnavailable``."""
-    from .extractor import LLMUnavailable
-
+    """Build the default local chat model, or raise :class:`LLMUnavailable`."""
     model = model or configured_model()
     try:
         from langchain_ollama import ChatOllama

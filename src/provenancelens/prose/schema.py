@@ -32,6 +32,7 @@ from ..schemas.lineage import Relation
 
 __all__ = [
     "ClaimStatus",
+    "unavailable_report",
     "RationaleCode",
     "ProseLineageClaim",
     "ProseClaimSet",
@@ -41,6 +42,7 @@ __all__ = [
     "ProseExtractionReport",
     "MAX_UNCERTAINTY_NOTE_CHARS",
     "llm_evidence_reliability",
+    "unavailable_report",
 ]
 
 MAX_UNCERTAINTY_NOTE_CHARS = 200
@@ -232,4 +234,42 @@ def build_llm_evidence_item(
         ),
         source_url=source_url,
         note=note,
+    )
+
+
+def unavailable_report(
+    source_name: str,
+    reason: str,
+    *,
+    model: str | None = None,
+    prompt_version: str = "1.0",
+    prompt_digest: str = "",
+) -> ProseExtractionReport:
+    """Report an unusable LLM runtime without raising or inventing evidence.
+
+    Defined here (not in the extractor) so that "LLM unavailable" can always be
+    represented structurally, even when LangChain itself is not installed.
+    """
+    if not prompt_digest:
+        # Record which prompt *would* have been used, when it is importable.
+        try:
+            from .prompt import PROSE_EXTRACTION_PROMPT_VERSION, prompt_digest as _digest
+
+            return ProseExtractionReport(
+                status=ProseExtractionStatus.UNAVAILABLE,
+                source_name=source_name,
+                prompt_version=PROSE_EXTRACTION_PROMPT_VERSION,
+                prompt_digest=_digest(),
+                model=model,
+                reason=reason,
+            )
+        except Exception:  # LangChain missing: version stays as provided
+            pass
+    return ProseExtractionReport(
+        status=ProseExtractionStatus.UNAVAILABLE,
+        source_name=source_name,
+        prompt_version=prompt_version,
+        prompt_digest=prompt_digest,
+        model=model,
+        reason=reason,
     )
