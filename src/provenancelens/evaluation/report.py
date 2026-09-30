@@ -31,6 +31,8 @@ from typing import Any, Sequence
 
 __all__ = [
     "ARTIFACT_DIRNAME",
+    "PLOT_NAMES",
+    "PlottingUnavailable",
     "render_markdown_table",
     "write_tables",
     "write_plots",
@@ -211,9 +213,40 @@ def write_tables(report: dict, directory: Path) -> dict[str, str]:
 
 # --- plots --------------------------------------------------------------------
 
+#: Documented figure set.  ``PLOT_NAMES`` lets callers (and tests) know exactly
+#: which figures a complete run contains without listing them twice.
+PLOT_NAMES: tuple[str, ...] = (
+    "action_accuracy_by_system",
+    "risk_coverage_curve",
+    "ablation_delta_action_accuracy",
+    "stratum_accuracy",
+    "failure_taxonomy",
+    "evidence_usage",
+    "action_confusion",
+)
+
+
+class PlottingUnavailable(RuntimeError):
+    """Raised when figures are requested but matplotlib is not installed."""
+
+
 def write_plots(report: dict, directory: Path) -> dict[str, str]:
-    """Render the figure set with a fixed, deterministic matplotlib setup."""
-    import matplotlib
+    """Render the figure set with a fixed, deterministic matplotlib setup.
+
+    Figures are *presentation only*: every number they show is also present in
+    the JSON and CSV artifacts.  Matplotlib is therefore an optional dependency
+    (``pip install '.[plots]'``) and a missing install raises
+    :class:`PlottingUnavailable` so callers can degrade deliberately instead of
+    crashing half-way through writing the study.
+    """
+    try:
+        import matplotlib
+    except ImportError as exc:  # pragma: no cover - depends on environment
+        raise PlottingUnavailable(
+            "matplotlib is required for figures: install the optional plotting "
+            "extra with `pip install '.[plots]'`, or run with --no-plots "
+            "(all tables, the JSON report and the manifest are still written)"
+        ) from exc
 
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -254,36 +287,62 @@ def write_plots(report: dict, directory: Path) -> dict[str, str]:
     save(fig, "action_accuracy_by_system")
 
     # 2. risk / coverage
+    # Only measured operating points are drawn. The sweep has a few distinct
+    # coverage levels, so the points are joined as a step and no interpolation
+    # band is filled in: a filled polygon would imply coverage values that were
+    # never measured.
     curve = report["selective_risk_curve"]
-    fig, ax = plt.subplots(figsize=(5.6, 3.6))
+    fig, ax = plt.subplots(figsize=(6.4, 3.8))
     xs = [row["coverage"]["value"] for row in curve]
     ys = [row["selective_accuracy"]["value"] for row in curve]
     lows = [row["selective_accuracy"]["low"] for row in curve]
     highs = [row["selective_accuracy"]["high"] for row in curve]
-    ax.plot(xs, ys, "-o", color="#2166ac", markersize=4, label="selective accuracy")
-    ax.fill_between(xs, lows, highs, color="#2166ac", alpha=0.18,
-                    label="Wilson 95% CI")
+    attempts = [row["attempted_repairs"] for row in curve]
+    false_repairs = [row["false_repairs"] for row in curve]
+    n_distinct = len({round(x, 6) for x in xs})
+    ax.step(xs, ys, where="post", color="#2166ac", linewidth=1.2,
+            label="selective accuracy (step over measured points)")
+    ax.errorbar(xs, ys,
+                yerr=[[y - lo for y, lo in zip(ys, lows)],
+                      [hi - y for y, hi in zip(ys, highs)]],
+                fmt="o", color="#2166ac", markersize=5, capsize=3,
+                label="Wilson 95% interval")
+    # A flat curve needs no per-point labels: the numbers belong in the table.
+    # What a reader does need is *how much* was measured.
+    ax.text(0.02, 0.52,
+            f"{n_distinct} measured coverage levels\n"
+            f"{min(attempts)}-{max(attempts)} repair attempt(s) per point\n"
+            f"{sum(false_repairs)} false repair(s) across all thresholds",
+            transform=ax.transAxes, fontsize=7, color="#333333",
+            va="bottom", ha="left")
     ax.plot(xs, xs, "--", color="#999999", linewidth=1, label="y = x (no added value)")
-    ax.set_xlabel("coverage (non-abstain share)")
+    ax.set_xlabel("coverage (non-abstain share of scored cases)")
     ax.set_ylabel("selective accuracy")
-    ax.set_title("Risk-coverage: accuracy as abstention is relaxed")
+    ax.set_title("Risk-coverage: accuracy at each measured threshold")
+    ax.set_ylim(-0.05, 1.18)
     ax.legend(fontsize=7, loc="lower right")
     save(fig, "risk_coverage_curve")
 
     # 3. ablations
     if "ablations" in report:
         rows = [row for row in report["ablations"]["results"] if row["ablation"] != "full"]
-        fig, ax = plt.subplots(figsize=(6.6, 3.6))
+        fig, ax = plt.subplots(figsize=(7.2, 3.8))
         names = [row["ablation"] for row in rows][::-1]
         deltas = [row["delta_action_accuracy"] for row in rows][::-1]
+        n_cases = rows[0]["n_cases"]
         ax.barh(names, deltas, color=["#b2182b" if d < -0.02 else "#999999" for d in deltas])
+        span = max(abs(min(deltas)), abs(max(deltas)), 0.01)
+        # pad the axis so the value labels are drawn inside it at both extremes
+        ax.set_xlim(-span * 1.35, span * 1.35)
         for index, delta in enumerate(deltas):
-            ax.text(delta - 0.005 if delta < 0 else delta + 0.005, index,
+            offset = span * 0.04
+            ax.text(delta - offset if delta < 0 else delta + offset, index,
                     f"{delta:+.3f}", va="center", ha="right" if delta < 0 else "left",
                     fontsize=8)
         ax.axvline(0.0, color="#333333", linewidth=0.8)
         ax.set_xlabel("change in action accuracy vs full system")
-        ax.set_title("Ablation effect on action accuracy (n=70)")
+        ax.set_title(f"Ablation effect on action accuracy (n={n_cases}, "
+                     f"red = removing it hurts)")
         save(fig, "ablation_delta_action_accuracy")
 
     # 4. strata
@@ -430,12 +489,7 @@ def build_manifest(
         inputs[str(path.relative_to(snapshot_root))] = _digest(path)
     outputs = {name: _digest(path) for name, path in sorted(artifacts.items())}
     git = _git_metadata(Path.cwd())
-    try:
-        import matplotlib
-
-        matplotlib_version = matplotlib.__version__
-    except Exception:  # pragma: no cover - matplotlib is optional for tables
-        matplotlib_version = None
+    extras = _optional_extras()
     return {
         "benchmark_version": report["benchmark"]["benchmark_version"],
         "n_cases": report["benchmark"]["n_cases"],
@@ -447,11 +501,16 @@ def build_manifest(
             "packages": {
                 "provenancelens": _package_version(),
                 "pydantic": _dist_version("pydantic"),
-                "matplotlib": matplotlib_version,
+                "matplotlib": _dist_version("matplotlib"),
             },
             "network_used": False,
             "llm_used": False,
-            "optional_extras_installed": False,
+            "optional_extras": extras,
+            "optional_extras_installed": any(extras.values()),
+            "optional_extras_note": (
+                "recorded for transparency: the deterministic study never uses "
+                "these extras, and their presence must not change any metric"
+            ),
         },
         "repository": {
             "git_commit": git["commit"],
@@ -467,6 +526,20 @@ def build_manifest(
                           "and excluded from the report digest because a duration "
                           "is not a result",
         },
+    }
+
+
+def _optional_extras() -> dict[str, bool]:
+    """Which optional extras are importable in this environment.
+
+    Recorded, never required: the deterministic core, the benchmark and the
+    Phase G tables do not import any of these.
+    """
+    import importlib.util
+
+    return {
+        "plots (matplotlib)": importlib.util.find_spec("matplotlib") is not None,
+        "llm (langchain-ollama)": importlib.util.find_spec("langchain_ollama") is not None,
     }
 
 
@@ -510,8 +583,12 @@ def _summary_markdown(report: dict, manifest: dict) -> str:
         f"({bench['by_track'].get('controlled')} controlled, "
         f"{bench['by_track'].get('real')} real), version {bench['benchmark_version']}")
     add(f"- Report digest: `{report_digest(report)}`")
-    add(f"- Commit: `{manifest['repository']['git_commit']}` "
-        f"(branch `{manifest['repository']['git_branch']}`)")
+    repository = manifest.get("repository") or {}
+    commit = repository.get("git_commit")
+    if commit:
+        add(f"- Commit: `{commit}` (branch `{repository.get('git_branch')}`)")
+    else:
+        add("- Commit: not recorded (this report was written outside a git checkout)")
     add("- Offline, deterministic, no LLM and no network.")
     add("")
     add("## Calibration status")
@@ -550,12 +627,15 @@ def _summary_markdown(report: dict, manifest: dict) -> str:
     add("## Per-stratum results")
     add("")
     add(render_markdown_table([
-        {**row, "action_accuracy": row["action_accuracy"]["value"],
-         "ci95": f"[{row['action_accuracy']['low']}, {row['action_accuracy']['high']}]",
-         "coverage": row["coverage"]["value"]}
+        {**row,
+         "action_accuracy": row["action_accuracy"]["value"],
+         "ci95": f"[{row['action_accuracy']['low']:.3f}, "
+                 f"{row['action_accuracy']['high']:.3f}]",
+         "coverage": row["coverage"]["value"],
+         "false_repair_rate": row["false_repair_rate"]["value"]}
         for row in report["stratified_results"]
     ], ["stratum", "n_cases", "action_accuracy", "ci95", "coverage",
-        "attempted_repairs", "false_repairs"]))
+        "attempted_repairs", "false_repairs", "false_repair_rate"]))
     add("## Failure taxonomy")
     add("")
     add(render_markdown_table(report["failure_analysis"]["taxonomy"],
@@ -590,8 +670,15 @@ def write_phase_g_report(
     snapshot_root: Path,
     config: dict,
     adjudication_rows: Sequence[dict] | None = None,
+    plots: bool = True,
 ) -> dict[str, Path]:
-    """Write every artifact; return ``name -> path`` for the manifest."""
+    """Write every artifact; return ``name -> path`` for the manifest.
+
+    ``plots=False`` (or a missing matplotlib with ``plots="auto"``) still writes
+    the JSON report, the markdown summary, every table, the adjudication CSV and
+    the manifest, and records why figures were omitted.  The canonical study
+    therefore never depends on an optional plotting library.
+    """
     output_dir.mkdir(parents=True, exist_ok=True)
     artifacts: dict[str, Path] = {}
 
@@ -608,15 +695,33 @@ def write_phase_g_report(
     )
     for name, _ in write_tables(report, output_dir / "tables").items():
         artifacts[f"tables/{name}"] = output_dir / "tables" / name
-    for name, _ in write_plots(report, output_dir / "plots").items():
+
+    figures: dict[str, str] = {}
+    skipped_reason: str | None = None
+    if plots is False:
+        skipped_reason = "figures disabled by request (--no-plots)"
+    else:
+        try:
+            figures = write_plots(report, output_dir / "plots")
+        except PlottingUnavailable as exc:
+            skipped_reason = str(exc)
+    for name, _ in figures.items():
         artifacts[f"plots/{name}"] = output_dir / "plots" / name
     if adjudication_rows:
         artifacts["adjudication_summary.csv"] = _write(
             output_dir / "adjudication_summary.csv",
             _csv_bytes(adjudication_rows).decode("utf-8"),
         )
-    manifest = {**manifest, "outputs": {name: _digest(path)
-                                       for name, path in sorted(artifacts.items())}}
+    manifest = {
+        **manifest,
+        "figures": {
+            "requested": list(PLOT_NAMES),
+            "written": sorted(figures),
+            "skipped_reason": skipped_reason,
+        },
+        "outputs": {name: _digest(path)
+                    for name, path in sorted(artifacts.items())},
+    }
     artifacts["manifest.json"] = _write(
         output_dir / "manifest.json",
         json.dumps(manifest, indent=1, sort_keys=True) + "\n",

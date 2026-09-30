@@ -353,9 +353,13 @@ def evidence_usage(cases: Sequence[BenchmarkCase]) -> dict:
                                    "candidate parent is in the adjudicated parent set"}
             for source, count in sorted(decisive.items())
         },
-        "definition": "presence is frequency; decisiveness is attribution. Only tool-generated "
-                      "lineage fields (adapter/merge/training configs) may be decisive, because "
-                      "declared metadata is the audit subject and never independent evidence.",
+        "definition": "presence is frequency; decisiveness is attribution. Declared "
+                      "metadata is the audit subject and is never independent "
+                      "evidence, so it appears in neither column. A decisive item "
+                      "is an independent evidence item whose candidate parent is "
+                      "in the adjudicated parent set. Whether such an item changes "
+                      "the final decision is a different question, answered by the "
+                      "ablation table rather than by these counts.",
     }
 
 
