@@ -15,7 +15,19 @@ from .dataset import (
     load_real_benchmark,
     validation_report,
 )
-from .real import REAL_CASE_SPECS
+from .acquisition import (
+    STRATA,
+    AcquisitionReport,
+    CandidateRecord,
+    acquire_real_snapshots,
+)
+from .real import (
+    ADJUDICATOR,
+    ADJUDICATION_FILE,
+    PRECEDENCE,
+    adjudication_summary,
+    load_adjudication_file,
+)
 from .schema import (
     BENCHMARK_VERSION,
     Adjudication,
@@ -42,9 +54,17 @@ from .validation import (
 )
 
 __all__ = [
+    "ADJUDICATOR",
+    "ADJUDICATION_FILE",
     "BENCHMARK_VERSION",
     "CONTROLLED_CASES",
-    "REAL_CASE_SPECS",
+    "PRECEDENCE",
+    "STRATA",
+    "AcquisitionReport",
+    "CandidateRecord",
+    "acquire_real_snapshots",
+    "adjudication_summary",
+    "load_adjudication_file",
     "Adjudication",
     "BenchmarkCase",
     "BenchmarkRun",

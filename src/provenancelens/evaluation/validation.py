@@ -78,9 +78,12 @@ def validate_case(case: BenchmarkCase) -> list[ValidationIssue]:
     if case.expected_action is Decision.REPLACE and case.truth.metadata_state is not MetadataState.INCORRECT:
         error("replace_without_incorrect_metadata",
               "REPLACE requires adjudicated metadata_state=incorrect")
-    if case.expected_action is Decision.ADD and case.truth.metadata_state is not MetadataState.MISSING:
+    if case.expected_action is Decision.ADD and case.truth.metadata_state not in (
+        MetadataState.MISSING, MetadataState.INCOMPLETE,
+    ):
         error("add_without_missing_metadata",
-              "ADD requires adjudicated metadata_state=missing")
+              "ADD requires adjudicated metadata_state=missing or incomplete "
+              "(the repair adds an absent parent or an absent relation)")
     if case.expected_action is Decision.KEEP and case.truth.metadata_state is MetadataState.INCORRECT:
         error("keep_with_incorrect_metadata",
               "KEEP must not be expected for known-incorrect metadata")
@@ -89,15 +92,41 @@ def validate_case(case: BenchmarkCase) -> list[ValidationIssue]:
                 "metadata is incorrect but the case is marked unrepairable")
 
     # --- declared state must match the declared metadata ------------------
-    has_declared = bool(case.declared_base_model or case.declared_additional_base_models)
-    if case.truth.metadata_state in (MetadataState.VALID, MetadataState.INCORRECT) and not has_declared:
+    has_declared_parent = bool(
+        case.declared_base_model or case.declared_additional_base_models
+    )
+    has_declared_relation = bool(
+        case.declared_relation_raw and case.declared_relation_raw.strip()
+    )
+    if (
+        case.truth.metadata_state in (MetadataState.VALID, MetadataState.INCOMPLETE,
+                                      MetadataState.INCORRECT)
+        and not has_declared_parent
+    ):
         error("state_without_declaration",
-              f"metadata_state={case.truth.metadata_state.value} but no lineage is "
+              f"metadata_state={case.truth.metadata_state.value} but no parent is "
               "declared; the label would describe metadata that does not exist")
-    if case.truth.metadata_state is MetadataState.MISSING and has_declared:
+    if (
+        case.truth.metadata_state is MetadataState.MISSING
+        and (has_declared_parent or has_declared_relation)
+    ):
         error("missing_but_declared",
-              "metadata_state=missing but the case declares a lineage")
-    if case.truth.metadata_state is MetadataState.UNDETERMINED and has_declared:
+              "metadata_state=missing but the case declares lineage metadata")
+    if (
+        case.truth.metadata_state is MetadataState.INCOMPLETE
+        and has_declared_relation
+        and case.declared_relation_raw is not None
+        and Relation.normalize(case.declared_relation_raw) is case.truth.relation
+    ):
+        error("incomplete_but_relation_declared",
+              "metadata_state=incomplete but the adjudicated relation is already "
+              "declared")
+    if case.truth.metadata_state is MetadataState.INCOMPLETE and (
+        case.truth.relation_status is not TruthStatus.KNOWN
+    ):
+        error("incomplete_without_known_relation",
+              "metadata_state=incomplete requires a knowable relation to repair")
+    if case.truth.metadata_state is MetadataState.UNDETERMINED and has_declared_parent:
         warning("undetermined_with_declaration",
                 "declared metadata present but the case is labelled undetermined")
 

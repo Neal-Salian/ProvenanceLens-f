@@ -1,0 +1,863 @@
+version: '1.0'
+adjudicator: Phase G manual adjudication (frozen artifacts)
+cases:
+- repository: IFM/K2-Horizon-7B-Uno
+  commit: 669f041aab04fad836e757ede9a028058b064996
+  snapshot_files:
+  - README.md
+  - adapter_config.json
+  evidence_summary: tool-generated adapter_config.json names the base checkpoint; front matter declares
+    the same parent
+  parents:
+  - IFM/K2-Horizon-7B
+  parents_status: known
+  relation: adapter
+  relation_status: known
+  metadata_state: valid
+  expected_action: KEEP
+  acceptable_actions:
+  - KEEP
+  rationale: adapter_config.base_model_name_or_path matches the declared base_model, so the existing metadata
+    is corroborated and no change is warranted.
+- repository: Jackrong/Qwopus3.6-27B-Coder-MTP-GGUF
+  commit: 8e5395bf66c3432cc53d2084dae48ecf5f68db0f
+  snapshot_files:
+  - README.md
+  evidence_summary: 'front matter leaves base_model empty; card body states ''Base Model: Qwopus3.6-27B-v2''
+    without an organization'
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: ambiguous
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - ABSTAIN
+  rationale: A bare model name cannot be adjudicated to a specific repository without guessing an organization,
+    and the card mixes a fine-tuning claim with GGUF packaging, so even the relation is ambiguous. A parent
+    is declared but no artifact corroborates it, so the label stays undetermined rather than missing.
+- repository: Jackrong/Qwopus3.6-35B-A3B-Coder-MTP-GGUF
+  commit: 6a5663090399e07f669c6f036a6ade65062c96db
+  snapshot_files:
+  - README.md
+  evidence_summary: front matter leaves base_model empty; card body names 'Qwopus3.6-35B-A3B-v1 / Qwen3.6-35B-A3B'
+    as base without organization qualifiers
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: ambiguous
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - ABSTAIN
+  rationale: Two unqualified names are offered as the base and neither identifies a repository; no independent
+    evidence resolves them. A parent is declared but no artifact corroborates it, so the label stays undetermined
+    rather than missing.
+- repository: MaziyarPanahi/mergekit-slerp-dafvhck-GGUF
+  commit: 1a0e15c557f1e0b36616c34791bf4ef360962661
+  snapshot_files:
+  - README.md
+  - config.json
+  evidence_summary: front matter declares base_model mergekit-community/mergekit-slerp-dafvhck plus quantized_by/model_creator
+    fields; no merge or config artifact is present
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  rationale: This is a GGUF redistribution of an upstream merge. The parent claim is declared metadata
+    only and no artifact in the snapshot corroborates it, so the direct lineage cannot be independently
+    adjudicated and no change is expected.
+- repository: MaziyarPanahi/mergekit-slerp-idbupbn-GGUF
+  commit: 87d448dc7a0a659cce3bdf10e8c840de52b82201
+  snapshot_files:
+  - README.md
+  - config.json
+  evidence_summary: front matter declares base_model mergekit-community/mergekit-slerp-idbupbn plus quantized_by/model_creator
+    fields; no merge or config artifact is present
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  rationale: This is a GGUF redistribution of an upstream merge. The parent claim is declared metadata
+    only and no artifact in the snapshot corroborates it, so the direct lineage cannot be independently
+    adjudicated and no change is expected.
+- repository: MaziyarPanahi/mergekit-slerp-ksadkxl-GGUF
+  commit: 365c6ea75e749f0c06d23cc393d7c13b2994db53
+  snapshot_files:
+  - README.md
+  - config.json
+  evidence_summary: front matter declares base_model mergekit-community/mergekit-slerp-ksadkxl plus quantized_by/model_creator
+    fields; no merge or config artifact is present
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  rationale: This is a GGUF redistribution of an upstream merge. The parent claim is declared metadata
+    only and no artifact in the snapshot corroborates it, so the direct lineage cannot be independently
+    adjudicated and no change is expected.
+- repository: MaziyarPanahi/mergekit-slerp-npojgos-GGUF
+  commit: 3683596163a05cd5d6674380e6e54277aca335bb
+  snapshot_files:
+  - README.md
+  - config.json
+  evidence_summary: front matter declares base_model mergekit-community/mergekit-slerp-npojgos plus quantized_by/model_creator
+    fields; no merge or config artifact is present
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  rationale: This is a GGUF redistribution of an upstream merge. The parent claim is declared metadata
+    only and no artifact in the snapshot corroborates it, so the direct lineage cannot be independently
+    adjudicated and no change is expected.
+- repository: MaziyarPanahi/mergekit-slerp-ozbsicw-GGUF
+  commit: cad7cab4a045444910ef6bb37a322360f8db68dd
+  snapshot_files:
+  - README.md
+  - config.json
+  evidence_summary: front matter declares base_model mergekit-community/mergekit-slerp-ozbsicw plus quantized_by/model_creator
+    fields; no merge or config artifact is present
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  rationale: This is a GGUF redistribution of an upstream merge. The parent claim is declared metadata
+    only and no artifact in the snapshot corroborates it, so the direct lineage cannot be independently
+    adjudicated and no change is expected.
+- repository: MaziyarPanahi/mergekit-slerp-rfdxiqs-GGUF
+  commit: 4a7ead685e8381765d603b004dcd51e54b0db0b2
+  snapshot_files:
+  - README.md
+  - config.json
+  evidence_summary: front matter declares base_model mergekit-community/mergekit-slerp-rfdxiqs plus quantized_by/model_creator
+    fields; no merge or config artifact is present
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  rationale: This is a GGUF redistribution of an upstream merge. The parent claim is declared metadata
+    only and no artifact in the snapshot corroborates it, so the direct lineage cannot be independently
+    adjudicated and no change is expected.
+- repository: MaziyarPanahi/mergekit-slerp-tzunwnr-GGUF
+  commit: a7004a1db2df3db3b7fa82a9c0405bcdad48fa7b
+  snapshot_files:
+  - README.md
+  - config.json
+  evidence_summary: front matter declares base_model mergekit-community/mergekit-slerp-tzunwnr plus quantized_by/model_creator
+    fields; no merge or config artifact is present
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  rationale: This is a GGUF redistribution of an upstream merge. The parent claim is declared metadata
+    only and no artifact in the snapshot corroborates it, so the direct lineage cannot be independently
+    adjudicated and no change is expected.
+- repository: McGill-NLP/LLM2Vec-Meta-Llama-3-8B-Instruct-mntp-supervised
+  commit: baa8ebf04a1c2500e61288e7dad65e8ae42601a7
+  snapshot_files:
+  - README.md
+  - adapter_config.json
+  evidence_summary: tool-generated adapter_config.json names the base checkpoint (base_model_name_or_path
+    = meta-llama/Meta-Llama-3-8B-Instruct); no declared base_model
+  parents:
+  - meta-llama/Meta-Llama-3-8B-Instruct
+  parents_status: known
+  relation: adapter
+  relation_status: known
+  metadata_state: missing
+  expected_action: ADD
+  acceptable_actions:
+  - ADD
+  rationale: The adapter config records the base model; the card documents LoRA weights only and declares
+    no lineage, so the metadata is missing rather than wrong.
+- repository: Qwen/Qwen2.5-0.5B-Instruct
+  commit: 7ae557604adf67be50417f59c2c2f167def9a775
+  snapshot_files:
+  - README.md
+  - config.json
+  - generation_config.json
+  - tokenizer_config.json
+  evidence_summary: 'front matter declares base_model: Qwen/Qwen2.5-0.5B with no base_model_relation;
+    no artifact in the snapshot names a parent'
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  rationale: The declaration is the audit subject, not evidence. With no adapter, training or merge artifact
+    and no card statement of the relationship, the parent cannot be independently confirmed and no relation
+    is stated anywhere; a repair would be a guess.
+- repository: Qwen/Qwen2.5-1.5B-Instruct
+  commit: 989aa7980e4cf806f80c7fef2b1adb7bc71aa306
+  snapshot_files:
+  - README.md
+  - config.json
+  - generation_config.json
+  - tokenizer_config.json
+  evidence_summary: 'front matter declares base_model: Qwen/Qwen2.5-1.5B with no base_model_relation;
+    no artifact in the snapshot names a parent'
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  rationale: The declaration is the audit subject, not evidence. With no adapter, training or merge artifact
+    and no card statement of the relationship, the parent cannot be independently confirmed and no relation
+    is stated anywhere; a repair would be a guess.
+- repository: Qwen/Qwen2.5-14B-Instruct-AWQ
+  commit: 539535859b135b0244c91f3e59816150c8056698
+  snapshot_files:
+  - README.md
+  - config.json
+  - generation_config.json
+  - tokenizer_config.json
+  evidence_summary: 'front matter declares base_model Qwen/Qwen2.5-14B-Instruct; card body states ''Quantization:
+    AWQ 4-bit'' of the instruction-tuned Qwen model (the parent is declared but no base_model_relation
+    is)'
+  parents:
+  - Qwen/Qwen2.5-14B-Instruct
+  parents_status: known
+  relation: quantized
+  relation_status: known
+  metadata_state: incomplete
+  expected_action: ADD
+  acceptable_actions:
+  - ADD
+  rationale: The card explicitly describes this repository as an AWQ 4-bit quantization of the named instruct
+    model, so parent and relation are knowable; the declared relation field is missing, so the expected
+    repair is to add it. The declared relation field is empty, so the incomplete metadata is exactly the
+    relation.
+- repository: Qwen/Qwen2.5-3B-Instruct
+  commit: aa8e72537993ba99e69dfaafa59ed015b17504d1
+  snapshot_files:
+  - README.md
+  - config.json
+  - generation_config.json
+  - tokenizer_config.json
+  evidence_summary: 'front matter declares base_model: Qwen/Qwen2.5-3B with no base_model_relation; no
+    artifact in the snapshot names a parent'
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  rationale: The declaration is the audit subject, not evidence. With no adapter, training or merge artifact
+    and no card statement of the relationship, the parent cannot be independently confirmed and no relation
+    is stated anywhere; a repair would be a guess.
+- repository: Qwen/Qwen2.5-7B-Instruct
+  commit: a09a35458c702b33eeacc393d103063234e8bc28
+  snapshot_files:
+  - README.md
+  - config.json
+  - generation_config.json
+  - tokenizer_config.json
+  evidence_summary: 'front matter declares base_model: Qwen/Qwen2.5-7B with no base_model_relation; no
+    artifact in the snapshot names a parent'
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  rationale: The declaration is the audit subject, not evidence. With no adapter, training or merge artifact
+    and no card statement of the relationship, the parent cannot be independently confirmed and no relation
+    is stated anywhere; a repair would be a guess.
+- repository: Qwen/Qwen2.5-7B-Instruct-AWQ
+  commit: b25037543e9394b818fdfca67ab2a00ecc7dd641
+  snapshot_files:
+  - README.md
+  - config.json
+  - generation_config.json
+  - tokenizer_config.json
+  evidence_summary: 'front matter declares base_model Qwen/Qwen2.5-7B-Instruct; card body states ''Quantization:
+    AWQ 4-bit'' of the instruction-tuned Qwen model (the parent is declared but no base_model_relation
+    is)'
+  parents:
+  - Qwen/Qwen2.5-7B-Instruct
+  parents_status: known
+  relation: quantized
+  relation_status: known
+  metadata_state: incomplete
+  expected_action: ADD
+  acceptable_actions:
+  - ADD
+  rationale: The card explicitly describes this repository as an AWQ 4-bit quantization of the named instruct
+    model, so parent and relation are knowable; the declared relation field is missing, so the expected
+    repair is to add it. The declared relation field is empty, so the incomplete metadata is exactly the
+    relation.
+- repository: Qwen/Qwen2.5-VL-7B-Instruct
+  commit: cc594898137f460bfe9f0759e9844b3ce807cfb5
+  snapshot_files:
+  - README.md
+  - config.json
+  - generation_config.json
+  - tokenizer_config.json
+  evidence_summary: no lineage artifact
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: missing
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - ABSTAIN
+  rationale: no front matter at all and no lineage statement in the card body
+- repository: Qwen/Qwen2.5-VL-7B-Instruct-AWQ
+  commit: 536a35794df8831aa814970ee8f89eff577e7718
+  snapshot_files:
+  - README.md
+  - config.json
+  - generation_config.json
+  - tokenizer_config.json
+  evidence_summary: front matter leaves base_model empty; config.json _name_or_path names Qwen/Qwen2.5-VL-7B-Instruct;
+    card body discusses AWQ/GPTQ quantization of the Qwen2.5-VL series (the parent is declared but no
+    base_model_relation is)
+  parents:
+  - Qwen/Qwen2.5-VL-7B-Instruct
+  parents_status: known
+  relation: quantized
+  relation_status: known
+  metadata_state: incomplete
+  expected_action: ADD
+  acceptable_actions:
+  - ADD
+  rationale: A framework-written config corroborates the parent and the card states the quantization,
+    while no lineage is declared at all; adding parent and relation is the safe repair. The declared relation
+    field is empty, so the incomplete metadata is exactly the relation.
+- repository: Qwen/Qwen3-14B-AWQ
+  commit: 31c69efc29464b6bb0aee1398b5a7b50a99340c3
+  snapshot_files:
+  - README.md
+  - config.json
+  - generation_config.json
+  - tokenizer_config.json
+  evidence_summary: 'front matter declares base_model Qwen/Qwen3-14B; card body states ''Quantization:
+    AWQ 4-bit'' of the instruction-tuned Qwen model (the parent is declared but no base_model_relation
+    is)'
+  parents:
+  - Qwen/Qwen3-14B
+  parents_status: known
+  relation: quantized
+  relation_status: known
+  metadata_state: incomplete
+  expected_action: ADD
+  acceptable_actions:
+  - ADD
+  rationale: The card explicitly describes this repository as an AWQ 4-bit quantization of the named instruct
+    model, so parent and relation are knowable; the declared relation field is missing, so the expected
+    repair is to add it. The declared relation field is empty, so the incomplete metadata is exactly the
+    relation.
+- repository: Qwen/Qwen3-8B-AWQ
+  commit: 4da05a8edb55c6046cce958586c33b61da07bb79
+  snapshot_files:
+  - README.md
+  - config.json
+  - generation_config.json
+  - tokenizer_config.json
+  evidence_summary: 'front matter declares base_model Qwen/Qwen3-8B; card body states ''Quantization:
+    AWQ 4-bit'' of the instruction-tuned Qwen model (the parent is declared but no base_model_relation
+    is)'
+  parents:
+  - Qwen/Qwen3-8B
+  parents_status: known
+  relation: quantized
+  relation_status: known
+  metadata_state: incomplete
+  expected_action: ADD
+  acceptable_actions:
+  - ADD
+  rationale: The card explicitly describes this repository as an AWQ 4-bit quantization of the named instruct
+    model, so parent and relation are knowable; the declared relation field is missing, so the expected
+    repair is to add it. The declared relation field is empty, so the incomplete metadata is exactly the
+    relation.
+- repository: Qwen/Qwen3-VL-8B-Instruct
+  commit: 0c351dd01ed87e9c1b53cbc748cba10e6187ff3b
+  snapshot_files:
+  - README.md
+  - config.json
+  - generation_config.json
+  - tokenizer_config.json
+  evidence_summary: no lineage artifact
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: missing
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - ABSTAIN
+  rationale: front matter without base_model and no lineage statement in the card body
+- repository: audio-cpp/audio.cpp-gguf
+  commit: 83c5d96c03023ff5a7712570d057ce26c8769f98
+  snapshot_files:
+  - README.md
+  evidence_summary: 'front matter declares base_model_relation: quantized but leaves base_model empty;
+    no artifact names a parent'
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - ABSTAIN
+  rationale: 'A declared relation without any parent cannot be adjudicated: no artifact in the snapshot
+    identifies the model this GGUF build derives from. A parent is declared but no artifact corroborates
+    it, so the label stays undetermined rather than missing.'
+- repository: cdiamond/Qwen3.8-27B-iMatrix-NVFP4-MTP-GGUF
+  commit: ac343e8f44caef0896f79d372ecc07ef7ab34ec8
+  snapshot_files:
+  - README.md
+  evidence_summary: 'front matter declares base_model Qwen/Qwen3.8-27B and base_model_relation quantized;
+    card body states ''Base model: [Qwen/Qwen3.8-27B]'''
+  parents:
+  - Qwen/Qwen3.8-27B
+  parents_status: known
+  relation: quantized
+  relation_status: known
+  metadata_state: valid
+  expected_action: KEEP
+  acceptable_actions:
+  - KEEP
+  rationale: Declared metadata matches an explicit card statement and the repository is indeed a GGUF
+    quantization of that model; nothing indicates an error.
+- repository: k-chirkunov/gemma4-e4b-claims-comparison
+  commit: 99f161c623be065e5db8827b1278f83ced8834dc
+  snapshot_files:
+  - README.md
+  evidence_summary: front matter declares google/gemma-4-e4b-it; card body states 'A fine-tuned google/gemma-4-e4b-it'
+    and 'LoRA SFT ... merged to full bf16 weights'
+  parents:
+  - google/gemma-4-e4b-it
+  parents_status: known
+  relation: null
+  relation_status: ambiguous
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  rationale: The parent is corroborated by the card, but the relation has two defensible readings (a finetune
+    whose LoRA was merged into the base weights, versus an adapter published as full weights). Choosing
+    one automatically is not safe.
+- repository: lightx2v/Qwen-Image-Edit-2511-Lightning
+  commit: d74eba145674fd7e31b949324e148e21e7118abd
+  snapshot_files:
+  - README.md
+  evidence_summary: 'no lineage artifact (front matter declares base_model: Qwen/Qwen-Image-Edit-2511)'
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - ABSTAIN
+  rationale: front matter leaves base_model empty; the card lists distilled LoRA artifacts without naming
+    a parent model A parent is declared (Qwen/Qwen-Image-Edit-2511) but no artifact or card statement
+    corroborates it, so the label stays undetermined rather than missing.
+- repository: lightx2v/Qwen-Image-Lightning
+  commit: e74da8d4e71a54b341de86aa9f8d2509165aa513
+  snapshot_files:
+  - README.md
+  evidence_summary: 'no lineage artifact (front matter declares base_model: Qwen/Qwen-Image)'
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - ABSTAIN
+  rationale: front matter leaves base_model empty; the card documents distilled LoRA checkpoints without
+    naming a parent model A parent is declared (Qwen/Qwen-Image) but no artifact or card statement corroborates
+    it, so the label stays undetermined rather than missing.
+- repository: llamafactory/tiny-random-Llama-3-lora
+  commit: 513b1e6c2e19c73f92644a352b62dd28eb63c980
+  snapshot_files:
+  - README.md
+  - adapter_config.json
+  evidence_summary: tool-generated adapter_config.json names the base checkpoint; front matter declares
+    the same parent
+  parents:
+  - llamafactory/tiny-random-Llama-3
+  parents_status: known
+  relation: adapter
+  relation_status: known
+  metadata_state: valid
+  expected_action: KEEP
+  acceptable_actions:
+  - KEEP
+  rationale: PEFT config and declared metadata agree on both parent and adapter relation.
+- repository: mergekit-community/Qwen3-1.5B-Instruct
+  commit: 675e6f455dc5d0054e78732e855af7b298def5c3
+  snapshot_files:
+  - README.md
+  - config.json
+  - mergekit_config.yml
+  - tokenizer_config.json
+  evidence_summary: 'mergekit_config.yml lists models: [Qwen/Qwen2.5-Coder-1.5B-Instruct, Qwen/Qwen2.5-Math-1.5B-Instruct]
+    with merge_method ties plus a top-level base_model: Qwen/Qwen2.5-1.5B-Instruct; front matter declares
+    all three'
+  parents:
+  - Qwen/Qwen2.5-Coder-1.5B-Instruct
+  - Qwen/Qwen2.5-Math-1.5B-Instruct
+  - Qwen/Qwen2.5-1.5B-Instruct
+  parents_status: ambiguous
+  relation: merge
+  relation_status: known
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  parent_set_alternatives:
+  - - Qwen/Qwen2.5-Coder-1.5B-Instruct
+    - Qwen/Qwen2.5-Math-1.5B-Instruct
+  - - Qwen/Qwen2.5-Coder-1.5B-Instruct
+    - Qwen/Qwen2.5-Math-1.5B-Instruct
+    - Qwen/Qwen2.5-1.5B-Instruct
+  rationale: Whether MergeKit's top-level base_model is an additional merged source or the residual base
+    is a MergeKit semantics question the frozen evidence does not settle, so the source set is ambiguous.
+    Under either reading the declared set is not demonstrably wrong, so no automatic change is expected.
+- repository: mergekit-community/ohnoes_now_nsfw
+  commit: f56a8bcbaf47fa62d1eb5790c511e5aa8b5832d9
+  snapshot_files:
+  - README.md
+  - config.json
+  - mergekit_config.yml
+  - tokenizer_config.json
+  evidence_summary: mergekit_config.yml lists five '<base>+<lora>' source entries; the front matter declares
+    five plain repository ids including FreedomIntelligence/HuatuoGPT-o1-8B
+  parents:
+  - FreedomIntelligence/HuatuoGPT-o1-8B
+  - Blackroot/Llama-3-LongStory-LORA
+  - vincentyandex/lora_llama3_chunked_novel_bs128
+  - grimjim/Llama-3-Instruct-abliteration-LoRA-8B
+  - HuatuoGPT-o1-8B+v
+  parents_status: ambiguous
+  relation: merge
+  relation_status: known
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - ABSTAIN
+  rationale: The merge configuration establishes a merge over five composed source entries (each a base+lora
+    combination), while the declared metadata lists five plain repository ids. Whether the declared set
+    is the same object as the merge inputs is a MergeKit semantics question the evidence does not settle,
+    so the source set is ambiguous and no automatic change is expected.
+  parent_set_alternatives:
+  - - FreedomIntelligence/HuatuoGPT-o1-8B
+    - Blackroot/Llama-3-LongStory-LORA
+    - vincentyandex/lora_llama3_chunked_novel_bs128
+    - grimjim/Llama-3-Instruct-abliteration-LoRA-8B
+    - HuatuoGPT-o1-8B+v
+  - - FreedomIntelligence/HuatuoGPT-o1-8B+eeeebbb2
+    - FreedomIntelligence/HuatuoGPT-o1-8B+surya-narayanan
+    - FreedomIntelligence/HuatuoGPT-o1-8B+Blackroot/Llama-3-LongStory-LORA
+    - FreedomIntelligence/HuatuoGPT-o1-8B+ResplendentAI/Llama3_RP_ORPO_LoRA
+    - FreedomIntelligence/HuatuoGPT-o1-8B+v
+- repository: meta-llama/Llama-3.1-8B-Instruct
+  commit: 0e9e39f249a16976918f6564b8830bc894c89659
+  snapshot_files:
+  - README.md
+  evidence_summary: front matter declares base_model 'meta-llama/Meta-Llama-3.1-8B' (dotted spelling);
+    the snapshot holds only the model card (gated repository)
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  rationale: The declared identifier cannot be confirmed from any artifact in the snapshot, and the dotted
+    spelling of the version segment is not independently verifiable here; naming a different repository
+    as 'truth' would require external knowledge rather than the frozen evidence.
+- repository: meta-llama/Llama-3.2-1B-Instruct
+  commit: 9213176726f574b556790deb65791e0c5aa438b6
+  snapshot_files:
+  - README.md
+  evidence_summary: no lineage artifact
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: missing
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - ABSTAIN
+  rationale: front matter without base_model; the card lists training data and benchmarks but never states
+    a direct parent
+- repository: mudler/locate-anything.cpp-gguf
+  commit: 4e50db5b836dd876f5e464734ef5484cae754a52
+  snapshot_files:
+  - README.md
+  evidence_summary: front matter declares base_model nvidia/LocateAnything-3B with library_name gguf;
+    no artifact names a parent
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  rationale: 'Declared-only quantized derivative: without a config or merge artifact the parent claim
+    remains unverified, so no automatic change is expected.'
+- repository: ornith-ai/Ornith-1.5-9B-GGUF
+  commit: abdd624b12ebf020b767fff532ff44fe552b28c3
+  snapshot_files:
+  - README.md
+  evidence_summary: front matter declares no lineage; card body names only the Ornith-1.5 family and a
+    'Ornith-1.5-9B-Mobile' sibling variant
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: missing
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - ABSTAIN
+  rationale: Family names and sibling variants are not parent identifiers; nothing states a direct parent.
+- repository: peft-internal-testing/tiny-OPTForCausalLM-lora
+  commit: 14e64b8ba522284138bfc22e76002ab6c0ce31e2
+  snapshot_files:
+  - README.md
+  - adapter_config.json
+  evidence_summary: tool-generated adapter_config.json names the base checkpoint (base_model_name_or_path
+    = hf-internal-testing/tiny-random-OPTForCausalLM); model card declares no lineage
+  parents:
+  - hf-internal-testing/tiny-random-OPTForCausalLM
+  parents_status: known
+  relation: adapter
+  relation_status: known
+  metadata_state: missing
+  expected_action: ADD
+  acceptable_actions:
+  - ADD
+  rationale: PEFT writes the base checkpoint into adapter_config when the adapter is saved, so the direct
+    parent and the adapter relation are established independently of the (absent) declared metadata.
+- repository: peft-internal-testing/tiny_GPT2ForTokenClassification-lora
+  commit: c32ca358e1deddf2d3e755faef6d22610d7b49ae
+  snapshot_files:
+  - README.md
+  - adapter_config.json
+  evidence_summary: tool-generated adapter_config.json names the base checkpoint (base_model_name_or_path
+    = hf-internal-testing/tiny-random-gpt2); model card declares no lineage
+  parents:
+  - hf-internal-testing/tiny-random-gpt2
+  parents_status: known
+  relation: adapter
+  relation_status: known
+  metadata_state: missing
+  expected_action: ADD
+  acceptable_actions:
+  - ADD
+  rationale: PEFT writes the base checkpoint into adapter_config when the adapter is saved, so the direct
+    parent and the adapter relation are established independently of the (absent) declared metadata.
+- repository: peft-internal-testing/tiny_OPTForFeatureExtraction-lora
+  commit: 342e5d6b9a8c5ce360fb2b459d4e6598c49ff1eb
+  snapshot_files:
+  - README.md
+  - adapter_config.json
+  evidence_summary: tool-generated adapter_config.json names the base checkpoint (base_model_name_or_path
+    = hf-internal-testing/tiny-random-OPTForCausalLM); model card declares no lineage
+  parents:
+  - hf-internal-testing/tiny-random-OPTForCausalLM
+  parents_status: known
+  relation: adapter
+  relation_status: known
+  metadata_state: missing
+  expected_action: ADD
+  acceptable_actions:
+  - ADD
+  rationale: PEFT writes the base checkpoint into adapter_config when the adapter is saved, so the direct
+    parent and the adapter relation are established independently of the (absent) declared metadata.
+- repository: peft-internal-testing/tiny_OPTForQuestionAnswering-lora
+  commit: bf74d712a3b7ca2086fec457602106e432033787
+  snapshot_files:
+  - README.md
+  - adapter_config.json
+  evidence_summary: tool-generated adapter_config.json names the base checkpoint (base_model_name_or_path
+    = hf-internal-testing/tiny-random-OPTForCausalLM); model card declares no lineage
+  parents:
+  - hf-internal-testing/tiny-random-OPTForCausalLM
+  parents_status: known
+  relation: adapter
+  relation_status: known
+  metadata_state: missing
+  expected_action: ADD
+  acceptable_actions:
+  - ADD
+  rationale: PEFT writes the base checkpoint into adapter_config when the adapter is saved, so the direct
+    parent and the adapter relation are established independently of the (absent) declared metadata.
+- repository: peft-internal-testing/tiny_OPTForSequenceClassification-lora
+  commit: c6ef8e0ad5748a888b3694c25aab6dcddb42a37d
+  snapshot_files:
+  - README.md
+  - adapter_config.json
+  evidence_summary: tool-generated adapter_config.json names the base checkpoint (base_model_name_or_path
+    = peft-internal-testing/tiny-random-OPTForCausalLM); model card declares no lineage
+  parents:
+  - peft-internal-testing/tiny-random-OPTForCausalLM
+  parents_status: known
+  relation: adapter
+  relation_status: known
+  metadata_state: missing
+  expected_action: ADD
+  acceptable_actions:
+  - ADD
+  rationale: PEFT writes the base checkpoint into adapter_config when the adapter is saved, so the direct
+    parent and the adapter relation are established independently of the (absent) declared metadata.
+- repository: qylu4156/strongreject-15k-v1
+  commit: 4bd893d32390d2cace4f067dc2e3ef5294fd78a2
+  snapshot_files:
+  - README.md
+  - adapter_config.json
+  - tokenizer_config.json
+  evidence_summary: tool-generated adapter_config.json names the base checkpoint; front matter declares
+    google/gemma-2b
+  parents:
+  - google/gemma-2b
+  parents_status: known
+  relation: adapter
+  relation_status: known
+  metadata_state: valid
+  expected_action: KEEP
+  acceptable_actions:
+  - KEEP
+  rationale: Declared base_model equals the adapter's recorded base; nothing indicates an error.
+- repository: teknium/OpenHermes-2.5-Mistral-7B
+  commit: 24c0bea14d53e6f67f1fbe2eca5bfe7cae389b33
+  snapshot_files:
+  - README.md
+  - config.json
+  - generation_config.json
+  - tokenizer_config.json
+  evidence_summary: front matter and config.json _name_or_path both name mistralai/Mistral-7B-v0.1; no
+    artifact states a relation; card prose only says 'a state of the art Mistral Fine-tune, a continuation
+    of OpenHermes 2 model'
+  parents:
+  - mistralai/Mistral-7B-v0.1
+  parents_status: known
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - KEEP
+  - ABSTAIN
+  rationale: The parent identity is corroborated by a framework-written config, but no artifact states
+    the transformation and the prose mentions a different intermediate model (OpenHermes 2) without a
+    canonical id. The metadata is neither verifiably complete nor verifiably incorrect, so no automated
+    change is expected.
+- repository: unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF
+  commit: b17cb02dd882d5b6ab62fc777ad2995f19668350
+  snapshot_files:
+  - README.md
+  evidence_summary: 'front matter leaves base_model empty; card body mentions quantization tooling and
+    unrelated fine-tuning tips but never names a direct parent (front matter declares base_model: Qwen/Qwen3-Coder-30B-A3B-Instruct)'
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - ABSTAIN
+  rationale: The GGUF packaging implies a relation but no artifact or statement identifies the parent
+    model, so the lineage is not knowable from the frozen evidence. A parent is declared (Qwen/Qwen3-Coder-30B-A3B-Instruct)
+    but no artifact or card statement corroborates it, so the label stays undetermined rather than missing.
+- repository: unsloth/Qwen3.8-27B-GGUF
+  commit: 4ca720788d1e01f1bff70c033e0d0028fd02e502
+  snapshot_files:
+  - README.md
+  - config.json
+  evidence_summary: 'front matter leaves base_model empty; config.json has no _name_or_path; card discusses
+    dynamic GGUF quantization without naming a parent (front matter declares base_model: Qwen/Qwen3.8-27B)'
+  parents: []
+  parents_status: unknown
+  relation: null
+  relation_status: unknown
+  metadata_state: undetermined
+  expected_action: ABSTAIN
+  acceptable_actions:
+  - ABSTAIN
+  rationale: Nothing in the snapshot identifies a direct parent, so no repair can be justified. A parent
+    is declared (Qwen/Qwen3.8-27B) but no artifact or card statement corroborates it, so the label stays
+    undetermined rather than missing.
+- repository: webAI-Official/TwIL-LM3
+  commit: e4f94da572d9857a91ca0dca857cebb0cbe6755a
+  snapshot_files:
+  - README.md
+  - config.json
+  - generation_config.json
+  - tokenizer_config.json
+  evidence_summary: front matter declares base_model HuggingFaceTB/SmolLM3-3B; card body states '| Base
+    model | HuggingFaceTB/SmolLM3-3B |' and describes LoRA supervised fine-tuning of that base (the parent
+    is declared but no base_model_relation is)
+  parents:
+  - HuggingFaceTB/SmolLM3-3B
+  parents_status: known
+  relation: finetune
+  relation_status: known
+  metadata_state: incomplete
+  expected_action: ADD
+  acceptable_actions:
+  - ADD
+  rationale: The card independently restates the parent and explicitly describes supervised fine-tuning
+    of it, so parent and relation are established while the declared relation field is absent; the safe
+    repair is to add the relation. The declared relation field is empty, so the incomplete metadata is
+    exactly the relation.
