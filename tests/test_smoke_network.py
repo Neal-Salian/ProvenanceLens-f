@@ -148,7 +148,9 @@ def _committed_snapshots() -> list[tuple[str, str, Path]]:
 
 def test_committed_snapshots_exist():
     snapshots = _committed_snapshots()
-    assert len(snapshots) == 3, f"expected 3 frozen snapshots, found {len(snapshots)}"
+    assert len(snapshots) == 44, f"expected 44 frozen snapshots, found {len(snapshots)}"
+    assert {repo for repo, _, _ in snapshots} >= {FINETUNE_REPO, ADAPTER_REPO, MERGE_REPO}
+    assert len({(repo, commit) for repo, commit, _ in snapshots}) == len(snapshots)
 
 
 def test_committed_snapshots_extract_deterministically():

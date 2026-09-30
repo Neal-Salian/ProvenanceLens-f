@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "repository": "Jackrong/Qwopus3.6-27B-Coder-MTP-GGUF",
+  "resolved_commit_sha": "8e5395bf66c3432cc53d2084dae48ecf5f68db0f",
+  "declared_lineage": {
+    "base_model": "Jackrong/Qwopus3.6-27B-v2",
+    "relation_raw": null,
+    "relation": null,
+    "additional_base_models": []
+  },
+  "declared_evidence": [
+    {
+      "source_type": "declared_metadata",
+      "role": "declared",
+      "extraction_method": "deterministic",
+      "reliability": "not_applicable",
+      "source_name": "README.md",
+      "repository": "Jackrong/Qwopus3.6-27B-Coder-MTP-GGUF",
+      "revision": "8e5395bf66c3432cc53d2084dae48ecf5f68db0f",
+      "candidate_parent": "Jackrong/Qwopus3.6-27B-v2",
+      "relation": null,
+      "relation_raw": null,
+      "raw_value": "Jackrong/Qwopus3.6-27B-v2",
+      "evidence_span": null,
+      "key_path": "base_model",
+      "explicitness": "explicit",
+      "source_url": null,
+      "note": "model-card front matter: subject of the audit, not independent evidence"
+    }
+  ],
+  "independent_evidence": [],
+  "issues": []
+}

@@ -1,0 +1,279 @@
+{
+  "schema_version": 1,
+  "repository": "lightx2v/Qwen-Image-Lightning",
+  "requested_revision": null,
+  "resolved_commit_sha": "e74da8d4e71a54b341de86aa9f8d2509165aa513",
+  "collected_at": "2026-09-30T15:37:57.914674+00:00",
+  "status": "SUCCESS",
+  "max_file_bytes": 1048576,
+  "retrieved": [
+    {
+      "filename": "README.md",
+      "status": "SUCCESS",
+      "category": "model_card",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/lightx2v/Qwen-Image-Lightning/resolve/e74da8d4e71a54b341de86aa9f8d2509165aa513/README.md",
+      "size_bytes": 1924,
+      "sha256": "a408c27e68cb935c2557c4082bf796abb543a040d321300660a70a450bff9942",
+      "retrieved_at": "2026-09-30T15:37:58.699396+00:00",
+      "error": null
+    }
+  ],
+  "failed": [],
+  "skipped": [
+    {
+      "filename": ".gitattributes",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 1519,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Edit-2509/Qwen-Image-Edit-2509-Lightning-4steps-V1.0-bf16.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 849608296,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Edit-2509/Qwen-Image-Edit-2509-Lightning-4steps-V1.0-fp32.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 1698951104,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Edit-2509/Qwen-Image-Edit-2509-Lightning-8steps-V1.0-bf16.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 849608296,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Edit-2509/Qwen-Image-Edit-2509-Lightning-8steps-V1.0-fp32.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 1698951104,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Edit-2509/config.json",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 339,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Edit-2509/qwen_image_edit_2509_fp8_e4m3fn_scaled.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 20436302974,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Edit-Lightning-4steps-V1.0-bf16.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 849608296,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Edit-Lightning-4steps-V1.0.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 1698951104,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Edit-Lightning-8steps-V1.0-bf16.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 849608296,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Edit-Lightning-8steps-V1.0.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 1698951104,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Lightning-4steps-V1.0-bf16.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 849608296,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Lightning-4steps-V1.0.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 1698951104,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Lightning-4steps-V2.0-bf16.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 849608296,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Lightning-4steps-V2.0.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 1698951104,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Lightning-8steps-V1.0.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 1698951104,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Lightning-8steps-V1.1-bf16.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 849608296,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Lightning-8steps-V1.1.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 1698951104,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Lightning-8steps-V2.0-bf16.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 849608296,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-Lightning-8steps-V2.0.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 1698951104,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-fp8-e4m3fn-Lightning-4steps-V1.0-bf16.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 849608296,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image-fp8-e4m3fn-Lightning-4steps-V1.0-fp32.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 1698951104,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwen-Image/qwen_image_fp8_e4m3fn_scaled.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 20436302974,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "repository": "Qwen/Qwen2.5-3B-Instruct",
+  "requested_revision": null,
+  "resolved_commit_sha": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "collected_at": "2026-09-30T15:38:24.219814+00:00",
+  "status": "SUCCESS",
+  "max_file_bytes": 1048576,
+  "retrieved": [
+    {
+      "filename": "README.md",
+      "status": "SUCCESS",
+      "category": "model_card",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/Qwen/Qwen2.5-3B-Instruct/resolve/aa8e72537993ba99e69dfaafa59ed015b17504d1/README.md",
+      "size_bytes": 4930,
+      "sha256": "2c74693e6ae36ba878124d465195b4dad0f71035b54ece1c9fd1553cc497ef8c",
+      "retrieved_at": "2026-09-30T15:38:24.719253+00:00",
+      "error": null
+    },
+    {
+      "filename": "config.json",
+      "status": "SUCCESS",
+      "category": "core_config",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/Qwen/Qwen2.5-3B-Instruct/resolve/aa8e72537993ba99e69dfaafa59ed015b17504d1/config.json",
+      "size_bytes": 661,
+      "sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+      "retrieved_at": "2026-09-30T15:38:25.003968+00:00",
+      "error": null
+    },
+    {
+      "filename": "generation_config.json",
+      "status": "SUCCESS",
+      "category": "generation_config",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/Qwen/Qwen2.5-3B-Instruct/resolve/aa8e72537993ba99e69dfaafa59ed015b17504d1/generation_config.json",
+      "size_bytes": 242,
+      "sha256": "ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9",
+      "retrieved_at": "2026-09-30T15:38:25.512675+00:00",
+      "error": null
+    },
+    {
+      "filename": "tokenizer_config.json",
+      "status": "SUCCESS",
+      "category": "tokenizer_config",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/Qwen/Qwen2.5-3B-Instruct/resolve/aa8e72537993ba99e69dfaafa59ed015b17504d1/tokenizer_config.json",
+      "size_bytes": 7305,
+      "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+      "retrieved_at": "2026-09-30T15:38:25.805952+00:00",
+      "error": null
+    }
+  ],
+  "failed": [],
+  "skipped": [
+    {
+      "filename": ".gitattributes",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 1519,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "LICENSE",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 7388,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "merges.txt",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 1671839,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "model-00001-of-00002.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 3968658944,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "model-00002-of-00002.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 2203268048,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "model.safetensors.index.json",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 35581,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "tokenizer.json",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 7031645,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "vocab.json",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 2776833,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    }
+  ],
+  "notes": []
+}

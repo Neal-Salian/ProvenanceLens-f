@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "repository": "mudler/locate-anything.cpp-gguf",
+  "requested_revision": null,
+  "resolved_commit_sha": "4e50db5b836dd876f5e464734ef5484cae754a52",
+  "collected_at": "2026-09-30T15:38:02.915927+00:00",
+  "status": "SUCCESS",
+  "max_file_bytes": 1048576,
+  "retrieved": [
+    {
+      "filename": "README.md",
+      "status": "SUCCESS",
+      "category": "model_card",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/mudler/locate-anything.cpp-gguf/resolve/4e50db5b836dd876f5e464734ef5484cae754a52/README.md",
+      "size_bytes": 3933,
+      "sha256": "4cd3bf6c67cc933e47197e6f7de3a83ebe4778d9c9d521e8f07025e7ce648058",
+      "retrieved_at": "2026-09-30T15:38:03.661890+00:00",
+      "error": null
+    }
+  ],
+  "failed": [],
+  "skipped": [
+    {
+      "filename": ".gitattributes",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 1828,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "gpu_speedup.png",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 62965,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "locate-anything-f16.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 9154203072,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "locate-anything-q4_k.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 4716320320,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "locate-anything-q5_k.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 5102223168,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "locate-anything-q6_k.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 5512244960,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "locate-anything-q8_0.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 6259931712,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "quant_tradeoff.png",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 63546,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "repository": "ornith-ai/Ornith-1.5-9B-GGUF",
+  "requested_revision": null,
+  "resolved_commit_sha": "abdd624b12ebf020b767fff532ff44fe552b28c3",
+  "collected_at": "2026-09-30T15:38:05.297432+00:00",
+  "status": "SUCCESS",
+  "max_file_bytes": 1048576,
+  "retrieved": [
+    {
+      "filename": "README.md",
+      "status": "SUCCESS",
+      "category": "model_card",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/ornith-ai/Ornith-1.5-9B-GGUF/resolve/abdd624b12ebf020b767fff532ff44fe552b28c3/README.md",
+      "size_bytes": 26796,
+      "sha256": "73fea91dc1a115240c564071eb05738832837bb5e51eb043b817739b8c86f2ca",
+      "retrieved_at": "2026-09-30T15:38:05.822300+00:00",
+      "error": null
+    }
+  ],
+  "failed": [],
+  "skipped": [
+    {
+      "filename": ".gitattributes",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 2074,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Ornith-1.5-9B-BF16.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 18407321184,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Ornith-1.5-9B-Q4_K_M.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 5780090816,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Ornith-1.5-9B-Q5_K_M.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 6642544576,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Ornith-1.5-9B-Q6_K.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 7558901696,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Ornith-1.5-9B-Q8_0.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 9786060384,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "assets/ornith_9b_eval.png",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 724267,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "assets/ornith_logo.png",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 962441,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "mmproj-Ornith-1.5-9B-BF16.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 921704672,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    }
+  ],
+  "notes": []
+}

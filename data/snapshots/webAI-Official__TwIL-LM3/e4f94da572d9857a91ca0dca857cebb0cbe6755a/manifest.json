@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "repository": "webAI-Official/TwIL-LM3",
+  "requested_revision": null,
+  "resolved_commit_sha": "e4f94da572d9857a91ca0dca857cebb0cbe6755a",
+  "collected_at": "2026-09-30T15:37:59.985222+00:00",
+  "status": "SUCCESS",
+  "max_file_bytes": 1048576,
+  "retrieved": [
+    {
+      "filename": "README.md",
+      "status": "SUCCESS",
+      "category": "model_card",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/webAI-Official/TwIL-LM3/resolve/e4f94da572d9857a91ca0dca857cebb0cbe6755a/README.md",
+      "size_bytes": 22997,
+      "sha256": "c9a88288d5c2ed310f4c5d51d2aab4d337c21c9c3162dda73fc4b1c644edce24",
+      "retrieved_at": "2026-09-30T15:38:00.797019+00:00",
+      "error": null
+    },
+    {
+      "filename": "config.json",
+      "status": "SUCCESS",
+      "category": "core_config",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/webAI-Official/TwIL-LM3/resolve/e4f94da572d9857a91ca0dca857cebb0cbe6755a/config.json",
+      "size_bytes": 1992,
+      "sha256": "5e6d72cb7acbd4bff92af720750b1333511eb65d8974115ffcdf8290c779ce97",
+      "retrieved_at": "2026-09-30T15:38:01.320805+00:00",
+      "error": null
+    },
+    {
+      "filename": "generation_config.json",
+      "status": "SUCCESS",
+      "category": "generation_config",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/webAI-Official/TwIL-LM3/resolve/e4f94da572d9857a91ca0dca857cebb0cbe6755a/generation_config.json",
+      "size_bytes": 176,
+      "sha256": "1c965358cdeacfdcab969b229870b252eb60337fdec7270df8f340eae54272a3",
+      "retrieved_at": "2026-09-30T15:38:01.844268+00:00",
+      "error": null
+    },
+    {
+      "filename": "tokenizer_config.json",
+      "status": "SUCCESS",
+      "category": "tokenizer_config",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/webAI-Official/TwIL-LM3/resolve/e4f94da572d9857a91ca0dca857cebb0cbe6755a/tokenizer_config.json",
+      "size_bytes": 56236,
+      "sha256": "f57cc58c8674220c295e71e804c82605c9e7914d816ea8d3af057e7fdf4ec882",
+      "retrieved_at": "2026-09-30T15:38:02.368286+00:00",
+      "error": null
+    }
+  ],
+  "failed": [],
+  "skipped": [
+    {
+      "filename": ".gitattributes",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 1848,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "LICENSE.md",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 4383,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "TwIL-LM3-F16.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 6158340256,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "TwIL-LM3-Q4_K_M.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 1915306144,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "TwIL-LM3-Q5_K_M.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 2213757088,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "TwIL-LM3-Q6_K.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 2530861216,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "TwIL-LM3-Q8_0.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 3275575456,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "apache-2.0-LICENSE.txt",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 11357,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "benchmarks.jpg",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 62076,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "chat_template.jinja",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 5598,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "model.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 6150235096,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "special_tokens_map.json",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 289,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "tokenizer.json",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 17208819,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    }
+  ],
+  "notes": []
+}

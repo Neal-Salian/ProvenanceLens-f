@@ -7,6 +7,7 @@ Offline and deterministic by default. Examples::
     python -m provenancelens.evaluation run --track real --systems provenancelens
     python -m provenancelens.evaluation all --output artifacts/evaluation
     python -m provenancelens.evaluation extraction
+    python -m provenancelens.evaluation phase-g run
 """
 
 from __future__ import annotations
@@ -50,6 +51,21 @@ def _cmd_run(args: argparse.Namespace) -> int:
     else:
         _print({system: run.metrics for system, run in runs.items()})
     return 0
+
+
+def _cmd_phase_g(args: argparse.Namespace) -> int:
+    """Forward to the Phase G study CLI (see provenancelens.evaluation.phase_g_cli).
+
+    Unknown options are passed through so the full Phase G interface stays
+    reachable from the main entry point, e.g.
+    ``python -m provenancelens.evaluation phase-g run --quiet``.
+    """
+    from .phase_g_cli import main as phase_g_main
+
+    forwarded = [*list(args.phase_g or []), *list(getattr(args, "passthrough", []) or [])]
+    if args.root and "--root" not in forwarded:
+        forwarded = ["--root", args.root, *forwarded]
+    return phase_g_main(forwarded)
 
 
 def _cmd_extraction(args: argparse.Namespace) -> int:
@@ -108,6 +124,13 @@ def build_parser() -> argparse.ArgumentParser:
                    help="evaluate prose-extraction quality only").set_defaults(
         func=_cmd_extraction)
 
+    phase_g = sub.add_parser("phase-g", parents=[common],
+                             help="run the Phase G experimental study")
+    phase_g.add_argument("phase_g", nargs="*",
+                         help="arguments forwarded to the Phase G CLI "
+                              "(run, summary, ablate, failures, verify)")
+    phase_g.set_defaults(func=_cmd_phase_g)
+
     every = sub.add_parser("all", parents=[common],
                            help="validate, run every system and write artifacts")
     every.add_argument("--output", default="artifacts/evaluation")
@@ -117,7 +140,11 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
-    args = parser.parse_args(argv)
+    args, unknown = parser.parse_known_args(argv)
+    if getattr(args, "command", None) == "phase-g" and unknown:
+        args.passthrough = unknown
+    elif unknown:
+        parser.error("unrecognized arguments: " + " ".join(unknown))
     if not getattr(args, "command", None):
         parser.print_help()
         return 2

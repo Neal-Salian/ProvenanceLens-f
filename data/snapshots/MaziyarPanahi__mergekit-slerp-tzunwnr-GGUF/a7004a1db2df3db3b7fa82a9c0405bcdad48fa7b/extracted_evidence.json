@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "repository": "MaziyarPanahi/mergekit-slerp-tzunwnr-GGUF",
+  "resolved_commit_sha": "a7004a1db2df3db3b7fa82a9c0405bcdad48fa7b",
+  "declared_lineage": {
+    "base_model": "mergekit-community/mergekit-slerp-tzunwnr",
+    "relation_raw": null,
+    "relation": null,
+    "additional_base_models": []
+  },
+  "declared_evidence": [
+    {
+      "source_type": "declared_metadata",
+      "role": "declared",
+      "extraction_method": "deterministic",
+      "reliability": "not_applicable",
+      "source_name": "README.md",
+      "repository": "MaziyarPanahi/mergekit-slerp-tzunwnr-GGUF",
+      "revision": "a7004a1db2df3db3b7fa82a9c0405bcdad48fa7b",
+      "candidate_parent": "mergekit-community/mergekit-slerp-tzunwnr",
+      "relation": null,
+      "relation_raw": null,
+      "raw_value": "mergekit-community/mergekit-slerp-tzunwnr",
+      "evidence_span": null,
+      "key_path": "base_model",
+      "explicitness": "explicit",
+      "source_url": null,
+      "note": "model-card front matter: subject of the audit, not independent evidence"
+    }
+  ],
+  "independent_evidence": [],
+  "issues": []
+}

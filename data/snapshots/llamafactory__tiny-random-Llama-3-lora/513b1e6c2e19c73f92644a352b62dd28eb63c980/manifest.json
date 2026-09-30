@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "repository": "llamafactory/tiny-random-Llama-3-lora",
+  "requested_revision": null,
+  "resolved_commit_sha": "513b1e6c2e19c73f92644a352b62dd28eb63c980",
+  "collected_at": "2026-09-30T15:37:37.487811+00:00",
+  "status": "SUCCESS",
+  "max_file_bytes": 1048576,
+  "retrieved": [
+    {
+      "filename": "README.md",
+      "status": "SUCCESS",
+      "category": "model_card",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/llamafactory/tiny-random-Llama-3-lora/resolve/513b1e6c2e19c73f92644a352b62dd28eb63c980/README.md",
+      "size_bytes": 182,
+      "sha256": "7663aef7d85e26a452412f16a39106994cf226a123172430d09eb8e50d4a6864",
+      "retrieved_at": "2026-09-30T15:37:38.248634+00:00",
+      "error": null
+    },
+    {
+      "filename": "adapter_config.json",
+      "status": "SUCCESS",
+      "category": "adapter",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/llamafactory/tiny-random-Llama-3-lora/resolve/513b1e6c2e19c73f92644a352b62dd28eb63c980/adapter_config.json",
+      "size_bytes": 731,
+      "sha256": "2da2dcbe7595640f6992907d07bb4bb7ac8d88d82f8705761887182178fe944a",
+      "retrieved_at": "2026-09-30T15:37:38.774461+00:00",
+      "error": null
+    }
+  ],
+  "failed": [],
+  "skipped": [
+    {
+      "filename": ".gitattributes",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 1519,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "adapter_model.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 27024,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "value_head.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 260,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    }
+  ],
+  "notes": []
+}

@@ -67,7 +67,8 @@ class MetadataState(str, Enum):
     """Condition of the declared metadata relative to adjudicated truth."""
 
     VALID = "valid"            # declared lineage matches truth
-    MISSING = "missing"        # no direct lineage declared
+    MISSING = "missing"        # no direct lineage declared at all
+    INCOMPLETE = "incomplete"  # parent declared, relation missing or undeclared
     INCORRECT = "incorrect"    # declared lineage contradicts truth
     UNDETERMINED = "undetermined"  # cannot be classified from the evidence
 

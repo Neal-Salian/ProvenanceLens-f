@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "repository": "k-chirkunov/gemma4-e4b-claims-comparison",
+  "requested_revision": null,
+  "resolved_commit_sha": "99f161c623be065e5db8827b1278f83ced8834dc",
+  "collected_at": "2026-09-30T15:37:55.789239+00:00",
+  "status": "PARTIAL",
+  "max_file_bytes": 1048576,
+  "retrieved": [
+    {
+      "filename": "README.md",
+      "status": "SUCCESS",
+      "category": "model_card",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/k-chirkunov/gemma4-e4b-claims-comparison/resolve/99f161c623be065e5db8827b1278f83ced8834dc/README.md",
+      "size_bytes": 7945,
+      "sha256": "9dacc2220f12a5776274455776a4764847c29d579e9b182338ff2fe6d174432d",
+      "retrieved_at": "2026-09-30T15:37:56.405557+00:00",
+      "error": null
+    }
+  ],
+  "failed": [
+    {
+      "filename": "config.json",
+      "status": "FAILED",
+      "category": "core_config",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/k-chirkunov/gemma4-e4b-claims-comparison/resolve/99f161c623be065e5db8827b1278f83ced8834dc/config.json",
+      "size_bytes": 5176,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": "HTTP 401"
+    },
+    {
+      "filename": "generation_config.json",
+      "status": "FAILED",
+      "category": "generation_config",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/k-chirkunov/gemma4-e4b-claims-comparison/resolve/99f161c623be065e5db8827b1278f83ced8834dc/generation_config.json",
+      "size_bytes": 204,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": "HTTP 401"
+    },
+    {
+      "filename": "tokenizer_config.json",
+      "status": "FAILED",
+      "category": "tokenizer_config",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/k-chirkunov/gemma4-e4b-claims-comparison/resolve/99f161c623be065e5db8827b1278f83ced8834dc/tokenizer_config.json",
+      "size_bytes": 3729,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": "HTTP 401"
+    }
+  ],
+  "skipped": [
+    {
+      "filename": ".gitattributes",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 1570,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "chat_template.jinja",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 18569,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "model.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 15882477500,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "processor_config.json",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 1689,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "tokenizer.json",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 32169626,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    }
+  ],
+  "notes": []
+}

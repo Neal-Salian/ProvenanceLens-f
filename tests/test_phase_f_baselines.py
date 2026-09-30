@@ -90,7 +90,9 @@ def test_controlled_track_loads_and_validates():
 
 def test_real_track_loads_from_frozen_snapshots():
     cases = load_real_benchmark()
-    assert len(cases) == 3
+    assert len(cases) == 44
+    assert len({case.repository for case in cases}) == 44
+    assert len({case.snapshot_commit for case in cases}) == 44
     for case in cases:
         assert case.track is Track.REAL
         assert case.repository and case.snapshot_commit and case.snapshot_files
@@ -100,8 +102,9 @@ def test_real_track_loads_from_frozen_snapshots():
 
 def test_benchmark_summary_reports_tracks_separately():
     summary = benchmark_summary(load_benchmark())
-    assert summary["by_track"] == {"controlled": 26, "real": 3}
-    assert summary["by_label_provenance"]["manual_adjudication"] == 3
+    assert summary["by_track"] == {"controlled": 26, "real": 44}
+    assert summary["by_label_provenance"]["manual_adjudication"] == 44
+    assert summary["by_expected_action"]["ABSTAIN"] > summary["by_expected_action"]["ADD"]
     assert summary["non_known_parent_truth"] > 0
 
 
@@ -333,7 +336,7 @@ def test_cli_validate_runs_offline(tmp_path: Path):
     )
     assert result.returncode == 0, result.stderr
     payload = json.loads(result.stdout)
-    assert payload["summary"]["n_cases"] == 29
+    assert payload["summary"]["n_cases"] == 70
     assert payload["errors"] == []
 
 
@@ -385,7 +388,7 @@ print('EXTRACTION', runs['provenancelens'].extraction.get('status', 'computed'))
         cwd=str(REPO_ROOT), env=env,
     )
     assert result.returncode == 0, result.stderr
-    assert "ACTION 29" in result.stdout
+    assert "ACTION 62" in result.stdout
     # extraction metrics are reported as unavailable rather than crashing
     assert "EXTRACTION unavailable" in result.stdout
 

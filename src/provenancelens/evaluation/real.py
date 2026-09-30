@@ -1,12 +1,10 @@
-"""LineageRepairBench REAL track: frozen snapshots with manual adjudication.
+"""LineageRepairBench REAL track: adjudicated frozen snapshots.
 
-Ground truth is **adjudicated from the frozen repository evidence and the
-published provenance of the model**, never copied from ProvenanceLens output.
-Where the frozen evidence cannot settle a question, the case is labelled
-ambiguous/undetermined instead of being given an invented label.
-
-Adjudication notes per case record what the label rests on, which files were
-read, and why the alternative readings were rejected or left open.
+Ground truth lives in a human-reviewable file
+(:mod:`provenancelens.evaluation.adjudication` -> ``adjudication/real_cases.yaml``)
+and is **never** derived from ProvenanceLens predictions. Each record pins the
+frozen commit, the artifacts it was adjudicated from, and the precedence rule
+that produced the label.
 """
 
 from __future__ import annotations
@@ -28,16 +26,30 @@ from .schema import (
 )
 
 __all__ = [
-    "REAL_CASE_SPECS",
+    "ADJUDICATION_FILE",
     "ADJUDICATOR",
+    "PRECEDENCE",
+    "load_adjudication_file",
     "load_real_benchmark",
     "snapshot_root",
-    "default_snapshot_root",
+    "adjudication_summary",
+    "real_case_index",
 ]
 
-ADJUDICATOR = "Phase F real-track adjudication (manual, from frozen evidence)"
-
+ADJUDICATOR = "Phase G manual adjudication (frozen artifacts)"
+ADJUDICATION_FILE = Path(__file__).resolve().parent / "adjudication" / "real_cases.yaml"
 DEFAULT_SNAPSHOT_ROOT = Path("data/snapshots")
+
+#: Documented adjudication precedence (also recorded in the YAML header).
+PRECEDENCE: tuple[str, ...] = (
+    "P1 tool-generated lineage field (adapter_config.json, mergekit models list) "
+    "determines parent and the relation it implies",
+    "P2 model-card body statement with a canonical org/model id determines the parent, "
+    "and the relation when the wording states one",
+    "P3 declared front-matter field alone is the audit subject, never independent "
+    "ground truth; it counts only when an artifact corroborates it",
+    "P4 name, family, architecture, tokenizer or popularity resemblance is never truth",
+)
 
 
 def snapshot_root(root: Path | None = None) -> Path:
@@ -47,207 +59,162 @@ def snapshot_root(root: Path | None = None) -> Path:
     return Path(__file__).resolve().parents[3] / DEFAULT_SNAPSHOT_ROOT
 
 
-class _RealSpec:
-    """Adjudication specification for one real repository (no evidence blobs)."""
+def load_adjudication_file(path: Path | None = None) -> dict[str, Any]:
+    """Parse the adjudication YAML (the reviewable source of REAL labels)."""
+    import yaml
 
-    def __init__(
-        self,
-        repository: str,
-        title: str,
-        truth: GroundTruth,
-        expected_action: Decision,
-        acceptable: tuple[Decision, ...],
-        evidence_used: tuple[str, ...],
-        excerpt: str | None,
-        notes: str,
-    ) -> None:
-        self.repository = repository
-        self.title = title
-        self.truth = truth
-        self.expected_action = expected_action
-        self.acceptable = acceptable
-        self.evidence_used = evidence_used
-        self.excerpt = excerpt
-        self.notes = notes
+    data = yaml.safe_load((path or ADJUDICATION_FILE).read_text(encoding="utf-8"))
+    if not isinstance(data, dict) or "cases" not in data:
+        raise ValueError(f"malformed adjudication file: {path or ADJUDICATION_FILE}")
+    return data
 
 
-def _adapter_truth(parent: str) -> GroundTruth:
-    return GroundTruth(
-        parents=(parent,),
-        parents_status=TruthStatus.KNOWN,
-        relation=Relation.ADAPTER,
-        relation_status=TruthStatus.KNOWN,
-        metadata_state=MetadataState.MISSING,
-        rationale=(
-            "adapter_config.json is written by the PEFT library when the adapter is "
-            "saved: base_model_name_or_path records the base checkpoint the adapter was "
-            "trained on, and peft_type=LORA identifies the transformation as an adapter. "
-            "The repository's model card declares no base_model at all, so the lineage "
-            "metadata is missing rather than wrong."
-        ),
-    )
-
-
-REAL_CASE_SPECS: tuple[_RealSpec, ...] = (
-    _RealSpec(
-        repository="peft-internal-testing/tiny-OPTForCausalLM-lora",
-        title="PEFT LoRA adapter whose model card declares no lineage",
-        truth=_adapter_truth("hf-internal-testing/tiny-random-OPTForCausalLM"),
-        expected_action=Decision.ADD,
-        acceptable=(Decision.ADD,),
-        evidence_used=("adapter_config.json",),
-        excerpt=(
-            '"peft_type": "LORA", "task_type": "CAUSAL_LM", '
-            '"base_model_name_or_path": "hf-internal-testing/tiny-random-OPTForCausalLM"'
-        ),
-        notes=(
-            "Adjudicated from a tool-generated artifact, so the label does not depend on "
-            "the card's own claims. A LoRA adapter is not a finetune of the base model "
-            "in the direct-parent sense: the adapter config states the base, and the "
-            "repository itself states nothing else."
-        ),
-    ),
-    _RealSpec(
-        repository="teknium/OpenHermes-2.5-Mistral-7B",
-        title="Finetune whose declared parent is corroborated but never related",
-        truth=GroundTruth(
-            parents=("mistralai/Mistral-7B-v0.1",),
-            parents_status=TruthStatus.KNOWN,
-            relation=None,
-            relation_status=TruthStatus.UNKNOWN,
-            metadata_state=MetadataState.UNDETERMINED,
-            rationale=(
-                "Two artifacts name mistralai/Mistral-7B-v0.1: the model-card front "
-                "matter (declared) and config.json _name_or_path (framework written), "
-                "so the parent identity is corroborated and is not demonstrably wrong. "
-                "No artifact in the snapshot states the transformation relation: the "
-                "card says only 'OpenHermes 2.5 Mistral 7B is a state of the art Mistral "
-                "Fine-tune, a continuation of OpenHermes 2 model' - a bare family name "
-                "and a different intermediate model, neither carrying a canonical id. "
-                "The declaration is therefore neither verifiably complete nor verifiably "
-                "incorrect, so no automated change is safe."
-            ),
-        ),
-        expected_action=Decision.ABSTAIN,
-        acceptable=(Decision.KEEP, Decision.ABSTAIN),
-        evidence_used=("README.md", "config.json"),
-        excerpt=(
-            "front matter: base_model: mistralai/Mistral-7B-v0.1 (no "
-            "base_model_relation); config.json: \"_name_or_path\": "
-            "\"mistralai/Mistral-7B-v0.1\""
-        ),
-        notes=(
-            "Deliberately NOT labelled 'incorrect': the missing relation is a completeness "
-            "gap, not a demonstrated error, and adding a relation would require evidence "
-            "the snapshot does not contain. External knowledge that the model is a "
-            "Mistral-7B-v0.1 finetune is deliberately not used as a label: the benchmark "
-            "scores what the stored evidence supports."
-        ),
-    ),
-    _RealSpec(
-        repository="mergekit-community/Qwen3-1.5B-Instruct",
-        title="MergeKit output whose declared source set has two defensible readings",
-        truth=GroundTruth(
-            parents=("Qwen/Qwen2.5-1.5B-Instruct", "Qwen/Qwen2.5-Coder-1.5B-Instruct",
-                     "Qwen/Qwen2.5-Math-1.5B-Instruct"),
-            parents_status=TruthStatus.AMBIGUOUS,
-            relation=Relation.MERGE,
-            relation_status=TruthStatus.KNOWN,
-            metadata_state=MetadataState.UNDETERMINED,
-            parent_set_alternatives=(
-                ("Qwen/Qwen2.5-Coder-1.5B-Instruct", "Qwen/Qwen2.5-Math-1.5B-Instruct"),
-                ("Qwen/Qwen2.5-1.5B-Instruct", "Qwen/Qwen2.5-Coder-1.5B-Instruct",
-                 "Qwen/Qwen2.5-Math-1.5B-Instruct"),
-            ),
-            rationale=(
-                "mergekit_config.yml lists two models under 'models:' (Coder and Math) "
-                "with merge_method 'ties' and additionally sets 'base_model: "
-                "Qwen/Qwen2.5-1.5B-Instruct'; the card's 'Models Merged' section lists "
-                "only Math and Coder, while its merge sentence names 1.5B-Instruct too. "
-                "Whether MergeKit's top-level base_model is an additional merged source "
-                "or the base the merge is residual-ised onto is an algorithm-semantics "
-                "question the stored evidence does not settle, so the source set is "
-                "labelled ambiguous. Under either reading the declared set is not "
-                "demonstrably wrong."
-            ),
-        ),
-        expected_action=Decision.ABSTAIN,
-        acceptable=(Decision.KEEP, Decision.ABSTAIN),
-        evidence_used=("mergekit_config.yml", "README.md", "config.json"),
-        excerpt=(
-            "models: [Qwen/Qwen2.5-Coder-1.5B-Instruct, Qwen/Qwen2.5-Math-1.5B-Instruct]; "
-            "merge_method: ties; base_model: Qwen/Qwen2.5-1.5B-Instruct"
-        ),
-        notes=(
-            "This is the interesting natural conflict: three declared parents against "
-            "two merge slots. Labelling either set as truth would encode a MergeKit "
-            "interpretation rather than an adjudicated fact, so the case is ambiguous and "
-            "only 'do not change the metadata silently' is expected."
-        ),
-    ),
-)
-
-
-def _read_snapshot_files(root: Path, repository: str) -> tuple[str, dict[str, str]]:
-    directory = root / repository.replace("/", "__")
-    if not directory.is_dir():
+def _read_snapshot_files(root: Path, repository: str, commit: str) -> dict[str, str]:
+    directory = Path(root) / repository.replace("/", "__") / commit
+    manifest = directory / "manifest.json"
+    if not manifest.is_file():
         raise FileNotFoundError(
-            f"no frozen snapshot for {repository!r} under {root}; run the Phase C "
-            "snapshot tests to materialise it"
+            f"no frozen snapshot for {repository!r} at {commit}; run the acquisition "
+            "command to freeze it (network required)"
         )
-    commits = sorted(path.name for path in directory.iterdir()
-                     if (path / "manifest.json").is_file())
-    if not commits:
-        raise FileNotFoundError(f"no manifest found for {repository!r} under {directory}")
-    commit = commits[-1]
-    manifest = json.loads(
-        (directory / commit / "manifest.json").read_text(encoding="utf-8")
-    )
-    files_root = directory / commit / "files"
-    files = {
+    files_root = directory / "files"
+    return {
         path.relative_to(files_root).as_posix(): path.read_text(encoding="utf-8")
         for path in sorted(files_root.rglob("*")) if path.is_file()
     }
-    return str(manifest.get("resolved_commit_sha") or commit), files
+
+
+_SELECTION_CACHE: dict[str, str] | None = None
+
+
+def acquisition_strata() -> dict[str, str]:
+    """Repository -> acquisition stratum, from the frozen selection record.
+
+    The selection record is the audit trail of *how* the real track was
+    sampled; stratification in the analysis uses it so the strata are the
+    ones the plan declared, not ones derived from measured outcomes.
+    """
+    global _SELECTION_CACHE
+    if _SELECTION_CACHE is None:
+        path = snapshot_root(None).parent / "acquisition" / "real_selection.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        _SELECTION_CACHE = {
+            record["repository"]: record["stratum"] for record in data["records"]
+        }
+    return dict(_SELECTION_CACHE)
+
+
+def _acquisition_stratum(repository: str) -> str:
+    return acquisition_strata().get(repository, "pre_phase_g")
+
+
+def _case_from_record(record: dict[str, Any], files: dict[str, str]) -> BenchmarkCase:
+    from ..parsers import extract_repository_evidence
+
+    # Declared metadata is read from the frozen snapshot (mechanical, not a label):
+    # it is the audit subject and the validator checks consistency against it.
+    extraction = extract_repository_evidence(record["repository"], record["commit"], files)
+    declared_lineage = extraction.declared_lineage
+    parents_status = TruthStatus(record["parents_status"])
+    relation_status = TruthStatus(record["relation_status"])
+    truth = GroundTruth(
+        parents=tuple(record["parents"]) or None,
+        parents_status=parents_status,
+        relation=Relation(record["relation"]) if record.get("relation") else None,
+        relation_status=relation_status,
+        metadata_state=MetadataState(record["metadata_state"]),
+        parent_set_alternatives=tuple(
+            tuple(alt) for alt in record.get("parent_set_alternatives", [])
+        ),
+        rationale=record["rationale"],
+    )
+    expected = Decision(record["expected_action"])
+    acceptable = tuple(Decision(a) for a in record.get("acceptable_actions", [expected.value]))
+    return BenchmarkCase(
+        case_id=f"REAL-{record['repository']}",
+        track=Track.REAL,
+        title=record.get("title") or record["repository"],
+        repository=record["repository"],
+        snapshot_commit=record["commit"],
+        snapshot_files=files,
+        declared_base_model=declared_lineage.base_model,
+        declared_relation_raw=declared_lineage.relation_raw,
+        declared_additional_base_models=tuple(declared_lineage.additional_base_models),
+        truth=truth,
+        expected_action=expected,
+        acceptable_actions=acceptable or (expected,),
+        adjudication=Adjudication(
+            provenance=LabelProvenance.MANUAL_ADJUDICATION,
+            adjudicator=ADJUDICATOR,
+            evidence_used=tuple(sorted(files)),
+            evidence_excerpt=record.get("evidence_summary"),
+            notes=record["rationale"],
+        ),
+        repairable=expected in (Decision.ADD, Decision.REPLACE),
+        tags=(
+            "real",
+            "frozen-snapshot",
+            f"stratum:{_acquisition_stratum(record['repository'])}",
+            *record.get("tags", ()),
+        ),
+    )
 
 
 def load_real_benchmark(
-    root: Path | None = None, *, repositories: tuple[str, ...] | None = None
+    root: Path | None = None,
+    *,
+    repositories: tuple[str, ...] | None = None,
+    adjudication_file: Path | None = None,
 ) -> list[BenchmarkCase]:
-    """Materialise the REAL track from frozen snapshots (offline, read-only)."""
+    """Materialise the REAL track from adjudications + frozen snapshots (offline)."""
     resolved_root = snapshot_root(root)
-    specs = REAL_CASE_SPECS
-    if repositories is not None:
-        specs = tuple(spec for spec in specs if spec.repository in repositories)
-
+    data = load_adjudication_file(adjudication_file)
     cases: list[BenchmarkCase] = []
-    for spec in specs:
-        commit, files = _read_snapshot_files(resolved_root, spec.repository)
-        cases.append(BenchmarkCase(
-            case_id=f"REAL-{spec.repository}",
-            track=Track.REAL,
-            title=spec.title,
-            repository=spec.repository,
-            snapshot_commit=commit,
-            snapshot_files=files,
-            truth=spec.truth,
-            expected_action=spec.expected_action,
-            acceptable_actions=spec.acceptable,
-            adjudication=Adjudication(
-                provenance=LabelProvenance.MANUAL_ADJUDICATION,
-                adjudicator=ADJUDICATOR,
-                evidence_used=spec.evidence_used,
-                evidence_excerpt=spec.excerpt,
-                notes=spec.notes,
-            ),
-            repairable=spec.expected_action in (Decision.ADD, Decision.REPLACE),
-            tags=("real", "frozen-snapshot"),
-        ))
+    for record in data["cases"]:
+        repository = record["repository"]
+        if repositories is not None and repository not in repositories:
+            continue
+        files = _read_snapshot_files(resolved_root, repository, record["commit"])
+        cases.append(_case_from_record(record, files))
     return cases
 
 
+def adjudication_summary(
+    root: Path | None = None, *, adjudication_file: Path | None = None
+) -> list[dict[str, Any]]:
+    """Reviewer-facing rows: declared vs adjudicated, per case."""
+    from ..parsers import extract_repository_evidence
+
+    resolved_root = snapshot_root(root)
+    data = load_adjudication_file(adjudication_file)
+    rows: list[dict[str, Any]] = []
+    for record in data["cases"]:
+        files = _read_snapshot_files(resolved_root, record["repository"], record["commit"])
+        extraction = extract_repository_evidence(
+            record["repository"], record["commit"], files
+        )
+        rows.append({
+            "repository": record["repository"],
+            "commit": record["commit"][:12],
+            "declared_parents": list(extraction.declared_lineage.base_models),
+            "declared_relation_raw": extraction.declared_lineage.relation_raw,
+            "adjudicated_parents": list(record["parents"]),
+            "parents_status": record["parents_status"],
+            "adjudicated_relation": record["relation"],
+            "relation_status": record["relation_status"],
+            "metadata_state": record["metadata_state"],
+            "expected_action": record["expected_action"],
+            "acceptable_actions": list(record.get("acceptable_actions", [])),
+            "evidence_files": sorted(files),
+            "evidence_summary": record["evidence_summary"],
+            "ambiguity": record["parents_status"] != "known",
+            "rationale": record["rationale"],
+        })
+    return rows
+
+
 def real_case_index(cases: list[BenchmarkCase]) -> dict[str, dict[str, Any]]:
-    """Convenience mapping used by documentation and reports."""
+    """Compact index used by documentation and reports."""
     return {
         case.case_id: {
             "repository": case.repository,

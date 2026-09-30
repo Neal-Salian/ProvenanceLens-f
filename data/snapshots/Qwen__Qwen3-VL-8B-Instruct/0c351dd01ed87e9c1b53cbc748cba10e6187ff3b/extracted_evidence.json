@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "repository": "Qwen/Qwen3-VL-8B-Instruct",
+  "resolved_commit_sha": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+  "declared_lineage": {
+    "base_model": null,
+    "relation_raw": null,
+    "relation": null,
+    "additional_base_models": []
+  },
+  "declared_evidence": [],
+  "independent_evidence": [],
+  "issues": []
+}
