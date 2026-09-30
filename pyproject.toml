@@ -27,6 +27,10 @@ dependencies = [
 
 [project.optional-dependencies]
 langchain = ["langchain-core>=0.2"]
+# Phase E: LLM-last prose extraction. Never required by the deterministic core,
+# and never includes a paid inference API. Ollama itself is an external
+# runtime; ProvenanceLens never downloads a model.
+llm = ["langchain-core>=1.0", "langchain-ollama>=0.3"]
 dev = ["pytest>=8"]
 
 [tool.setuptools.packages.find]

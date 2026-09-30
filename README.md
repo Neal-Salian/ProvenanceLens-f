@@ -85,7 +85,7 @@ The Phase 2 prototype currently includes:
 | Structured conflict detection       | ✅ Working  |
 | KEEP / ADD / REPLACE / ABSTAIN     | ✅ Working  |
 | LangChain workflow (Phase 2 legacy)| 🟡 Partial |
-| LLM prose extraction (Phase E)     | ⬜ Not started |
+| LLM prose extraction (Phase E)     | ✅ Working  |
 
 The current implementation uses frozen evidence bundles for reproducible testing and a rule-based prose extractor.
 
@@ -238,6 +238,112 @@ Determinism properties are tested as well: evidence ordering does not change a d
 
 ---
 
+## 🗣️ Phase E LLM-Assisted Prose Extraction (local, open-weight)
+
+Phase C parses everything that is structured. Phase D reasons about it. **Phase E adds exactly one new evidence source: unstructured repository prose**, read by a local open-weight model through LangChain. The model is an *information-extraction component*, never a decision maker: the existing Phase D engine still produces every KEEP/ADD/REPLACE/ABSTAIN.
+
+### Why an LLM at all, and only here
+
+| Repository content | How it is read |
+| --- | --- |
+| README YAML front matter | YAML parser (deterministic) |
+| `config.json`, `adapter_config.json` | JSON parser (deterministic) |
+| MergeKit config | YAML parser (deterministic) |
+| Training config | JSON/YAML parser (deterministic) |
+| **Free-form model-card prose** | **LangChain + local LLM (Phase E)** |
+
+Structured data is never sent to a model. Front matter is stripped *before* chunking, so declared metadata is never re-read by the LLM ("LLM last").
+
+### Setup (no paid API, nothing auto-downloaded)
+
+```bash
+# 1. optional dependency for the LangChain path
+pip install -e ".[llm]"
+
+# 2. local model runtime (external application; install it yourself)
+#    macOS: brew install ollama
+#    then:  ollama serve
+
+# 3. model (small enough for an 8 GB M2). ProvenanceLens never pulls models.
+ollama pull llama3.2:3b
+
+# 4. optional overrides
+export PROVENANCELENS_LLM_MODEL=llama3.2:3b     # default
+export PROVENANCELENS_LLM_BASE_URL=http://localhost:11434
+export PROVENANCELENS_LLM_NUM_CTX=4096           # bounded context
+```
+
+The deterministic core never needs any of this. Without LangChain or Ollama the package still imports, collection/parsing/reasoning still work, and the LLM path reports `UNAVAILABLE` instead of failing.
+
+### Pipeline components (all genuinely used)
+
+```text
+PromptTemplate(v1.0) → ChatOllama → StrOutputParser → PydanticOutputParser(ProseClaimSet)
+```
+
+* **PromptTemplate** — versioned (`PROSE_EXTRACTION_PROMPT_VERSION = "1.0"`) with a SHA-256 digest recorded in every report.
+* **LCEL** — the chain above is a real `RunnableSequence`; only the model call is injectable for tests.
+* **Pydantic structured output** — `ProseLineageClaim`/`ProseClaimSet`; unknown fields, non-canonical relations, and prose that is not a claim are rejected by the parser.
+* **LangChain tools** — three read-only, offline snapshot lookups (`list_frozen_snapshots`, `lookup_frozen_lineage_evidence`, `read_frozen_model_card`); the Phase E workflow actually calls the model-card tool to obtain the prose it analyses. No agent is created, and no tool can execute repository code, download weights, or write metadata.
+
+### Claim schema and meaning
+
+| Field | Meaning |
+| --- | --- |
+| `claim_status` | `EXPLICIT` (direct parent clearly stated), `NO_CLAIM` (no lineage statement — a first-class valid answer), `AMBIGUOUS` (lineage-like wording, imprecise parent) |
+| `candidate_parent` | exactly as it appears in the source text |
+| `relation` | one of `finetune`, `adapter`, `merge`, `quantized`, or `null` when the relation is not stated |
+| `evidence_span` | exact quotation from the supplied prose |
+| `rationale_code` | deterministic code (e.g. `EXPLICIT_FINETUNE_PHRASE`, `PARENT_MENTION_WITHOUT_RELATION`, `NO_DIRECT_LINEAGE_CLAIM`) — never chain-of-thought |
+
+### Validation and hallucination guards (all deterministic, fail closed)
+
+A claim becomes evidence only if it survives every check:
+
+1. **Span exists** in the chunk actually sent (exact substring; whitespace/case leniency only — never fuzzy matching).
+2. **Parent appears in the span**, so a span and a parent cannot come from different sentences.
+3. **Lineage is actually stated** — a span that merely names a model (comparison, leaderboard, tokenizer remark) is rejected.
+4. **Non-lineage context rejected** — comparison/inspiration/acknowledgement wording is rejected even when it contains a relation word.
+5. **Injection rejected** — a span that is an instruction aimed at the model is never treated as a claim; repository prose is fenced as untrusted data and its delimiters are neutralised.
+6. **Model id validated** through the Phase D resolver; bare names stay unresolved, invalid values are rejected, and nothing is silently "repaired" into a convenient id.
+7. **Relation corroborated** in the span; an unstated relation is downgraded to `null` rather than accepted because it seems plausible.
+
+Rejected claims are recorded structurally (code + chunk index) and reported; they never become evidence and never abort the audit.
+
+### Evidence produced by the LLM path
+
+`EvidenceItem` with `extraction_method=LLM`, `role=INDEPENDENT`, `reliability=medium`, the verified `evidence_span`, the exact source file, and a note carrying prompt version, model, claim status, rationale code, and any relation downgrade. **LLM evidence is never more authoritative than the prose it came from**: it is author-controlled documentation, so it can corroborate but cannot outrank an adapter/training/merge configuration, and model self-reported confidence never influences `support_score`.
+
+### Chunking and section selection (deterministic)
+
+Headings first, then blank-line paragraphs, then a hard character split; code fences, inline code, HTML comments, and front matter are removed; every chunk keeps exact offsets back into the original file. Selection ranks lineage headings (`base model`, `training`, `merge`, `adapter`, `quantization`, ...) and lineage wording, with a bounded fallback so an unusual heading cannot hide a lineage statement. Budgets are laptop-friendly (≤1200 characters, ≤6 chunks, no parallelism).
+
+### Modes and failure behaviour
+
+```python
+# deterministic only (default; no LLM code path involved)
+audit_repository(repo, root=SNAPSHOT_ROOT)
+
+# deterministic + validated prose claims
+audit_repository_with_prose(repo, root=SNAPSHOT_ROOT, extractor=LLMProseExtractor(build_default_chat_model()))
+```
+
+LLM failures (runtime down, timeout, unparsable answer, failed validation) are recorded like any other tool failure: they add a `tool_failure`-style status, and deterministic evidence that was already sufficient still decides. A failed LLM never forces ABSTAIN, and it never blocks a safe deterministic decision.
+
+### Optional live tests
+
+```bash
+PROVENANCELENS_LLM_TESTS=1 python3 -m pytest tests/test_phase_e_live_ollama.py
+```
+
+Skipped by default, and skipped again (never failed) when no local model is installed. The normal suite uses a canned `BaseChatModel`: the prompt, chain, parser, schema, and validation all run for real, and only local inference is replaced.
+
+### Observed behaviour on the three frozen repositories
+
+Documented in the test suite and reproducible offline. In the live run with `llama3.2:3b`, **no decision changed**; the guards rejected paraphrased spans, an unresolvable bare name, malformed output, and one leaderboard sentence that the small model misread as a finetune claim. `support_score` remains a heuristic evidence strength, **not** a calibrated probability, and LLM-derived evidence is not independently verified ground truth.
+
+---
+
 ## 🧠 Decision Logic
 
 ProvenanceLens uses four possible outcomes.
@@ -285,6 +391,8 @@ In conflict and failure cases, the system produces **ABSTAIN** rather than makin
 Phase 3 additionally covers: collector selection/limits/statuses (mocked), snapshot immutability/path-safety/integrity, and front-matter/adapter/training/merge extraction with the declared-versus-independent invariant.
 
 Phase D additionally covers: entity resolution, all controlled decision cases, false-repair safety invariants, determinism properties, and offline reasoning over the three frozen real repositories.
+
+Phase E additionally covers: the prose claim schema and prompt contract, the real LangChain chain with a canned model (explicit/ambiguous/no-claim claims, multi-source merges, hallucinated spans, guessed parents/versions/relations, prompt injection, malformed and fenced output), chunking and section selection, the LangChain tools, Phase D integration and decision stability, and guarded imports without LangChain.
 
 ---
 
@@ -338,6 +446,9 @@ ProvenanceLens/
 │   ├── collectors/                   # Hugging Face repository collection
 │   ├── snapshots/                    # snapshot store (save/load/verify)
 │   ├── parsers/                      # deterministic extraction
+│   ├── prose/                        # Phase E: prompt, chunking, validation, extractor
+│   ├── llm_runtime.py                # local model config + read-only availability probe
+│   ├── tools.py                      # read-only LangChain snapshot tools
 │   ├── resolution/                   # conservative model-id resolution
 │   ├── reasoning/                    # Phase D candidates/fusion/conflicts/decision
 │   │   └── legacy.py                 # Phase 2 engine (regression baseline, untouched)
@@ -418,7 +529,7 @@ When evidence is missing or conflicting, ProvenanceLens chooses `ABSTAIN`.
 * `support_score` is a **heuristic evidence strength**, not a calibrated probability; no benchmark-calibrated confidence is claimed.
 * Repair decisions on real repositories are **system conclusions from current evidence**, not independently verified truth; only manual adjudication can establish that repository metadata is actually wrong.
 * Entity resolution never searches the hub, so bare model names without an organization conservatively abstain.
-* Prose extraction is still rule-based (no LLM yet — that is Phase E).
+* Prose extraction has two paths: deterministic rules plus an optional local LLM; a small local model still produces paraphrased or misread claims, so validation rejects them and coverage is conservative rather than high.
 * Suggested patches are recommendations only; the tool never writes to external repositories.
 * Evaluation so far is three frozen real repositories plus controlled cases — a prototype-scale evaluation, not a research result.
 
@@ -435,7 +546,8 @@ Progress:
 * 🟡 Manually adjudicate real-repository outcomes (decisions are heuristic, not ground truth)
 * ⬜ Include poor/failed retrieval cases at scale
 * ⬜ Preserve explicit evidence citations end-to-end
-* ⬜ Open-weight LLM prose extraction (Phase E)
+* ✅ Open-weight LLM prose extraction, local-first and fail-closed (Phase E)
+* ⬜ Manually adjudicated evaluation of extraction and decisions (Phase F)
 * ⬜ Keep using `ABSTAIN` whenever a repair cannot be safely supported
 
 ---

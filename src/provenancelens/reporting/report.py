@@ -30,11 +30,54 @@ def to_json(data: Any, *, indent: int = 2) -> str:
     return json.dumps(data, indent=indent, ensure_ascii=False)
 
 
-def format_audit_decision(decision: BaseModel) -> str:
-    """Render a Phase D :class:`AuditDecision` as a human-readable audit record.
+LLM_EXTRACTED_LABEL = "[LLM_EXTRACTED]"
+DETERMINISTIC_LABEL = "[DETERMINISTIC]"
 
-    Structured and deterministic (no chain-of-thought): every section states a
-    fact about the evidence or the action taken.
+
+def _evidence_line(item: Any) -> str:
+    relation = item.relation.value if item.relation else "unspecified"
+    line = (
+        f"{item.source_type.value}:{item.source_name or '-'} "
+        f"key_path={item.key_path or '-'} "
+        f"raw={item.raw_value or item.candidate_parent or '-'} "
+        f"relation={relation} reliability={item.reliability.value} "
+        f"explicitness={item.explicitness.value}"
+    )
+    if item.evidence_span:
+        line += f' span="{item.evidence_span}"'
+    return "    - " + line
+
+
+def _evidence_section(items: Sequence[Any], *, llm_report: Any = None) -> str:
+    """Render evidence grouped by extraction method, as an audit reader needs."""
+    if not items:
+        return "    none"
+    deterministic = [i for i in items if i.extraction_method.value == "deterministic"]
+    llm = [i for i in items if i.extraction_method.value == "llm"]
+    if not llm:
+        return "\n".join(_evidence_line(i) for i in items)
+    lines: list[str] = []
+    if deterministic:
+        lines.append(f"    {DETERMINISTIC_LABEL}")
+        lines.extend(_evidence_line(i) for i in deterministic)
+    report = getattr(llm_report, "report", llm_report)
+    prompt_version = getattr(report, "prompt_version", None)
+    lines.append(
+        f"    {LLM_EXTRACTED_LABEL}"
+        + (f" prompt version: {prompt_version}" if prompt_version else "")
+    )
+    lines.extend(_evidence_line(i) for i in llm)
+    return "\n".join(lines)
+
+
+def format_audit_decision(decision: BaseModel, *, prose_report: Any = None) -> str:
+    """Render a Phase D AuditDecision, optionally annotated with LLM provenance.
+
+    ``prose_report`` is a :class:`ProseExtractionReport` (or a
+    :class:`ProseExtractionOutcome`). It never changes the decision, it only
+    makes the evidence provenance visible: which items came from deterministic
+    parsers, which were LLM-extracted from prose, and why an LLM run was
+    unavailable. No chain-of-thought is ever displayed.
     """
     lineage = decision.proposed_lineage
     proposed = (
@@ -54,18 +97,7 @@ def format_audit_decision(decision: BaseModel) -> str:
         declared_parts.append("(no declared relation)")
 
     def _items(items) -> str:
-        if not items:
-            return "    none"
-        return "\n".join(
-            "    - "
-            f"{item.source_type.value}:{item.source_name or '-'}"
-            f" key_path={item.key_path or '-'}"
-            f" raw={item.raw_value or item.candidate_parent or '-'}"
-            f" relation={item.relation.value if item.relation else 'unspecified'}"
-            f" reliability={item.reliability.value}"
-            f" explicitness={item.explicitness.value}"
-            for item in items
-        )
+        return _evidence_section(items, llm_report=prose_report)
 
     if decision.conflicts:
         conflicts = "\n".join(
@@ -101,4 +133,44 @@ def format_audit_decision(decision: BaseModel) -> str:
         f"CONFLICTS           :\n{conflicts}",
         f"REASONING SUMMARY   : {decision.reasoning_summary}",
         f"SUGGESTED PATCH     :\n    {patch_text}",
+        *_prose_status_lines(prose_report),
     ])
+
+
+def _prose_status_lines(prose_report: Any) -> list[str]:
+    """Concise LLM status block (never chain-of-thought, never a crash)."""
+    if prose_report is None:
+        return []
+    report = getattr(prose_report, "report", prose_report)
+    summary = getattr(report, "summary", None)
+    if not callable(summary):  # pragma: no cover - defensive
+        return []
+    detail = summary()
+    lines = ["", f"LLM PROSE EXTRACTION: {detail}"]
+    version = getattr(report, "prompt_version", None)
+    digest = getattr(report, "prompt_digest", None)
+    if version:
+        provenance = f"prompt version: {version}"
+        if digest:
+            provenance += f" (digest {str(digest)[:12]})"
+        if getattr(report, "model", None):
+            provenance += f", model {report.model}"
+        lines.append(f"    {provenance}")
+    evidence = getattr(report, "evidence", []) or []
+    if evidence:
+        lines.append("    validated claims:")
+        for item in evidence:
+            span = f' "{item.evidence_span}"' if item.evidence_span else ""
+            lines.append(
+                f"    - {item.candidate_parent}"
+                f"[{item.relation.value if item.relation else 'unspecified'}]"
+                f" ({item.claim_status if hasattr(item, 'claim_status') else ''}){span}"
+            )
+    failures = getattr(report, "failures", []) or []
+    if failures:
+        lines.append("    rejected claims (not used as evidence):")
+        for failure in failures:
+            lines.append(
+                f"    - {failure.code.value} (chunk {failure.chunk_index}): {failure.detail}"
+            )
+    return lines
