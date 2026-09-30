@@ -25,6 +25,9 @@ class ConflictKind(str, Enum):
     MULTIPLE_MERGE_SOURCES = "multiple_merge_sources"
     TOOL_FAILURE = "tool_failure"
     UNKNOWN_DECLARED_RELATION = "unknown_declared_relation"
+    # Phase D (reasoning) additions; no existing name covers them:
+    UNRESOLVED_MODEL_ID = "unresolved_model_id"
+    INSUFFICIENT_INDEPENDENT_SUPPORT = "insufficient_independent_support"
     OTHER = "other"
 
 
