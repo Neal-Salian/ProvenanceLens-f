@@ -364,6 +364,32 @@ def test_evaluation_does_not_modify_frozen_snapshots():
     assert digest() == before
 
 
+def test_decision_evaluation_runs_without_the_optional_llm_stack():
+    """Phase F metrics must not depend on the Phase E extra."""
+    guard = """
+import builtins
+_real = builtins.__import__
+def _guard(name, g=None, l=None, fromlist=(), level=0):
+    if name.split('.')[0] in ('langchain_core', 'langchain', 'langchain_ollama', 'ollama'):
+        raise ImportError('blocked: ' + name)
+    return _real(name, g, l, fromlist, level)
+builtins.__import__ = _guard
+from provenancelens.evaluation.run import run_benchmark
+runs = run_benchmark(include_extraction=True)
+print('ACTION', runs['provenancelens'].metrics['action']['accuracy']['numerator'])
+print('EXTRACTION', runs['provenancelens'].extraction.get('status', 'computed'))
+"""
+    env = {"PYTHONPATH": str(REPO_ROOT / "src"), "PATH": "/usr/bin:/bin"}
+    result = subprocess.run(
+        [sys.executable, "-c", guard], capture_output=True, text=True,
+        cwd=str(REPO_ROOT), env=env,
+    )
+    assert result.returncode == 0, result.stderr
+    assert "ACTION 29" in result.stdout
+    # extraction metrics are reported as unavailable rather than crashing
+    assert "EXTRACTION unavailable" in result.stdout
+
+
 def test_evaluation_package_does_not_import_the_network_or_llm():
     for name in ("dataset.py", "controlled.py", "real.py", "runner.py", "metrics.py",
                  "selective.py", "validation.py", "baselines.py", "run.py"):
@@ -371,3 +397,7 @@ def test_evaluation_package_does_not_import_the_network_or_llm():
         for forbidden in ("huggingface_hub", "requests.", "urllib.request", "httpx",
                           "subprocess", "os.system"):
             assert forbidden not in text, f"{name} references {forbidden}"
+    # the decision-metric modules never import the optional LLM stack
+    for name in ("metrics.py", "baselines.py", "selective.py", "dataset.py"):
+        text = (EVAL_DIR / name).read_text(encoding="utf-8")
+        assert "langchain" not in text, f"{name} imports langchain"

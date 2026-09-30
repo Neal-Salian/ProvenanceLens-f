@@ -11,7 +11,6 @@ from .. import __version__
 from .baselines import BASELINE_NAMES, run_baseline
 from .calibration import calibration_status
 from .dataset import benchmark_summary, load_benchmark
-from .extraction_eval import default_fixtures, evaluate_fixtures
 from .metrics import compute_metrics
 from .runner import run_case
 from .schema import BENCHMARK_VERSION, BenchmarkRun, CaseResult, Track
@@ -70,10 +69,7 @@ def run_benchmark(
             suite=track.value if track is not None else "all",
             cases=tuple(results),
             metrics=metrics,
-            extraction=(
-                evaluate_fixtures(default_fixtures()).model_dump(mode="json")
-                if include_extraction else None
-            ),
+            extraction=_extraction_metrics(include_extraction),
             provenance={
                 "package_version": __version__,
                 "benchmark_summary": summary,
@@ -81,6 +77,22 @@ def run_benchmark(
             },
         )
     return runs
+
+
+def _extraction_metrics(include_extraction: bool) -> dict | None:
+    """Prose-extraction metrics, or ``None`` when unavailable/disabled.
+
+    Never a required dependency: decision-level evaluation runs without the
+    optional LangChain extra.
+    """
+    if not include_extraction:
+        return None
+    try:
+        from .extraction_eval import default_fixtures, evaluate_fixtures
+
+        return evaluate_fixtures(default_fixtures()).model_dump(mode="json")
+    except Exception as exc:  # missing optional dependency or fixture defect
+        return {"status": "unavailable", "reason": f"{type(exc).__name__}: {exc}"}
 
 
 def selective_csv(runs: dict[str, BenchmarkRun]) -> str:

@@ -14,16 +14,38 @@ from __future__ import annotations
 
 from typing import Any, List, Optional
 
-from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_core.messages import AIMessage, BaseMessage
-from langchain_core.outputs import ChatGeneration, ChatResult
 from pydantic import BaseModel, ConfigDict, Field
 
-from ..prose import LLMProseExtractor, ProseExtractionReport, ProseFailureCode
 from ..schemas.lineage import Relation
 from .schema import CountMetric
 
+# The extraction layer needs the optional LangChain stack (Phase E extra).
+# Decision-level evaluation must work without it, so the import is guarded.
+EXTRACTION_EVALUATION_AVAILABLE = True
+
+
+class ExtractionEvaluationUnavailable(RuntimeError):
+    """Prose-extraction metrics need the optional LangChain dependency."""
+
+
+try:  # pragma: no cover - exercised by the guarded-import test instead
+    from langchain_core.language_models.chat_models import BaseChatModel
+    from langchain_core.messages import AIMessage, BaseMessage
+    from langchain_core.outputs import ChatGeneration, ChatResult
+    from ..prose import LLMProseExtractor, ProseExtractionReport
+except ImportError as exc:  # pragma: no cover - depends on environment
+    EXTRACTION_EVALUATION_AVAILABLE = False
+    _IMPORT_ERROR = f"{type(exc).__name__}: {exc}"
+    BaseChatModel = object  # type: ignore[assignment,misc]
+    AIMessage = BaseMessage = ChatGeneration = ChatResult = None  # type: ignore[assignment]
+    LLMProseExtractor = None  # type: ignore[assignment]
+    ProseExtractionReport = Any  # type: ignore[misc,assignment]
+
+from ..prose import ProseFailureCode  # always importable (LangChain-free schema module)
+
 __all__ = [
+    "EXTRACTION_EVALUATION_AVAILABLE",
+    "ExtractionEvaluationUnavailable",
     "ExtractionFixture",
     "ClaimLabel",
     "ExtractionMetrics",
@@ -75,30 +97,35 @@ class ExtractionMetrics(BaseModel):
     per_fixture: dict[str, dict] = Field(default_factory=dict)
 
 
-class StubChatModel(BaseChatModel):
-    """A real ``BaseChatModel`` returning fixed completions (no local LLM).
+if EXTRACTION_EVALUATION_AVAILABLE:
 
-    Used so the fixtures exercise the genuine prompt/chain/parser/validation
-    path while replacing only local inference.
-    """
+    class StubChatModel(BaseChatModel):
+        """A real ``BaseChatModel`` returning fixed completions (no local LLM).
 
-    responses: List[str] = []
-    model: str = "fixture-model"
+        Used so the fixtures exercise the genuine prompt/chain/parser/
+        validation path while replacing only local inference.
+        """
 
-    @property
-    def _llm_type(self) -> str:
-        return "extraction-fixture-stub"
+        responses: List[str] = []
+        model: str = "fixture-model"
 
-    def _generate(
-        self,
-        messages: List[BaseMessage],
-        stop: Optional[List[str]] = None,
-        run_manager: Any = None,
-        **kwargs: Any,
-    ) -> ChatResult:
-        index = min(len(messages) - 1, len(self.responses) - 1)
-        content = self.responses[index] if self.responses else '{"claims": []}'
-        return ChatResult(generations=[ChatGeneration(message=AIMessage(content=content))])
+        @property
+        def _llm_type(self) -> str:
+            return "extraction-fixture-stub"
+
+        def _generate(
+            self,
+            messages: List[BaseMessage],
+            stop: Optional[List[str]] = None,
+            run_manager: Any = None,
+            **kwargs: Any,
+        ) -> ChatResult:
+            index = min(len(messages) - 1, len(self.responses) - 1)
+            content = self.responses[index] if self.responses else '{"claims": []}'
+            return ChatResult(generations=[ChatGeneration(message=AIMessage(content=content))])
+
+else:  # pragma: no cover - only without the optional extra
+    StubChatModel = None  # type: ignore[assignment,misc]
 
 
 def _claim_key(parent: str, relation: Relation | None) -> tuple[str, str | None]:
@@ -177,10 +204,19 @@ def _score_fixture(
     )
 
 
+def _require_stack() -> None:
+    if not EXTRACTION_EVALUATION_AVAILABLE:  # pragma: no cover
+        raise ExtractionEvaluationUnavailable(
+            "prose-extraction metrics need the optional LangChain extra: "
+            f"pip install 'provenancelens[llm]' ({_IMPORT_ERROR})"
+        )
+
+
 def evaluate_fixture(
     fixture: ExtractionFixture,
-) -> tuple[ExtractionMetrics, ProseExtractionReport]:
+) -> tuple[ExtractionMetrics, "ProseExtractionReport"]:
     """Run one fixture through the real extraction pipeline and score it."""
+    _require_stack()
     extractor = LLMProseExtractor(
         StubChatModel(responses=[fixture.model_output]), model_name="fixture"
     )
