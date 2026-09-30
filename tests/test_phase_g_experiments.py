@@ -482,3 +482,78 @@ def test_track_restriction_is_honoured():
     payload = run_phase_g(track=Track.REAL, include_ablations=False)
     assert payload["benchmark"]["by_track"] == {"real": 44}
     assert all(result["track"] == "real" for result in payload["per_case"]["provenancelens"])
+
+
+# --- optional local-LLM comparator (never runs in the test suite) --------------
+
+def test_llm_comparator_is_not_part_of_the_default_study(report):
+    """The deterministic study and its digest must stay LLM-free."""
+    assert "llm_comparator" not in report
+    assert "claims_accepted" not in json.dumps(report)
+
+
+def test_llm_comparator_targets_are_selected_without_the_engine():
+    """Targets come from truth and declared metadata, never from decisions."""
+    from provenancelens.evaluation.llm_comparator import llm_comparator_targets
+
+    targets = llm_comparator_targets(load_real_benchmark())
+    assert targets, "the comparator needs at least one target"
+    for case in targets:
+        assert case.track is Track.REAL
+        assert case.truth.metadata_state.value in ("incomplete", "valid")
+        assert "huggingface.co/" in (case.snapshot_files.get("README.md", "")).lower()
+    assert len(targets) <= 12
+
+
+def test_llm_comparator_refuses_an_uninstalled_model(monkeypatch):
+    """Fail closed: never pull a model, never start a runtime for the operator."""
+    from provenancelens.evaluation import llm_comparator
+
+    class Unavailable:
+        available = False
+        installed_models = ("other/model",)
+        reason = "not installed"
+
+    monkeypatch.setattr(
+        "provenancelens.llm_runtime.llm_availability",
+        lambda **kwargs: Unavailable(),
+    )
+    with pytest.raises(llm_comparator.LLMComparatorUnavailable) as excinfo:
+        llm_comparator.run_local_llm_comparator(load_real_benchmark())
+    assert "not installed locally" in str(excinfo.value)
+
+
+def test_llm_comparator_summary_counts_recovery_and_false_repairs():
+    from provenancelens.evaluation.llm_comparator import comparator_summary
+
+    rows = [
+        {"claims_reported": 2, "claims_accepted": 1, "case_id": "A",
+         "deterministic": {"action_correct": False},
+         "with_local_llm": {"action_correct": True, "repair_attempted": True,
+                            "false_repair": False}},
+        {"claims_reported": 1, "claims_accepted": 0, "case_id": "B",
+         "deterministic": {"action_correct": True},
+         "with_local_llm": {"action_correct": False, "repair_attempted": False,
+                            "false_repair": None}},
+        {"claims_reported": 1, "claims_accepted": 0, "case_id": "C",
+         "deterministic": {"action_correct": False},
+         "with_local_llm": {"action_correct": False, "repair_attempted": True,
+                            "false_repair": True}},
+    ]
+    summary = comparator_summary(rows)
+    assert summary["n_cases"] == 3
+    assert summary["recovered_by_llm"] == 1
+    assert summary["regressed_by_llm"] == 1
+    assert summary["claims_reported"] == 4
+    assert summary["claim_acceptance_rate"] == 0.25
+    assert summary["false_repairs"] == 1
+    assert summary["false_repair_case_ids"] == ["C"]
+
+
+def test_llm_comparator_artifact_is_written_separately(tmp_path):
+    from provenancelens.evaluation.llm_comparator import write_comparator_report
+
+    payload = {"experiment": "optional_local_llm_comparator", "summary": {"n_cases": 0}}
+    path = write_comparator_report(payload, tmp_path)
+    assert path.name == "llm_comparator.json"
+    assert json.loads(path.read_text())["summary"]["n_cases"] == 0

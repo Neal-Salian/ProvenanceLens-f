@@ -8,6 +8,7 @@ Subcommands
 ``ablate``    run only the ablation suite
 ``failures``  print the failure taxonomy and every failure
 ``verify``    re-run and compare the report digest for reproducibility
+``llm-compare`` optional local open-weight LLM comparator (never runs by default)
 
 All subcommands are offline and deterministic.  ``run`` records the
 environment, configuration, input and output digests in ``manifest.json``;
@@ -23,6 +24,7 @@ import time
 from pathlib import Path
 
 from .. import __version__
+from .dataset import load_benchmark
 from .phase_g import run_phase_g
 from .real import adjudication_summary
 from .report import build_manifest, report_digest, render_markdown_table, write_phase_g_report
@@ -64,6 +66,16 @@ def build_parser() -> argparse.ArgumentParser:
 
     verify = sub.add_parser("verify", help="re-run twice and compare report digests")
     verify.add_argument("--output", type=Path, default=_DEFAULT_OUTPUT)
+
+    compare = sub.add_parser(
+        "llm-compare",
+        help="optional local open-weight LLM comparator (opt-in, local only)",
+    )
+    compare.add_argument("--model", default="llama3.2:3b",
+                         help="an already-installed local model (never downloaded)")
+    compare.add_argument("--output", type=Path, default=Path("artifacts/phase_g/llm"))
+    compare.add_argument("--dry-run", action="store_true",
+                         help="list the selected cases without calling any model")
     return parser
 
 
@@ -108,6 +120,33 @@ def main(argv: list[str] | None = None) -> int:
             [{**row, "conflicts": "|".join(row["conflicts"])} for row in analysis["failures"]],
             ["case_id", "category", "expected_action", "predicted_action",
              "support_score", "reasoning_summary"]))
+        return 0
+
+    if command == "llm-compare":
+        from .llm_comparator import (
+            LLMComparatorUnavailable,
+            llm_comparator_targets,
+            run_local_llm_comparator,
+            write_comparator_report,
+        )
+
+        if args.dry_run:
+            targets = llm_comparator_targets(load_benchmark("real", root=root))
+            sys.stdout.write(json.dumps(
+                {"would_run": [case.case_id for case in targets],
+                 "n_cases": len(targets)}, indent=1) + "\n")
+            return 0
+        try:
+            payload = run_local_llm_comparator(load_benchmark("real", root=root),
+                                               model=args.model)
+        except LLMComparatorUnavailable as exc:
+            sys.stdout.write(json.dumps(
+                {"status": "skipped", "reason": str(exc)}, indent=1) + "\n")
+            return 3
+        path = write_comparator_report(payload, args.output)
+        sys.stdout.write(json.dumps(
+            {"status": "ran", "model": payload["model"], "artifact": str(path),
+             "summary": payload["summary"]}, indent=1, default=str) + "\n")
         return 0
 
     if command == "verify":

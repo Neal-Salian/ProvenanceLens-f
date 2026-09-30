@@ -54,12 +54,17 @@ def _cmd_run(args: argparse.Namespace) -> int:
 
 
 def _cmd_phase_g(args: argparse.Namespace) -> int:
-    """Forward to the Phase G study CLI (see provenancelens.evaluation.phase_g_cli)."""
+    """Forward to the Phase G study CLI (see provenancelens.evaluation.phase_g_cli).
+
+    Unknown options are passed through so the full Phase G interface stays
+    reachable from the main entry point, e.g.
+    ``python -m provenancelens.evaluation phase-g run --quiet``.
+    """
     from .phase_g_cli import main as phase_g_main
 
-    forwarded = list(args.phase_g or [])
-    if args.root:
-        forwarded += ["--root", args.root]
+    forwarded = [*list(args.phase_g or []), *list(getattr(args, "passthrough", []) or [])]
+    if args.root and "--root" not in forwarded:
+        forwarded = ["--root", args.root, *forwarded]
     return phase_g_main(forwarded)
 
 
@@ -135,7 +140,11 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
-    args = parser.parse_args(argv)
+    args, unknown = parser.parse_known_args(argv)
+    if getattr(args, "command", None) == "phase-g" and unknown:
+        args.passthrough = unknown
+    elif unknown:
+        parser.error("unrecognized arguments: " + " ".join(unknown))
     if not getattr(args, "command", None):
         parser.print_help()
         return 2

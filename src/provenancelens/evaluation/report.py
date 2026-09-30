@@ -166,10 +166,11 @@ def write_tables(report: dict, directory: Path) -> dict[str, str]:
         "action_ci95_high", "coverage", "attempted_repairs", "false_repairs",
         "false_repair_rate"])
 
-    emit("failure_taxonomy", report["failure_analysis"]["taxonomy"],
+    taxonomy = report["failure_analysis"]["taxonomy"]
+    emit("failure_taxonomy", taxonomy,
          ["category", "n_cases", "description"] +
-         [key for key in report["failure_analysis"]["taxonomy"][0]
-          if key.startswith("n_")])
+         [key for key in taxonomy[0]
+          if key.startswith("n_") and key != "n_cases"])
     emit("failures", [
         {**row, "conflicts": "|".join(row["conflicts"])}
         for row in report["failure_analysis"]["failures"]

@@ -39,7 +39,7 @@ untransformed ``full`` reference) on the same benchmark.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable, Iterable, Sequence
+from typing import Callable, Sequence
 
 from ..reasoning import DEFAULT_POLICY, DecisionPolicy, decide_lineage
 from ..schemas.evidence import EvidenceItem, EvidenceRole, Reliability, SourceType
@@ -330,15 +330,22 @@ def run_ablations(
 
 
 def ablation_table(ablation_runs: dict, *, track: str | None = None) -> list[dict]:
-    """One flat row per ablation with the headline metrics and deltas."""
-    full = ablation_runs.get("full", {}).get("metrics")
+    """One flat row per ablation with the headline metrics and deltas.
+
+    Deltas are always measured against the ``full`` run of the *same* block, so
+    a per-track table compares like with like.
+    """
+    full_metrics = ablation_runs.get("full", {}).get("metrics")
+    full_block = None
+    if full_metrics is not None:
+        full_block = full_metrics if track is None else full_metrics["by_track"][track]
     rows = []
     for name, run in ablation_runs.items():
         metrics = run["metrics"]
         block = metrics if track is None else metrics["by_track"][track]
         row = {
             "ablation": name,
-            "n_cases": metrics["n_cases"],
+            "n_cases": block["n_cases"],
             "action_accuracy": block["action"]["accuracy"]["value"],
             "action_correct": block["action"]["accuracy"]["numerator"],
             "macro_f1": block["action"]["macro_f1"]["value"],
@@ -349,8 +356,7 @@ def ablation_table(ablation_runs: dict, *, track: str | None = None) -> list[dic
             "parent_accuracy": block["parent"]["value"],
             "relation_accuracy": block["relation"]["accuracy"]["value"],
         }
-        if full is not None and track is None:
-            full_block = full
+        if full_block is not None:
             row["delta_action_accuracy"] = (
                 row["action_accuracy"] - full_block["action"]["accuracy"]["value"]
             )
@@ -360,5 +366,3 @@ def ablation_table(ablation_runs: dict, *, track: str | None = None) -> list[dic
         rows.append(row)
     return rows
 
-
-_ = Iterable  # re-exported for typing completeness
