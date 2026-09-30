@@ -182,7 +182,8 @@ class BenchmarkRun(BaseModel):
     cases: tuple[CaseResult, ...] = ()
     metrics: dict[str, Any] = Field(default_factory=dict)
     extraction: dict[str, Any] | None = None
-    provenance: dict[str, str] = Field(default_factory=dict)
+    #: Run provenance: package/benchmark version, label summary, LLM usage.
+    provenance: dict[str, Any] = Field(default_factory=dict)
 
 
 # --- metric containers (denominators are explicit by design) ----------------
@@ -235,6 +236,10 @@ class TrackMetrics(BaseModel):
     n_cases: int
     action: ClassificationMetrics | None = None
     parent: CountMetric | None = None
-    relation: CountMetric | None = None
+    relation: ClassificationMetrics | None = None
+    #: Coverage-conditioned views (abstention still never counts as correct).
+    parent_selective: CountMetric | None = None
+    relation_selective: CountMetric | None = None
+    coverage: CountMetric | None = None
     repair_safety: RepairSafetyMetrics | None = None
     extra: dict[str, Any] = Field(default_factory=dict)

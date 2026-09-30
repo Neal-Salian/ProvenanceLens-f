@@ -88,6 +88,19 @@ def validate_case(case: BenchmarkCase) -> list[ValidationIssue]:
         warning("incorrect_but_not_repairable",
                 "metadata is incorrect but the case is marked unrepairable")
 
+    # --- declared state must match the declared metadata ------------------
+    has_declared = bool(case.declared_base_model or case.declared_additional_base_models)
+    if case.truth.metadata_state in (MetadataState.VALID, MetadataState.INCORRECT) and not has_declared:
+        error("state_without_declaration",
+              f"metadata_state={case.truth.metadata_state.value} but no lineage is "
+              "declared; the label would describe metadata that does not exist")
+    if case.truth.metadata_state is MetadataState.MISSING and has_declared:
+        error("missing_but_declared",
+              "metadata_state=missing but the case declares a lineage")
+    if case.truth.metadata_state is MetadataState.UNDETERMINED and has_declared:
+        warning("undetermined_with_declaration",
+                "declared metadata present but the case is labelled undetermined")
+
     # --- ambiguity must not masquerade as certainty -----------------------
     if case.truth.parents_status is TruthStatus.AMBIGUOUS and case.truth.parents is not None:
         warning("ambiguous_with_single_label",

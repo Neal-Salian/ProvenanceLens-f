@@ -195,6 +195,7 @@ CONTROLLED_CASES: list[BenchmarkCase] = [
         truth=_known((A,), Relation.FINETUNE, MetadataState.VALID,
                      "two independent artifacts name the declared parent and relation"),
         expected_action=Decision.KEEP,
+        declared_base_model=A, declared_relation_raw="finetune",
         tags=("keep", "single-parent"),
     ),
     _case(
@@ -204,6 +205,7 @@ CONTROLLED_CASES: list[BenchmarkCase] = [
         truth=_known((A,), Relation.ADAPTER, MetadataState.VALID,
                      "adapter_config records the base model the adapter was trained on"),
         expected_action=Decision.KEEP,
+        declared_base_model=A, declared_relation_raw="adapter",
         tags=("keep", "single-source"),
     ),
     _case(
@@ -213,6 +215,7 @@ CONTROLLED_CASES: list[BenchmarkCase] = [
         truth=_known((A, B), Relation.MERGE, MetadataState.VALID,
                      "merge configuration lists exactly the declared source set"),
         expected_action=Decision.KEEP,
+        declared_base_model=A, declared_relation_raw="merge", declared_additional=(B,),
         tags=("keep", "merge", "set-semantics"),
     ),
     _case(
@@ -228,6 +231,7 @@ CONTROLLED_CASES: list[BenchmarkCase] = [
         truth=_known((A,), Relation.FINETUNE, MetadataState.VALID,
                      "declared parent is corroborated; weak hints are below the conflict bar"),
         expected_action=Decision.KEEP,
+        declared_base_model=A, declared_relation_raw="finetune",
         tags=("keep", "noise"),
     ),
     _case(
@@ -298,6 +302,7 @@ CONTROLLED_CASES: list[BenchmarkCase] = [
         truth=_known((B,), Relation.ADAPTER, MetadataState.INCORRECT,
                      "two tool-generated artifacts name a different parent than declared"),
         expected_action=Decision.REPLACE,
+        declared_base_model=A, declared_relation_raw="finetune",
         tags=("replace",),
     ),
     _case(
@@ -311,6 +316,7 @@ CONTROLLED_CASES: list[BenchmarkCase] = [
         truth=_known((B,), Relation.ADAPTER, MetadataState.INCORRECT,
                      "adapter config, training config and card prose all name B"),
         expected_action=Decision.REPLACE,
+        declared_base_model=A, declared_relation_raw="finetune",
         tags=("replace", "multi-source"),
     ),
 
