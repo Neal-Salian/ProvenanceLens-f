@@ -1,0 +1,191 @@
+"""Deterministic validation of LLM prose claims against the source text.
+
+This module is the fail-closed boundary. A claim survives only if every check
+below passes, each of them anchored in the repository text:
+
+1. **Shape** - the parser already enforced the schema (status/parent/span
+   coherence, canonical relation vocabulary, no extra fields).
+2. **Span exists** - ``evidence_span`` must be a substring of the chunk that
+   was actually sent, allowing only whitespace/case differences. Fabricated
+   citations are rejected; no fuzzy or semantic matching is used.
+3. **Parent is in the span** - the parent identifier must occur inside the
+   quoted span, so a claim cannot borrow a span from one sentence and a parent
+   from another (or from the model's memory).
+4. **Model id validation** - the parent goes through the Phase D resolver.
+   Values that are not model references at all are rejected; bare names stay
+   unresolved on purpose and are never repaired into a canonical id.
+5. **Relation corroboration** - a stated relation must have a matching cue in
+   the span. An unsupported relation is downgraded to ``None`` (never invented
+   and never silently accepted), with a deterministic rationale code.
+6. **Duplicates** - identical (parent, span) pairs are counted once.
+
+Rejections are recorded structurally as :class:`ProseFailure`; they never
+raise into the audit.
+"""
+
+from __future__ import annotations
+
+import re
+from dataclasses import dataclass
+
+from ..resolution import ResolutionStatus, resolve_identifier
+from ..schemas.lineage import Relation
+from .chunking import ProseChunk
+from .schema import (
+    ClaimStatus,
+    ProseFailure,
+    ProseFailureCode,
+    ProseLineageClaim,
+    RationaleCode,
+)
+
+__all__ = [
+    "RELATION_CUES",
+    "ClaimValidation",
+    "span_occurs_in",
+    "validate_claim",
+]
+
+#: Per-relation lexical cues that must appear in the quoted span for a stated
+#: relation to be accepted. Deliberately narrow: a plausible-but-unstated
+#: relation is downgraded rather than trusted.
+RELATION_CUES: dict[Relation, tuple[str, ...]] = {
+    Relation.FINETUNE: (
+        "fine-tun", "finetun", "fine tun", "trained on", "trained from",
+        "trained on top of", "further train", "continued pre-training",
+        "continued pretraining", "pre-trained on", "pretrained on",
+        "sft", "supervised fine", "post-trained on", "post trained on",
+    ),
+    Relation.ADAPTER: (
+        "adapter", "lora", "peft", "prefix-tuning", "prefix tuning", "ia3",
+    ),
+    Relation.MERGE: (
+        "merge", "merged", "merging", "combined from", "combination of",
+        "blend of", "blended from", "model soup", "soup of",
+    ),
+    Relation.QUANTIZED: (
+        "quantiz", "quantis", "gguf", "awq", "gptq", "int4", "int8",
+        "4-bit", "8-bit", "2-bit", "q4_", "q5_", "q8_",
+    ),
+}
+
+#: Rationale code recorded when the stated relation loses its textual support.
+_RELATION_DOWNGRADE_CODE = RationaleCode.PARENT_MENTION_WITHOUT_RELATION
+
+_RELATION_RATIONALE: dict[Relation, RationaleCode] = {
+    Relation.FINETUNE: RationaleCode.EXPLICIT_FINETUNE_PHRASE,
+    Relation.ADAPTER: RationaleCode.EXPLICIT_ADAPTER_PHRASE,
+    Relation.MERGE: RationaleCode.EXPLICIT_MERGE_PHRASE,
+    Relation.QUANTIZED: RationaleCode.EXPLICIT_QUANTIZED_PHRASE,
+}
+
+
+def _normalize_whitespace(text: str) -> str:
+    return re.sub(r"\s+", " ", text).strip().lower()
+
+
+def span_occurs_in(span: str, haystack: str) -> bool:
+    """True when ``span`` is literally present in ``haystack``.
+
+    Exact substring first; the only leniency is collapsing whitespace and
+    case, which cannot manufacture a citation that is not in the source.
+    """
+    if not span or not haystack:
+        return False
+    if span in haystack:
+        return True
+    return _normalize_whitespace(span) in _normalize_whitespace(haystack)
+
+
+def _relation_is_corroborated(relation: Relation, span: str) -> bool:
+    lowered = span.lower()
+    return any(cue in lowered for cue in RELATION_CUES.get(relation, ()))
+
+
+@dataclass(frozen=True)
+class ClaimValidation:
+    """Outcome of validating one claim against its source chunk."""
+
+    claim: ProseLineageClaim
+    accepted: bool
+    is_no_claim: bool = False
+    relation_downgraded: bool = False
+    resolution_status: ResolutionStatus | None = None
+    failure: ProseFailure | None = None
+
+    @property
+    def outcome(self) -> str:
+        if self.failure is not None:
+            return "rejected"
+        return "no_claim" if self.is_no_claim else "accepted"
+
+
+def validate_claim(
+    claim: ProseLineageClaim,
+    *,
+    chunk: ProseChunk,
+    source_name: str,
+) -> ClaimValidation:
+    """Validate one parsed claim against the chunk it was produced from."""
+    if claim.claim_status is ClaimStatus.NO_CLAIM:
+        return ClaimValidation(claim=claim, accepted=False, is_no_claim=True)
+
+    def reject(code: ProseFailureCode, detail: str) -> ClaimValidation:
+        return ClaimValidation(
+            claim=claim,
+            accepted=False,
+            failure=ProseFailure(
+                source_name=source_name,
+                chunk_index=chunk.index,
+                code=code,
+                detail=detail,
+                candidate_parent=claim.candidate_parent,
+            ),
+        )
+
+    span = claim.evidence_span or ""
+    if not span_occurs_in(span, chunk.text):
+        return reject(
+            ProseFailureCode.SPAN_NOT_FOUND,
+            "quoted evidence span does not occur in the supplied prose",
+        )
+
+    parent = (claim.candidate_parent or "").strip()
+    if not span_occurs_in(parent, span):
+        return reject(
+            ProseFailureCode.PARENT_NOT_IN_SOURCE,
+            f"candidate parent {parent!r} does not occur in the quoted span",
+        )
+
+    resolution = resolve_identifier(parent)
+    if resolution.status is ResolutionStatus.INVALID:
+        return reject(
+            ProseFailureCode.INVALID_MODEL_ID,
+            f"candidate parent {parent!r} is not a model reference ({resolution.reason})",
+        )
+
+    downgraded = False
+    validated = claim
+    if claim.relation is not None and not _relation_is_corroborated(claim.relation, span):
+        # The parent may be explicit while the relation is not stated: keep the
+        # parent, drop the unsupported relation, and record why.
+        validated = claim.model_copy(update={
+            "relation": None,
+            "rationale_code": _RELATION_DOWNGRADE_CODE,
+        })
+        downgraded = True
+
+    if (
+        validated.relation is None
+        and validated.rationale_code not in (*_RELATION_RATIONALE.values(),)
+    ):
+        validated = validated.model_copy(update={
+            "rationale_code": _RELATION_DOWNGRADE_CODE,
+        })
+
+    return ClaimValidation(
+        claim=validated,
+        accepted=True,
+        relation_downgraded=downgraded,
+        resolution_status=resolution.status,
+    )
