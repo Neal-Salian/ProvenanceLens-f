@@ -42,6 +42,7 @@ from .schema import (
 __all__ = [
     "RELATION_CUES",
     "LINEAGE_CUES",
+    "NON_LINEAGE_CUES",
     "INJECTION_PATTERNS",
     "ClaimValidation",
     "span_occurs_in",
@@ -65,6 +66,22 @@ LINEAGE_CUES: tuple[str, ...] = (
     "awq", "gptq", "int4", "int8", "4-bit", "8-bit",
     "initialized from", "initialised from", "built from", "derived from",
     "adapted from", "distilled from", "forked from", "released from",
+)
+
+#: Context markers that make a sentence a comparison, an inspiration, a
+#: tokenizer/architecture remark, or an acknowledgement rather than a lineage
+#: statement. Observed in live runs: a small local model read "surpasses most
+#: of the current Mistral finetunes" as lineage, so the prompt rule is also
+#: enforced deterministically here.
+NON_LINEAGE_CUES: tuple[str, ...] = (
+    "outperform", "outperforms", "outperforming", "surpass", "surpasses",
+    "surpassing", "better than", "compared to", "compare against", "compares to",
+    "comparison", "benchmark", "leaderboard", "evaluation results",
+    "state of the art", "sota", "beats ", "ranking", "baseline", "ablations",
+    "inspired by", "inspired from", "inspired from the", "reimplements",
+    "same tokenizer", "tokenizer style", "compatible with", "architecture is based",
+    "thanks to", "thank you", "credit to", "acknowledg", "build on the ideas",
+    "based on the ideas", "we are grateful",
 )
 
 #: Text patterns that are prompt-injection attempts rather than repository
@@ -154,6 +171,12 @@ def looks_like_injection(span: str) -> bool:
     return any(pattern in lowered for pattern in INJECTION_PATTERNS)
 
 
+def has_non_lineage_context(span: str) -> bool:
+    """True when the span reads as comparison, inspiration, or an acknowledgement."""
+    lowered = span.lower()
+    return any(marker in lowered for marker in NON_LINEAGE_CUES)
+
+
 @dataclass(frozen=True)
 class ClaimValidation:
     """Outcome of validating one claim against its source chunk."""
@@ -212,6 +235,11 @@ def validate_claim(
         return reject(
             ProseFailureCode.LINEAGE_NOT_STATED,
             "quoted span names a model but does not state a lineage relationship",
+        )
+    if claim.claim_status is ClaimStatus.EXPLICIT and has_non_lineage_context(span):
+        return reject(
+            ProseFailureCode.NON_LINEAGE_CONTEXT,
+            "quoted span is a comparison, inspiration, or acknowledgement, not lineage",
         )
 
     parent = (claim.candidate_parent or "").strip()

@@ -147,6 +147,15 @@ def _prose_status_lines(prose_report: Any) -> list[str]:
         return []
     detail = summary()
     lines = ["", f"LLM PROSE EXTRACTION: {detail}"]
+    version = getattr(report, "prompt_version", None)
+    digest = getattr(report, "prompt_digest", None)
+    if version:
+        provenance = f"prompt version: {version}"
+        if digest:
+            provenance += f" (digest {str(digest)[:12]})"
+        if getattr(report, "model", None):
+            provenance += f", model {report.model}"
+        lines.append(f"    {provenance}")
     evidence = getattr(report, "evidence", []) or []
     if evidence:
         lines.append("    validated claims:")

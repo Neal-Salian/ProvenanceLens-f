@@ -136,6 +136,7 @@ class ProseFailureCode(str, Enum):
     DUPLICATE_CLAIM = "duplicate_claim"        # already accepted from another chunk
     LINEAGE_NOT_STATED = "lineage_not_stated"  # span contains no lineage statement
     INJECTION_DETECTED = "injection_detected"  # span is an instruction, not a claim
+    NON_LINEAGE_CONTEXT = "non_lineage_context"  # comparison/inspiration/credits text
 
 
 class ProseExtractionStatus(str, Enum):

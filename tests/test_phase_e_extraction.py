@@ -235,17 +235,35 @@ def test_ambiguous_bare_name_survives_as_evidence_for_phase_d():
     assert "resolution=ambiguous" in item.note
 
 
-def test_benchmark_comparison_is_not_lineage():
-    ex = extractor([claim_set(explicit_claim(
-        "org/other-model", "finetune",
-        "We compare against org/other-model and perform better than org/other-model.",
-    ))])
-    report = ex.extract(NO_CLAIM_README, source_name="README.md")
-    # the span exists, so the parent is a real mention; but Phase D never treats
-    # a bare mention as a contradiction, and the extractor stays honest
-    assert all(item.reliability.value == "medium" for item in report.evidence)
-    assert all(item.relation is None or item.relation.value == "finetune"
-               for item in report.evidence)
+def test_benchmark_comparison_never_becomes_lineage_evidence():
+    """Observed live failure mode: a small model read a leaderboard line as lineage.
+
+    The span exists and even contains the word "finetune", so substring checks
+    alone would accept it; the non-lineage context guard rejects it instead.
+    """
+    span = ("Hermes 2.5 on Mistral-7B outperforms all Nous-Hermes models, and "
+            "surpasses most of the current Mistral finetunes across the board.")
+    ex = extractor([claim_set(explicit_claim("Mistral-7B", "finetune", span))])
+    report = ex.extract(FINETUNE_README.replace(
+        "## Usage\n\nNot lineage related.",
+        f"## Results\n\n{span}",
+    ), source_name="README.md")
+    assert report.evidence == []
+    assert ProseFailureCode.NON_LINEAGE_CONTEXT in {f.code for f in report.failures}
+
+
+@pytest.mark.parametrize("span", [
+    "Our architecture is inspired by Mistral-7B and we trained on the data.",
+    "We use the same tokenizer style as Mistral-7B after fine-tuning ours.",
+    "Thanks to the Mistral-7B team; our model was fine-tuned from it.",
+])
+def test_inspiration_and_acknowledgement_contexts_are_rejected(span: str):
+    ex = extractor([claim_set(explicit_claim("Mistral-7B", "finetune", span))])
+    report = ex.extract(FINETUNE_README.replace(
+        "## Usage\n\nNot lineage related.", f"## Usage\n\n{span}"
+    ), source_name="README.md")
+    assert report.evidence == []
+    assert ProseFailureCode.NON_LINEAGE_CONTEXT in {f.code for f in report.failures}
 
 
 def test_duplicate_claims_are_counted_once():
