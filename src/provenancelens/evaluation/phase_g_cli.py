@@ -54,7 +54,9 @@ def build_parser() -> argparse.ArgumentParser:
                      help="restrict to one track (default: both)")
     run.add_argument("--no-ablations", action="store_true",
                      help="skip the ablation suite")
-    run.add_argument("--no-plots", action="store_true", help="skip figure rendering")
+    run.add_argument("--no-plots", action="store_true",
+                     help="skip figures (all tables, the JSON report and the "
+                          "manifest are still written)")
     run.add_argument("--quiet", action="store_true", help="only print the digest")
 
     sub.add_parser("summary", help="print headline metrics only")
@@ -177,24 +179,12 @@ def main(argv: list[str] | None = None) -> int:
     snapshot_root = Path(root) if root else Path("data/snapshots")
     manifest = build_manifest(report, artifacts={}, snapshot_root=snapshot_root,
                               elapsed_seconds=elapsed, config=config)
-    if args.no_plots:
-        manifest["config"]["plots"] = False
-        output = Path(args.output)
-        output.mkdir(parents=True, exist_ok=True)
-        (output / "phase_g_report.json").write_text(
-            json.dumps({k: v for k, v in report.items() if k != "per_case"},
-                       indent=1, sort_keys=True) + "\n", encoding="utf-8")
-        (output / "manifest.json").write_text(
-            json.dumps(manifest, indent=1, sort_keys=True) + "\n", encoding="utf-8")
-        digest = report_digest(report)
-        if not args.quiet:
-            print(json.dumps({"report_digest": digest, "output": str(output),
-                              "elapsed_seconds": round(elapsed, 3)}, indent=1))
-        return 0
-
+    # One writer for every case: --no-plots still produces the JSON report, the
+    # markdown summary, all tables, the adjudication CSV and the manifest.
     artifacts = write_phase_g_report(
         report, Path(args.output), manifest=manifest, snapshot_root=snapshot_root,
-        config=config, adjudication_rows=adjudication_summary(),
+        config=config, adjudication_rows=adjudication_summary(root=root),
+        plots=not args.no_plots,
     )
     digest = report_digest(report)
     if args.quiet:
