@@ -197,10 +197,27 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+#: subcommands that forward their arguments to another parser
+_FORWARDING = ("demo", "benchmark", "study")
+
+
 def main(argv: list[str] | None = None) -> int:
+    """Dispatch, forwarding unrecognised options to forwarding subcommands.
+
+    ``argparse.REMAINDER`` does not capture options that appear *before* the
+    first positional (``provenancelens demo --list`` would fail), so leftover
+    arguments are collected with ``parse_known_args`` and prepended to the
+    subcommand's own list.  For every other subcommand an unknown option is a
+    genuine error and is reported as one.
+    """
     parser = build_parser()
-    args = parser.parse_args(argv)
-    if not getattr(args, "command", None):
+    args, unknown = parser.parse_known_args(argv)
+    command = getattr(args, "command", None)
+    if command in _FORWARDING and unknown:
+        args.rest = [*unknown, *list(getattr(args, "rest", []) or [])]
+    elif unknown:
+        parser.error("unrecognized arguments: " + " ".join(unknown))
+    if not command:
         parser.print_help()
         return 2
     return args.func(args)

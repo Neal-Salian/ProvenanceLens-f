@@ -276,6 +276,25 @@ def test_cli_audit_reports_a_missing_snapshot_helpfully(capsys):
     assert "frozen" in error.lower()
 
 
+def test_cli_forwards_options_to_subcommands(capsys):
+    """`demo --list` must work: argparse.REMAINDER drops leading options."""
+    from provenancelens.cli import main as cli_main
+
+    assert cli_main(["demo", "--list"]) == 0
+    listing = capsys.readouterr().out
+    assert "ADD" in listing and "ABSTAIN" in listing
+    assert cli_main(["demo", "--case", demo_cases()[0].case_id]) == 0
+    assert "DECISION" in capsys.readouterr().out
+
+
+def test_cli_rejects_unknown_options_for_non_forwarding_commands():
+    from provenancelens.cli import main as cli_main
+
+    with pytest.raises(SystemExit) as excinfo:
+        cli_main(["audit", "--definitely-not-an-option"])
+    assert excinfo.value.code != 0
+
+
 def test_cli_audit_renders_a_frozen_repository(capsys):
     from provenancelens.cli import main as cli_main
 
