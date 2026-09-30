@@ -576,36 +576,38 @@ cases:
   - config.json
   - mergekit_config.yml
   - tokenizer_config.json
-  evidence_summary: mergekit_config.yml lists five '<base>+<lora>' source entries; the front matter declares
-    five plain repository ids including FreedomIntelligence/HuatuoGPT-o1-8B
-  parents:
+  evidence_summary: mergekit_config.yml (merge_method model_stock, dtype bfloat16) lists six composed
+    '<base>+<lora>' model entries; the front matter declares eight separate repository ids including FreedomIntelligence/HuatuoGPT-o1-8B
+  parents: &id001
   - FreedomIntelligence/HuatuoGPT-o1-8B
   - Blackroot/Llama-3-LongStory-LORA
   - vincentyandex/lora_llama3_chunked_novel_bs128
+  - eeeebbb2/3aff0ea7-4262-4abb-97b1-1879f340d32e
   - grimjim/Llama-3-Instruct-abliteration-LoRA-8B
-  - HuatuoGPT-o1-8B+v
+  - ResplendentAI/Llama3_RP_ORPO_LoRA
+  - surya-narayanan/professional_psychology
+  - surya-narayanan/human_sexuality
   parents_status: ambiguous
   relation: merge
   relation_status: known
   metadata_state: undetermined
   expected_action: ABSTAIN
   acceptable_actions:
+  - KEEP
   - ABSTAIN
-  rationale: The merge configuration establishes a merge over five composed source entries (each a base+lora
-    combination), while the declared metadata lists five plain repository ids. Whether the declared set
-    is the same object as the merge inputs is a MergeKit semantics question the evidence does not settle,
-    so the source set is ambiguous and no automatic change is expected.
+  rationale: 'The merge configuration is tool-generated and establishes a merge over six composed base+lora
+    inputs, so the relation is knowable. The source set is not: the declared metadata names eight repositories,
+    while the configuration consumed six composed models, and nothing in the frozen artifacts settles
+    which object the parent set should describe. Both readings are recorded as alternatives and no automatic
+    change is expected.'
   parent_set_alternatives:
-  - - FreedomIntelligence/HuatuoGPT-o1-8B
-    - Blackroot/Llama-3-LongStory-LORA
-    - vincentyandex/lora_llama3_chunked_novel_bs128
-    - grimjim/Llama-3-Instruct-abliteration-LoRA-8B
-    - HuatuoGPT-o1-8B+v
-  - - FreedomIntelligence/HuatuoGPT-o1-8B+eeeebbb2
-    - FreedomIntelligence/HuatuoGPT-o1-8B+surya-narayanan
+  - *id001
+  - - FreedomIntelligence/HuatuoGPT-o1-8B+eeeebbb2/3aff0ea7-4262-4abb-97b1-1879f340d32e
+    - FreedomIntelligence/HuatuoGPT-o1-8B+surya-narayanan/professional_psychology
     - FreedomIntelligence/HuatuoGPT-o1-8B+Blackroot/Llama-3-LongStory-LORA
     - FreedomIntelligence/HuatuoGPT-o1-8B+ResplendentAI/Llama3_RP_ORPO_LoRA
-    - FreedomIntelligence/HuatuoGPT-o1-8B+v
+    - FreedomIntelligence/HuatuoGPT-o1-8B+vincentyandex/lora_llama3_chunked_novel_bs128
+    - FreedomIntelligence/HuatuoGPT-o1-8B+surya-narayanan/human_sexuality
 - repository: meta-llama/Llama-3.1-8B-Instruct
   commit: 0e9e39f249a16976918f6564b8830bc894c89659
   snapshot_files:
