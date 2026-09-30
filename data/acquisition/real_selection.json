@@ -1,0 +1,601 @@
+{
+ "existing_cases_excluded_as_already_frozen": [
+  "mergekit-community/Qwen3-1.5B-Instruct",
+  "peft-internal-testing/tiny-OPTForCausalLM-lora",
+  "teknium/OpenHermes-2.5-Mistral-7B"
+ ],
+ "n_excluded": 0,
+ "n_included": 41,
+ "plan": "stratified selection with fixed per-stratum quotas; candidates ordered by (downloads desc, id asc); exclusions recorded, never silently dropped",
+ "records": [
+  {
+   "commit": "7ae557604adf67be50417f59c2c2f167def9a775",
+   "downloads": 8703304,
+   "files": [
+    "README.md",
+    "config.json",
+    "generation_config.json",
+    "tokenizer_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "Qwen/Qwen2.5-0.5B-Instruct",
+   "snapshot_bytes": 17143,
+   "status": "SUCCESS",
+   "stratum": "instruction_finetunes"
+  },
+  {
+   "commit": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+   "downloads": 7668222,
+   "files": [
+    "README.md",
+    "config.json",
+    "generation_config.json",
+    "tokenizer_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "Qwen/Qwen2.5-1.5B-Instruct",
+   "snapshot_bytes": 17145,
+   "status": "SUCCESS",
+   "stratum": "instruction_finetunes"
+  },
+  {
+   "commit": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+   "downloads": 4092961,
+   "files": [
+    "README.md",
+    "config.json",
+    "generation_config.json",
+    "tokenizer_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "Qwen/Qwen2.5-3B-Instruct",
+   "snapshot_bytes": 17772,
+   "status": "SUCCESS",
+   "stratum": "instruction_finetunes"
+  },
+  {
+   "commit": "a09a35458c702b33eeacc393d103063234e8bc28",
+   "downloads": 9651741,
+   "files": [
+    "README.md",
+    "config.json",
+    "generation_config.json",
+    "tokenizer_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "Qwen/Qwen2.5-7B-Instruct",
+   "snapshot_bytes": 19704,
+   "status": "SUCCESS",
+   "stratum": "instruction_finetunes"
+  },
+  {
+   "commit": "cc594898137f460bfe9f0759e9844b3ce807cfb5",
+   "downloads": 6163398,
+   "files": [
+    "README.md",
+    "config.json",
+    "generation_config.json",
+    "tokenizer_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "Qwen/Qwen2.5-VL-7B-Instruct",
+   "snapshot_bytes": 31742,
+   "status": "SUCCESS",
+   "stratum": "instruction_finetunes"
+  },
+  {
+   "commit": "0c351dd01ed87e9c1b53cbc748cba10e6187ff3b",
+   "downloads": 16554271,
+   "files": [
+    "README.md",
+    "config.json",
+    "generation_config.json",
+    "tokenizer_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "Qwen/Qwen3-VL-8B-Instruct",
+   "snapshot_bytes": 25594,
+   "status": "SUCCESS",
+   "stratum": "instruction_finetunes"
+  },
+  {
+   "commit": "0e9e39f249a16976918f6564b8830bc894c89659",
+   "downloads": 6192447,
+   "files": [
+    "README.md"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "meta-llama/Llama-3.1-8B-Instruct",
+   "snapshot_bytes": 49968,
+   "status": "PARTIAL",
+   "stratum": "instruction_finetunes"
+  },
+  {
+   "commit": "9213176726f574b556790deb65791e0c5aa438b6",
+   "downloads": 7610184,
+   "files": [
+    "README.md"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "meta-llama/Llama-3.2-1B-Instruct",
+   "snapshot_bytes": 46427,
+   "status": "PARTIAL",
+   "stratum": "instruction_finetunes"
+  },
+  {
+   "commit": "8e5395bf66c3432cc53d2084dae48ecf5f68db0f",
+   "downloads": 339885,
+   "files": [
+    "README.md"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "Jackrong/Qwopus3.6-27B-Coder-MTP-GGUF",
+   "snapshot_bytes": 54780,
+   "status": "SUCCESS",
+   "stratum": "lora_adapters"
+  },
+  {
+   "commit": "6a5663090399e07f669c6f036a6ade65062c96db",
+   "downloads": 401005,
+   "files": [
+    "README.md"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "Jackrong/Qwopus3.6-35B-A3B-Coder-MTP-GGUF",
+   "snapshot_bytes": 43300,
+   "status": "SUCCESS",
+   "stratum": "lora_adapters"
+  },
+  {
+   "commit": "99f161c623be065e5db8827b1278f83ced8834dc",
+   "downloads": 438706,
+   "files": [
+    "README.md"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "k-chirkunov/gemma4-e4b-claims-comparison",
+   "snapshot_bytes": 11523,
+   "status": "PARTIAL",
+   "stratum": "lora_adapters"
+  },
+  {
+   "commit": "d74eba145674fd7e31b949324e148e21e7118abd",
+   "downloads": 351022,
+   "files": [
+    "README.md"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "lightx2v/Qwen-Image-Edit-2511-Lightning",
+   "snapshot_bytes": 28318,
+   "status": "SUCCESS",
+   "stratum": "lora_adapters"
+  },
+  {
+   "commit": "e74da8d4e71a54b341de86aa9f8d2509165aa513",
+   "downloads": 366250,
+   "files": [
+    "README.md"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "lightx2v/Qwen-Image-Lightning",
+   "snapshot_bytes": 10327,
+   "status": "SUCCESS",
+   "stratum": "lora_adapters"
+  },
+  {
+   "commit": "e4f94da572d9857a91ca0dca857cebb0cbe6755a",
+   "downloads": 329548,
+   "files": [
+    "README.md",
+    "config.json",
+    "generation_config.json",
+    "tokenizer_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "webAI-Official/TwIL-LM3",
+   "snapshot_bytes": 87479,
+   "status": "SUCCESS",
+   "stratum": "lora_adapters"
+  },
+  {
+   "commit": "1a0e15c557f1e0b36616c34791bf4ef360962661",
+   "downloads": 1678,
+   "files": [
+    "README.md",
+    "config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "MaziyarPanahi/mergekit-slerp-dafvhck-GGUF",
+   "snapshot_bytes": 8133,
+   "status": "SUCCESS",
+   "stratum": "mergekit_merges"
+  },
+  {
+   "commit": "87d448dc7a0a659cce3bdf10e8c840de52b82201",
+   "downloads": 1797,
+   "files": [
+    "README.md",
+    "config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "MaziyarPanahi/mergekit-slerp-idbupbn-GGUF",
+   "snapshot_bytes": 8091,
+   "status": "SUCCESS",
+   "stratum": "mergekit_merges"
+  },
+  {
+   "commit": "365c6ea75e749f0c06d23cc393d7c13b2994db53",
+   "downloads": 1763,
+   "files": [
+    "README.md",
+    "config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "MaziyarPanahi/mergekit-slerp-ksadkxl-GGUF",
+   "snapshot_bytes": 8087,
+   "status": "SUCCESS",
+   "stratum": "mergekit_merges"
+  },
+  {
+   "commit": "3683596163a05cd5d6674380e6e54277aca335bb",
+   "downloads": 1782,
+   "files": [
+    "README.md",
+    "config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "MaziyarPanahi/mergekit-slerp-npojgos-GGUF",
+   "snapshot_bytes": 8106,
+   "status": "SUCCESS",
+   "stratum": "mergekit_merges"
+  },
+  {
+   "commit": "cad7cab4a045444910ef6bb37a322360f8db68dd",
+   "downloads": 1841,
+   "files": [
+    "README.md",
+    "config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "MaziyarPanahi/mergekit-slerp-ozbsicw-GGUF",
+   "snapshot_bytes": 8042,
+   "status": "SUCCESS",
+   "stratum": "mergekit_merges"
+  },
+  {
+   "commit": "4a7ead685e8381765d603b004dcd51e54b0db0b2",
+   "downloads": 1730,
+   "files": [
+    "README.md",
+    "config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "MaziyarPanahi/mergekit-slerp-rfdxiqs-GGUF",
+   "snapshot_bytes": 8106,
+   "status": "SUCCESS",
+   "stratum": "mergekit_merges"
+  },
+  {
+   "commit": "a7004a1db2df3db3b7fa82a9c0405bcdad48fa7b",
+   "downloads": 1704,
+   "files": [
+    "README.md",
+    "config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "MaziyarPanahi/mergekit-slerp-tzunwnr-GGUF",
+   "snapshot_bytes": 8105,
+   "status": "SUCCESS",
+   "stratum": "mergekit_merges"
+  },
+  {
+   "commit": "f56a8bcbaf47fa62d1eb5790c511e5aa8b5832d9",
+   "downloads": 2361,
+   "files": [
+    "README.md",
+    "config.json",
+    "mergekit_config.yml",
+    "tokenizer_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "mergekit-community/ohnoes_now_nsfw",
+   "snapshot_bytes": 64903,
+   "status": "SUCCESS",
+   "stratum": "mergekit_merges"
+  },
+  {
+   "commit": "669f041aab04fad836e757ede9a028058b064996",
+   "downloads": 58493,
+   "files": [
+    "README.md",
+    "adapter_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "IFM/K2-Horizon-7B-Uno",
+   "snapshot_bytes": 25115,
+   "status": "SUCCESS",
+   "stratum": "peft_adapters"
+  },
+  {
+   "commit": "baa8ebf04a1c2500e61288e7dad65e8ae42601a7",
+   "downloads": 96207,
+   "files": [
+    "README.md",
+    "adapter_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "McGill-NLP/LLM2Vec-Meta-Llama-3-8B-Instruct-mntp-supervised",
+   "snapshot_bytes": 65503,
+   "status": "SUCCESS",
+   "stratum": "peft_adapters"
+  },
+  {
+   "commit": "513b1e6c2e19c73f92644a352b62dd28eb63c980",
+   "downloads": 43481,
+   "files": [
+    "README.md",
+    "adapter_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "llamafactory/tiny-random-Llama-3-lora",
+   "snapshot_bytes": 3140,
+   "status": "SUCCESS",
+   "stratum": "peft_adapters"
+  },
+  {
+   "commit": "c32ca358e1deddf2d3e755faef6d22610d7b49ae",
+   "downloads": 33061,
+   "files": [
+    "README.md",
+    "adapter_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "peft-internal-testing/tiny_GPT2ForTokenClassification-lora",
+   "snapshot_bytes": 2500,
+   "status": "SUCCESS",
+   "stratum": "peft_adapters"
+  },
+  {
+   "commit": "342e5d6b9a8c5ce360fb2b459d4e6598c49ff1eb",
+   "downloads": 34238,
+   "files": [
+    "README.md",
+    "adapter_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "peft-internal-testing/tiny_OPTForFeatureExtraction-lora",
+   "snapshot_bytes": 2555,
+   "status": "SUCCESS",
+   "stratum": "peft_adapters"
+  },
+  {
+   "commit": "bf74d712a3b7ca2086fec457602106e432033787",
+   "downloads": 34023,
+   "files": [
+    "README.md",
+    "adapter_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "peft-internal-testing/tiny_OPTForQuestionAnswering-lora",
+   "snapshot_bytes": 2519,
+   "status": "SUCCESS",
+   "stratum": "peft_adapters"
+  },
+  {
+   "commit": "c6ef8e0ad5748a888b3694c25aab6dcddb42a37d",
+   "downloads": 33170,
+   "files": [
+    "README.md",
+    "adapter_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "peft-internal-testing/tiny_OPTForSequenceClassification-lora",
+   "snapshot_bytes": 2531,
+   "status": "SUCCESS",
+   "stratum": "peft_adapters"
+  },
+  {
+   "commit": "4bd893d32390d2cace4f067dc2e3ef5294fd78a2",
+   "downloads": 143169,
+   "files": [
+    "README.md",
+    "adapter_config.json",
+    "tokenizer_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "qylu4156/strongreject-15k-v1",
+   "snapshot_bytes": 49072,
+   "status": "SUCCESS",
+   "stratum": "peft_adapters"
+  },
+  {
+   "commit": "539535859b135b0244c91f3e59816150c8056698",
+   "downloads": 1866848,
+   "files": [
+    "README.md",
+    "config.json",
+    "generation_config.json",
+    "tokenizer_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "Qwen/Qwen2.5-14B-Instruct-AWQ",
+   "snapshot_bytes": 19731,
+   "status": "SUCCESS",
+   "stratum": "quantized_awq"
+  },
+  {
+   "commit": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+   "downloads": 3033413,
+   "files": [
+    "README.md",
+    "config.json",
+    "generation_config.json",
+    "tokenizer_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+   "snapshot_bytes": 19412,
+   "status": "SUCCESS",
+   "stratum": "quantized_awq"
+  },
+  {
+   "commit": "536a35794df8831aa814970ee8f89eff577e7718",
+   "downloads": 1747554,
+   "files": [
+    "README.md",
+    "config.json",
+    "generation_config.json",
+    "tokenizer_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "Qwen/Qwen2.5-VL-7B-Instruct-AWQ",
+   "snapshot_bytes": 26568,
+   "status": "SUCCESS",
+   "stratum": "quantized_awq"
+  },
+  {
+   "commit": "31c69efc29464b6bb0aee1398b5a7b50a99340c3",
+   "downloads": 2858592,
+   "files": [
+    "README.md",
+    "config.json",
+    "generation_config.json",
+    "tokenizer_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "Qwen/Qwen3-14B-AWQ",
+   "snapshot_bytes": 32370,
+   "status": "SUCCESS",
+   "stratum": "quantized_awq"
+  },
+  {
+   "commit": "4da05a8edb55c6046cce958586c33b61da07bb79",
+   "downloads": 2047169,
+   "files": [
+    "README.md",
+    "config.json",
+    "generation_config.json",
+    "tokenizer_config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "Qwen/Qwen3-8B-AWQ",
+   "snapshot_bytes": 32491,
+   "status": "SUCCESS",
+   "stratum": "quantized_awq"
+  },
+  {
+   "commit": "83c5d96c03023ff5a7712570d057ce26c8769f98",
+   "downloads": 5424280,
+   "files": [
+    "README.md"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "audio-cpp/audio.cpp-gguf",
+   "snapshot_bytes": 126368,
+   "status": "SUCCESS",
+   "stratum": "quantized_gguf"
+  },
+  {
+   "commit": "ac343e8f44caef0896f79d372ecc07ef7ab34ec8",
+   "downloads": 4364075,
+   "files": [
+    "README.md"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "cdiamond/Qwen3.8-27B-iMatrix-NVFP4-MTP-GGUF",
+   "snapshot_bytes": 14437,
+   "status": "SUCCESS",
+   "stratum": "quantized_gguf"
+  },
+  {
+   "commit": "4e50db5b836dd876f5e464734ef5484cae754a52",
+   "downloads": 7366681,
+   "files": [
+    "README.md"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "mudler/locate-anything.cpp-gguf",
+   "snapshot_bytes": 7137,
+   "status": "SUCCESS",
+   "stratum": "quantized_gguf"
+  },
+  {
+   "commit": "abdd624b12ebf020b767fff532ff44fe552b28c3",
+   "downloads": 5050521,
+   "files": [
+    "README.md"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "ornith-ai/Ornith-1.5-9B-GGUF",
+   "snapshot_bytes": 30313,
+   "status": "SUCCESS",
+   "stratum": "quantized_gguf"
+  },
+  {
+   "commit": "b17cb02dd882d5b6ab62fc777ad2995f19668350",
+   "downloads": 9487810,
+   "files": [
+    "README.md"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF",
+   "snapshot_bytes": 19353,
+   "status": "SUCCESS",
+   "stratum": "quantized_gguf"
+  },
+  {
+   "commit": "4ca720788d1e01f1bff70c033e0d0028fd02e502",
+   "downloads": 6342850,
+   "files": [
+    "README.md",
+    "config.json"
+   ],
+   "included": true,
+   "reason": "frozen from documented stratum",
+   "repository": "unsloth/Qwen3.8-27B-GGUF",
+   "snapshot_bytes": 21903,
+   "status": "SUCCESS",
+   "stratum": "quantized_gguf"
+  }
+ ]
+}

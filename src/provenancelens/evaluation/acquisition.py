@@ -35,15 +35,19 @@ Safety
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
 from pydantic import BaseModel, ConfigDict
 
-from ..collectors import HuggingFaceCollector
 from ..schemas.collection import CollectionStatus
 from ..snapshots import DEFAULT_SNAPSHOT_ROOT, SnapshotError, save_snapshot
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from ..collectors import HuggingFaceCollector
 
 __all__ = [
     "SNAPSHOT_MAX_BYTES",
@@ -72,11 +76,17 @@ class Stratum:
 
 
 def _list_models(**kwargs):
-    from huggingface_hub import HfApi
+    """Return a *lazy* Hub query.
+
+    The client is imported inside the closure, never at module import time:
+    importing the evaluation package must not touch the network stack, and
+    ``STRATA`` is built at import time to document the frozen selection plan.
+    """
 
     def _query() -> list:
-        api = HfApi()
-        return list(api.list_models(**kwargs))
+        from huggingface_hub import HfApi
+
+        return list(HfApi().list_models(**kwargs))
 
     return _query
 
@@ -210,7 +220,12 @@ def acquire_real_snapshots(
 
     With ``dry_run=True`` the selection is reported without any download.
     """
-    collector = collector or HuggingFaceCollector()
+    if collector is None:
+        # imported lazily so that importing the evaluation package never pulls in
+        # an HTTP client: evaluation and acquisition must stay separable offline
+        from ..collectors import HuggingFaceCollector
+
+        collector = HuggingFaceCollector()
     records: list[CandidateRecord] = []
 
     for stratum_name, candidate in enumerate_candidates(strata, already=already):

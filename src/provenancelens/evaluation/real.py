@@ -9,6 +9,7 @@ that produced the label.
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
@@ -83,6 +84,30 @@ def _read_snapshot_files(root: Path, repository: str, commit: str) -> dict[str, 
     }
 
 
+_SELECTION_CACHE: dict[str, str] | None = None
+
+
+def acquisition_strata() -> dict[str, str]:
+    """Repository -> acquisition stratum, from the frozen selection record.
+
+    The selection record is the audit trail of *how* the real track was
+    sampled; stratification in the analysis uses it so the strata are the
+    ones the plan declared, not ones derived from measured outcomes.
+    """
+    global _SELECTION_CACHE
+    if _SELECTION_CACHE is None:
+        path = snapshot_root(None).parent / "acquisition" / "real_selection.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        _SELECTION_CACHE = {
+            record["repository"]: record["stratum"] for record in data["records"]
+        }
+    return dict(_SELECTION_CACHE)
+
+
+def _acquisition_stratum(repository: str) -> str:
+    return acquisition_strata().get(repository, "pre_phase_g")
+
+
 def _case_from_record(record: dict[str, Any], files: dict[str, str]) -> BenchmarkCase:
     from ..parsers import extract_repository_evidence
 
@@ -126,7 +151,12 @@ def _case_from_record(record: dict[str, Any], files: dict[str, str]) -> Benchmar
             notes=record["rationale"],
         ),
         repairable=expected in (Decision.ADD, Decision.REPLACE),
-        tags=("real", "frozen-snapshot", *record.get("tags", ())),
+        tags=(
+            "real",
+            "frozen-snapshot",
+            f"stratum:{_acquisition_stratum(record['repository'])}",
+            *record.get("tags", ()),
+        ),
     )
 
 
