@@ -344,6 +344,128 @@ Documented in the test suite and reproducible offline. In the live run with `lla
 
 ---
 
+## 📊 Phase F Evaluation: LineageRepairBench
+
+Phases B–E build the system; **Phase F measures it**. `LineageRepairBench` is a small, frozen, self-validating benchmark plus a reproducible, offline evaluation runner. It is not a new decision layer: the production engine is used unchanged.
+
+```bash
+python -m provenancelens.evaluation validate            # self-check + summary
+python -m provenancelens.evaluation run --track controlled
+python -m provenancelens.evaluation run --track real
+python -m provenancelens.evaluation extraction           # prose-extraction quality
+python -m provenancelens.evaluation all --output artifacts/evaluation
+```
+
+No network, no LLM, no paid API: the normal run re-uses the frozen snapshots and canned model answers. Generated artifacts go to `artifacts/evaluation/` (git-ignored) and are reproducible from the CLI.
+
+### Two tracks, never mixed
+
+| Track | Cases | Labels |
+| --- | --- | --- |
+| `CONTROLLED` | 26 | synthetic evidence bundles, labelled **by construction** |
+| `REAL` | 3 | frozen real repository snapshots, **manually adjudicated** |
+
+**How REAL ground truth was determined.** Never from ProvenanceLens output. Each label rests on the frozen artifact itself plus the published provenance of the model, and every case records an adjudication (adjudicator, files read, excerpt, rationale):
+
+* `peft-internal-testing/tiny-OPTForCausalLM-lora` — `adapter_config.json` (written by PEFT at save time) records `base_model_name_or_path = hf-internal-testing/tiny-random-OPTForCausalLM` with `peft_type: LORA`. Parent **known**, relation **adapter**, declared metadata **missing** → expected `ADD`.
+* `teknium/OpenHermes-2.5-Mistral-7B` — the front matter and `config.json` both name `mistralai/Mistral-7B-v0.1`, but **no artifact states the relation** (the card only says "a state of the art Mistral Fine-tune, a continuation of OpenHermes 2 model", with no canonical id). Metadata state is **undetermined**, not incorrect: no repair is expected (`KEEP` or `ABSTAIN`).
+* `mergekit-community/Qwen3-1.5B-Instruct` — `mergekit_config.yml` lists two sources under `models:` plus a top-level `base_model:`; whether that key is an additional merged source or the residual base is an algorithm-semantics question the evidence does not settle. Parent set **ambiguous** (two admissible readings recorded), relation **merge** → no repair expected.
+
+### Benchmark validation
+
+The benchmark validates itself before any metric is computed and fails loudly on: duplicate case ids, invalid relation labels, `REPLACE` without adjudicated-incorrect metadata, `ADD` without missing metadata, `KEEP` on known-wrong metadata, repairs demanded on ambiguous truth, ambiguous truth without recorded alternatives, inconsistent declared state vs. labels, invalid expected parents, and REAL cases without manual adjudication. The validator never imports the decision engine, so it cannot manufacture a label from the system's own output.
+
+Running the benchmark early caught a real defect in the fixtures: six cases claimed `VALID`/`INCORRECT` metadata while declaring none, so the engine saw "nothing declared" and answered `ADD`. Both the fixtures and a new validation rule were fixed; production behaviour was not touched.
+
+### Metrics (denominators always explicit)
+
+* **Parent identification** — exact-set match over cases with `KNOWN` parent truth; multi-parent truth compared order-insensitively.
+* **Relation classification** — accuracy plus macro precision/recall/F1 over `finetune|adapter|merge|quantized|none` (`none` = "no relation established", a real outcome, not folded into a relation).
+* **Action prediction** — accuracy plus macro precision/recall/F1 for `KEEP/ADD/REPLACE/ABSTAIN`; ambiguous cases accept any action in their `acceptable_actions`.
+* **Repair safety** — abstention is never counted as correct.
+
+> **False Repair Rate** = *incorrect attempted repairs* / *total attempted repairs*, where an attempted repair is an `ADD` or `REPLACE` whose proposed lineage contradicts **known** adjudicated truth. Attempts on non-knowable truth are reported separately as `unverifiable_repairs` — neither credited nor blamed. Zero denominators yield `null`, never `0.0`.
+
+### Selective prediction
+
+```
+coverage           = non-ABSTAIN predictions / scored predictions
+selective accuracy = correct predictions among non-ABSTAIN predictions
+abstention rate    = ABSTAIN predictions / scored predictions
+```
+
+`python -m provenancelens.evaluation run` sweeps the raw `support_score` over 0.00–1.00 plus every observed value and reports, per operating point: threshold, coverage, selective accuracy, attempted repairs, false repairs and false-repair rate (`selective_metrics.csv`). This is a *threshold sweep*, not a calibration curve.
+
+### Baselines
+
+| Baseline | Behaviour |
+| --- | --- |
+| `declared_metadata` | trusts the declaration, never infers |
+| `config_only` | production engine restricted to framework config evidence |
+| `prose_only` | production engine restricted to model-card prose evidence |
+| `majority_count` | picks the parent with the most evidence records; **ties abstain** |
+| `rule_priority` | fixed source hierarchy (adapter > merge > training > config > prose), no fusion or conflict logic |
+| `always_keep` | trivial reference, never the main comparator |
+| `llm_full_context` | optional interface only — needs live local inference, so never a required dependency |
+
+None is deliberately weakened, and each is scored with the same fields as the full system.
+
+### Extraction quality, measured separately
+
+11 labelled prose fixtures run through the real prompt/chain/parser/validation path (only inference is stubbed), yielding claim precision/recall/F1 and rejection counts by reason. Extraction errors are **not** attributed to downstream decisions: a rejected claim costs recall but is correct fail-closed behaviour, and an abstention does not imply the extractor was wrong.
+
+### Measured results (this repository, this benchmark version)
+
+Numbers below come from the committed benchmark; re-running the CLI reproduces them exactly. Per-track metrics are in `metrics.json`; `false_repair_rate` denominators are shown because several systems attempt few or no repairs.
+
+| System | Action acc. | Parent acc. | Relation acc. | Coverage | Attempts | False repairs | False repair rate | Abstention |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `provenancelens` | 1.000 (29/29) | 0.688 (11/16) | 0.800 (12/15) | 0.414 | 7 | 0 | 0.000 (7 attempts) | 0.586 |
+| `rule_priority` | 0.448 (13/29) | 0.875 (14/16) | 1.000 (15/15) | 0.966 | 20 | 1 | 0.050 (20 attempts) | 0.034 |
+| `majority_count` | 0.345 (10/29) | 0.812 (13/16) | 0.667 (10/15) | 0.793 | 18 | 0 | 0.000 (18 attempts) | 0.207 |
+| `config_only` | 0.586 (17/29) | 0.000 (0/16) | 0.000 (0/15) | 0.000 | 0 | 0 | n/a (0 attempts) | 1.000 |
+| `prose_only` | 0.586 (17/29) | 0.000 (0/16) | 0.000 (0/15) | 0.000 | 0 | 0 | n/a (0 attempts) | 1.000 |
+| `declared_metadata` | 0.586 (17/29) | 0.375 (6/16) | 0.333 (5/15) | 0.414 | 0 | 0 | n/a (0 attempts) | 0.586 |
+| `always_keep` | 0.586 (17/29) | 0.375 (6/16) | 0.333 (5/15) | 0.414 | 0 | 0 | n/a (0 attempts) | 0.586 |
+
+Per track for the full system:
+
+| Track | Cases | Action acc. | Parent acc. | Attempts | False repairs |
+| --- | --- | --- | --- | --- | --- |
+| `controlled` | 26 | 1.000 (26/26) | 0.714 (10/14) | 6 | 0 |
+| `real` | 3 | 1.000 (3/3) | 0.500 (1/2) | 1 | 0 |
+
+Selective accuracy when answering: parent 11/11, relation 12/12. Action macro-F1 1.000.
+
+Prose extraction over the labelled fixtures: precision 1.000 (6/6), recall 1.000 (6/6), rejection reasons matched 5/5.
+
+What the numbers say (and do not say):
+
+* **Repair safety vs coverage is the whole story.** ProvenanceLens attempts 7 repairs and none is wrong, but answers only 41.4 % of cases. `rule_priority` answers 96.6 %, scores *higher* on parent (0.875) and relation (1.000) accuracy, and still records a false repair — plus 10 of its 20 attempts are on truth that is not knowable (e.g. acting on a bare `Mistral 7B` reference), so its repairs cannot even be verified.
+* **All strict parent/relation misses of the full system are abstentions**, not wrong answers: when it answers, parent accuracy is 11/11 and relation accuracy 12/12.
+* **Action accuracy 1.000 on CONTROLLED is a specification check.** Those labels encode the documented policy; it confirms the implementation still matches its specification and says nothing about generality.
+* `config_only` and `prose_only` abstain everywhere: honest, and also useless alone — neither evidence subset can certify lineage.
+* `declared_metadata` / `always_keep` never repair, so their parent accuracy (0.375) is simply the share of cases where the declaration happens to be right.
+
+
+### Benchmark limitations
+
+* The CONTROLLED track is a **specification check**, not evidence of generality: its labels encode the documented policy, so a perfect score there means "the implementation still matches its specification" and nothing more.
+* The REAL track has **three** adjudicated cases — far too few for statistically meaningful claims. Denominators are printed for every metric for that reason.
+* Two of the three real cases are deliberately ambiguous/undetermined, so `parent_accuracy` there is dominated by cases where no answer was expected.
+* Labels reflect what the stored evidence supports, not external truth about these models; the OpenHermes case would change if a training manifest were added to the snapshot.
+* No calibration is reported (see below), and no baseline was tuned against the benchmark after labels were fixed.
+
+### `support_score` is not a probability
+
+The raw support score is a heuristic evidence strength (a capped sum of documented per-artifact contributions). Phase F therefore **does not** report ECE, Brier score, or reliability diagrams for it: doing so would present a non-probability as a calibrated one. Instead the evaluation package provides a `CalibratedScore` schema and mathematically standard ECE/Brier implementations that **refuse** uncalibrated inputs, plus a status object explaining which conditions are missing (a fitted mapping on a held-out split, ≥ 50 cases, a disjoint evaluation split). With 29 cases and no held-out split, probability calibration is deliberately **deferred** rather than faked.
+
+### No research claims
+
+ProvenanceLens makes no claim of state of the art, novelty, or empirical superiority: the benchmark is small, self-authored, and mostly synthetic. What it does show, on its own terms, is the intended trade-off — high repair safety at limited coverage — against simpler strategies that repair more often and less safely.
+
+---
+
 ## 🧠 Decision Logic
 
 ProvenanceLens uses four possible outcomes.
@@ -391,6 +513,8 @@ In conflict and failure cases, the system produces **ABSTAIN** rather than makin
 Phase 3 additionally covers: collector selection/limits/statuses (mocked), snapshot immutability/path-safety/integrity, and front-matter/adapter/training/merge extraction with the declared-versus-independent invariant.
 
 Phase D additionally covers: entity resolution, all controlled decision cases, false-repair safety invariants, determinism properties, and offline reasoning over the three frozen real repositories.
+
+Phase F additionally covers: benchmark schema and self-validation, controlled and real tracks, metric semantics (strict vs coverage-conditioned, false-repair accounting, zero denominators, all-abstain and no-abstain systems), selective threshold sweeps, calibration guardrails, every baseline, runner determinism, CLI reproducibility in a clean subprocess, and frozen-snapshot integrity.
 
 Phase E additionally covers: the prose claim schema and prompt contract, the real LangChain chain with a canned model (explicit/ambiguous/no-claim claims, multi-source merges, hallucinated spans, guessed parents/versions/relations, prompt injection, malformed and fenced output), chunking and section selection, the LangChain tools, Phase D integration and decision stability, and guarded imports without LangChain.
 
@@ -449,6 +573,7 @@ ProvenanceLens/
 │   ├── prose/                        # Phase E: prompt, chunking, validation, extractor
 │   ├── llm_runtime.py                # local model config + read-only availability probe
 │   ├── tools.py                      # read-only LangChain snapshot tools
+│   ├── evaluation/                   # Phase F: LineageRepairBench, metrics, baselines, CLI
 │   ├── resolution/                   # conservative model-id resolution
 │   ├── reasoning/                    # Phase D candidates/fusion/conflicts/decision
 │   │   └── legacy.py                 # Phase 2 engine (regression baseline, untouched)
@@ -531,7 +656,7 @@ When evidence is missing or conflicting, ProvenanceLens chooses `ABSTAIN`.
 * Entity resolution never searches the hub, so bare model names without an organization conservatively abstain.
 * Prose extraction has two paths: deterministic rules plus an optional local LLM; a small local model still produces paraphrased or misread claims, so validation rejects them and coverage is conservative rather than high.
 * Suggested patches are recommendations only; the tool never writes to external repositories.
-* Evaluation so far is three frozen real repositories plus controlled cases — a prototype-scale evaluation, not a research result.
+* Evaluation (Phase F) is a small self-authored benchmark: 26 controlled cases and 3 adjudicated real cases. It documents the safety/coverage trade-off; it is not a research result and supports no superiority claims.
 
 ---
 
@@ -547,7 +672,7 @@ Progress:
 * ⬜ Include poor/failed retrieval cases at scale
 * ⬜ Preserve explicit evidence citations end-to-end
 * ✅ Open-weight LLM prose extraction, local-first and fail-closed (Phase E)
-* ⬜ Manually adjudicated evaluation of extraction and decisions (Phase F)
+* ✅ LineageRepairBench evaluation, baselines and repair-safety metrics (Phase F)
 * ⬜ Keep using `ABSTAIN` whenever a repair cannot be safely supported
 
 ---
