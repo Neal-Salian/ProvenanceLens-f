@@ -1,0 +1,11 @@
+ablation,question,verdict,n_cases,action_accuracy,action_correct,macro_f1,coverage,attempted_repairs,false_repairs,false_repair_rate,parent_accuracy,relation_accuracy
+full,"reference run, no transformation",reference,70,0.8857,62,0.8928,0.3000,12,0,0.0000,0.5938,0.6774
+no_prose,RQ4: how much of the decision comes from model-card prose?,no measurable effect on this benchmark,70,0.8857,62,0.8928,0.3000,12,0,0.0000,0.5938,0.6774
+no_config,RQ4: how much does framework config contribute?,no measurable effect on this benchmark,70,0.8857,62,0.8928,0.3000,12,0,0.0000,0.5938,0.6774
+no_tool_configs,RQ4: how much do adapter/merge/training files contribute?,component matters (removing it hurts),70,0.6143,43,0.7611,0.0000,0,0,-,0.0000,0.0000
+only_tool_configs,RQ4: are adapter/merge/training files sufficient alone?,no measurable effect on this benchmark,70,0.8857,62,0.8928,0.3000,12,0,0.0000,0.5938,0.6774
+inflate_duplicates,RQ5: what does per-file deduplication buy?,component matters (removing it hurts),70,0.8571,60,0.8034,0.3286,14,0,0.0000,0.6250,0.6774
+flatten_reliability,RQ6: does tiered reliability matter versus equal tiers?,component matters (removing it hurts),70,0.6429,45,0.5471,0.0286,1,0,0.0000,0.0312,0.0645
+no_relation_evidence,RQ7: how much does relation evidence matter?,component matters (removing it hurts),70,0.6286,44,0.4839,0.0143,0,0,-,0.0000,0.0323
+highest_priority_only,RQ8: is a fixed source hierarchy sufficient?,component matters (removing it hurts),70,0.8571,60,0.8506,0.2714,10,0,0.0000,0.5312,0.6129
+only_highest_reliability,RQ8: does the single best item decide?,component matters (removing it hurts),70,0.8571,60,0.8506,0.2714,10,0,0.0000,0.5312,0.6129

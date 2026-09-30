@@ -583,8 +583,12 @@ def _summary_markdown(report: dict, manifest: dict) -> str:
         f"({bench['by_track'].get('controlled')} controlled, "
         f"{bench['by_track'].get('real')} real), version {bench['benchmark_version']}")
     add(f"- Report digest: `{report_digest(report)}`")
-    add(f"- Commit: `{manifest['repository']['git_commit']}` "
-        f"(branch `{manifest['repository']['git_branch']}`)")
+    repository = manifest.get("repository") or {}
+    commit = repository.get("git_commit")
+    if commit:
+        add(f"- Commit: `{commit}` (branch `{repository.get('git_branch')}`)")
+    else:
+        add("- Commit: not recorded (this report was written outside a git checkout)")
     add("- Offline, deterministic, no LLM and no network.")
     add("")
     add("## Calibration status")

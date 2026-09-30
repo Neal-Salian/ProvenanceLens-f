@@ -1,0 +1,9 @@
+| system | n_cases | action_accuracy | action_correct | macro_f1 | coverage | attempted_repairs | false_repairs | parent_exact_match | relation_accuracy | abstention_rate |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| provenancelens | 70 | 0.8857 | 62 | 0.8928 | 0.3000 | 12 | 0 | 0.5938 | 0.6774 | 0.7000 |
+| config_only | 70 | 0.6143 | 43 | 0.7611 | 0.0000 | 0 | 0 | 0.0000 | 0.0000 | 1.0000 |
+| prose_only | 70 | 0.6143 | 43 | 0.7611 | 0.0000 | 0 | 0 | 0.0000 | 0.0000 | 1.0000 |
+| rule_priority | 70 | 0.3714 | 26 | 0.4792 | 0.9286 | 23 | 1 | 0.9375 | 0.7742 | 0.0714 |
+| majority_count | 70 | 0.3571 | 25 | 0.4703 | 0.8286 | 21 | 0 | 0.9062 | 0.5161 | 0.1714 |
+| always_keep | 70 | 0.3286 | 23 | 0.3726 | 0.6571 | 0 | 0 | 0.5625 | 0.1935 | 0.3429 |
+| declared_metadata | 70 | 0.3286 | 23 | 0.3726 | 0.6571 | 0 | 0 | 0.5625 | 0.1935 | 0.3429 |

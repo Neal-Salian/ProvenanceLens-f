@@ -8,6 +8,8 @@ Subcommands
 ``ablate``    run only the ablation suite
 ``failures``  print the failure taxonomy and every failure
 ``verify``    re-run and compare the report digest for reproducibility
+``publish``    write the canonical, version-controlled result set
+``verify-canonical``  re-check the committed canonical results
 ``llm-compare`` optional local open-weight LLM comparator (never runs by default)
 
 All subcommands are offline and deterministic.  ``run`` records the
@@ -69,6 +71,28 @@ def build_parser() -> argparse.ArgumentParser:
     verify = sub.add_parser("verify", help="re-run twice and compare report digests")
     verify.add_argument("--output", type=Path, default=_DEFAULT_OUTPUT)
 
+    publish = sub.add_parser(
+        "publish",
+        help="write the canonical, version-controlled result set (results/phase_g)",
+        description="Regenerate results/phase_g - the committed evidence for the "
+                    "research claims - from a fresh offline study run.",
+    )
+    publish.add_argument("--canonical", type=Path, default=Path("results/phase_g"),
+                         help="canonical output directory (default: results/phase_g)")
+    publish.add_argument("--output", type=Path, default=None,
+                         help="also write the full study artifacts here")
+    publish.add_argument("--no-plots", action="store_true",
+                         help="skip figures (all tables, results.json, RESULTS.md and "
+                              "the manifest are still written)")
+    publish.add_argument("--quiet", action="store_true", help="print only the digest")
+
+    verify_canonical = sub.add_parser(
+        "verify-canonical",
+        help="verify the committed canonical results against their manifest",
+    )
+    verify_canonical.add_argument("--canonical", type=Path,
+                                  default=Path("results/phase_g"))
+
     compare = sub.add_parser(
         "llm-compare",
         help="optional local open-weight LLM comparator (opt-in, local only)",
@@ -79,6 +103,28 @@ def build_parser() -> argparse.ArgumentParser:
     compare.add_argument("--dry-run", action="store_true",
                          help="list the selected cases without calling any model")
     return parser
+
+
+def _snapshot_root(root: Path | None) -> Path:
+    return Path(root) if root else Path("data/snapshots")
+
+
+def _study_config(args: argparse.Namespace, *, plot_requested: bool) -> dict:
+    """Experiment configuration recorded in a manifest.
+
+    Deliberately free of absolute paths, timings and machine details so the
+    canonical manifest is byte-identical everywhere.
+    """
+    return {
+        "track": getattr(args, "track", None) or "all",
+        "ablations": not getattr(args, "no_ablations", False),
+        "plots": plot_requested,
+        "systems": "provenancelens + 6 baselines",
+        "snapshot_root": "data/snapshots",
+        "adjudication_file": "evaluation/adjudication/real_cases.yaml",
+        "network": False,
+        "llm": False,
+    }
 
 
 def _print_headline(report: dict, track: str | None = None) -> None:
@@ -124,6 +170,47 @@ def main(argv: list[str] | None = None) -> int:
              "support_score", "reasoning_summary"]))
         return 0
 
+    if command == "publish":
+        from .canonical import verify_canonical_results, write_canonical_results
+
+        config = _study_config(args, plot_requested=not args.no_plots)
+        report = run_phase_g(root=root, include_ablations=True,
+                             include_extraction=False)
+        artifacts = write_canonical_results(
+            report, Path(args.canonical), snapshot_root=_snapshot_root(root),
+            config=config, adjudication_rows=adjudication_summary(root=root),
+            plots=not args.no_plots,
+        )
+        verification = verify_canonical_results(Path(args.canonical))
+        if args.output:
+            write_phase_g_report(
+                report, Path(args.output), manifest=build_manifest(
+                    report, artifacts={}, snapshot_root=_snapshot_root(root),
+                    elapsed_seconds=0.0, config=config),
+                snapshot_root=_snapshot_root(root), config=config,
+                adjudication_rows=adjudication_summary(root=root),
+                plots=not args.no_plots,
+            )
+        digest = report_digest(report)
+        if args.quiet:
+            print(digest)
+            return 0 if verification["ok"] else 1
+        print(json.dumps({
+            "report_digest": digest,
+            "canonical": str(args.canonical),
+            "n_files": len(artifacts),
+            "verified": verification["ok"],
+            "problems": verification["problems"],
+        }, indent=1))
+        return 0 if verification["ok"] else 1
+
+    if command == "verify-canonical":
+        from .canonical import verify_canonical_results
+
+        verification = verify_canonical_results(Path(args.canonical))
+        print(json.dumps(verification, indent=1))
+        return 0 if verification["ok"] else 1
+
     if command == "llm-compare":
         from .llm_comparator import (
             LLMComparatorUnavailable,
@@ -160,17 +247,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0 if first == second else 1
 
     # run
-    config = {
-        "output": str(args.output),
-        "track": args.track,
-        "ablations": not args.no_ablations,
-        "plots": not args.no_plots,
-        "systems": "default",
-        "snapshot_root": str(root) if root else "data/snapshots",
-        "adjudication_file": "adjudication/real_cases.yaml",
-        "network": False,
-        "llm": False,
-    }
+    config = _study_config(args, plot_requested=not args.no_plots)
     started = time.perf_counter()
     report = run_phase_g(track=args.track, root=root,
                          include_ablations=not args.no_ablations,

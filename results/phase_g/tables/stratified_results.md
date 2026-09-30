@@ -1,0 +1,10 @@
+| stratum | n_cases | action_accuracy | action_ci95_low | action_ci95_high | coverage | attempted_repairs | false_repairs | false_repair_rate |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| controlled | 26 | 1.0000 | 0.8713 | 1.0000 | 0.4231 | 6 | 0 | 0.0000 |
+| instruction_finetunes | 8 | 1.0000 | 0.6756 | 1.0000 | 0.0000 | 0 | 0 | - |
+| lora_adapters | 6 | 0.8333 | 0.4365 | 0.9699 | 0.0000 | 0 | 0 | - |
+| mergekit_merges | 8 | 1.0000 | 0.6756 | 1.0000 | 0.0000 | 0 | 0 | - |
+| peft_adapters | 8 | 1.0000 | 0.6756 | 1.0000 | 1.0000 | 5 | 0 | 0.0000 |
+| pre_phase_g | 3 | 1.0000 | 0.4385 | 1.0000 | 0.6667 | 1 | 0 | 0.0000 |
+| quantized_awq | 5 | 0.0000 | 0.0000 | 0.4345 | 0.0000 | 0 | 0 | - |
+| quantized_gguf | 6 | 0.8333 | 0.4365 | 0.9699 | 0.0000 | 0 | 0 | - |
