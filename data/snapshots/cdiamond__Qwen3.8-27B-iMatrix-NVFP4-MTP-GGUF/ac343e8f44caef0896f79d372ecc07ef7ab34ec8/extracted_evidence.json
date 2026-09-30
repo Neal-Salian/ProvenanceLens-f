@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "repository": "cdiamond/Qwen3.8-27B-iMatrix-NVFP4-MTP-GGUF",
+  "resolved_commit_sha": "ac343e8f44caef0896f79d372ecc07ef7ab34ec8",
+  "declared_lineage": {
+    "base_model": "Qwen/Qwen3.8-27B",
+    "relation_raw": "quantized",
+    "relation": "quantized",
+    "additional_base_models": []
+  },
+  "declared_evidence": [
+    {
+      "source_type": "declared_metadata",
+      "role": "declared",
+      "extraction_method": "deterministic",
+      "reliability": "not_applicable",
+      "source_name": "README.md",
+      "repository": "cdiamond/Qwen3.8-27B-iMatrix-NVFP4-MTP-GGUF",
+      "revision": "ac343e8f44caef0896f79d372ecc07ef7ab34ec8",
+      "candidate_parent": "Qwen/Qwen3.8-27B",
+      "relation": "quantized",
+      "relation_raw": "quantized",
+      "raw_value": "Qwen/Qwen3.8-27B",
+      "evidence_span": null,
+      "key_path": "base_model",
+      "explicitness": "explicit",
+      "source_url": null,
+      "note": "model-card front matter: subject of the audit, not independent evidence"
+    }
+  ],
+  "independent_evidence": [],
+  "issues": []
+}

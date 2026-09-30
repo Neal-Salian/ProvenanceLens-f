@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "repository": "peft-internal-testing/tiny_OPTForQuestionAnswering-lora",
+  "requested_revision": null,
+  "resolved_commit_sha": "bf74d712a3b7ca2086fec457602106e432033787",
+  "collected_at": "2026-09-30T15:37:40.066589+00:00",
+  "status": "SUCCESS",
+  "max_file_bytes": 1048576,
+  "retrieved": [
+    {
+      "filename": "README.md",
+      "status": "SUCCESS",
+      "category": "model_card",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/peft-internal-testing/tiny_OPTForQuestionAnswering-lora/resolve/bf74d712a3b7ca2086fec457602106e432033787/README.md",
+      "size_bytes": 93,
+      "sha256": "5adcf3bab034c257da8bfc845704a02ec3d00903f67d0bbe84925c37b35d6691",
+      "retrieved_at": "2026-09-30T15:37:40.935274+00:00",
+      "error": null
+    },
+    {
+      "filename": "adapter_config.json",
+      "status": "SUCCESS",
+      "category": "adapter",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/peft-internal-testing/tiny_OPTForQuestionAnswering-lora/resolve/bf74d712a3b7ca2086fec457602106e432033787/adapter_config.json",
+      "size_bytes": 446,
+      "sha256": "3cd32325a4ddf22eaf1ce0d2adead07d497d5143fd26409fa0b5b7b7d1d272cd",
+      "retrieved_at": "2026-09-30T15:37:41.428727+00:00",
+      "error": null
+    }
+  ],
+  "failed": [],
+  "skipped": [
+    {
+      "filename": ".gitattributes",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 1519,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "adapter_model.bin",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 17971,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    }
+  ],
+  "notes": []
+}

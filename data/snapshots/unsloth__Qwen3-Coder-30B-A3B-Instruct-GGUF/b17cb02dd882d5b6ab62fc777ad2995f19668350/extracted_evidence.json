@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "repository": "unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF",
+  "resolved_commit_sha": "b17cb02dd882d5b6ab62fc777ad2995f19668350",
+  "declared_lineage": {
+    "base_model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+    "relation_raw": null,
+    "relation": null,
+    "additional_base_models": []
+  },
+  "declared_evidence": [
+    {
+      "source_type": "declared_metadata",
+      "role": "declared",
+      "extraction_method": "deterministic",
+      "reliability": "not_applicable",
+      "source_name": "README.md",
+      "repository": "unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF",
+      "revision": "b17cb02dd882d5b6ab62fc777ad2995f19668350",
+      "candidate_parent": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "relation": null,
+      "relation_raw": null,
+      "raw_value": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "evidence_span": null,
+      "key_path": "base_model",
+      "explicitness": "explicit",
+      "source_url": null,
+      "note": "model-card front matter: subject of the audit, not independent evidence"
+    }
+  ],
+  "independent_evidence": [],
+  "issues": []
+}

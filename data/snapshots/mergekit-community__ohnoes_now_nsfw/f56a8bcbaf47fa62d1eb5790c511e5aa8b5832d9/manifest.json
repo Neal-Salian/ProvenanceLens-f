@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "repository": "mergekit-community/ohnoes_now_nsfw",
+  "requested_revision": null,
+  "resolved_commit_sha": "f56a8bcbaf47fa62d1eb5790c511e5aa8b5832d9",
+  "collected_at": "2026-09-30T15:37:44.022957+00:00",
+  "status": "SUCCESS",
+  "max_file_bytes": 1048576,
+  "retrieved": [
+    {
+      "filename": "README.md",
+      "status": "SUCCESS",
+      "category": "model_card",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/mergekit-community/ohnoes_now_nsfw/resolve/f56a8bcbaf47fa62d1eb5790c511e5aa8b5832d9/README.md",
+      "size_bytes": 3171,
+      "sha256": "f61abd2ba1e4ca30b2d9e9e761a7737f00e3fc107ee6860cabf2ed0728144fe4",
+      "retrieved_at": "2026-09-30T15:37:44.773586+00:00",
+      "error": null
+    },
+    {
+      "filename": "config.json",
+      "status": "SUCCESS",
+      "category": "core_config",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/mergekit-community/ohnoes_now_nsfw/resolve/f56a8bcbaf47fa62d1eb5790c511e5aa8b5832d9/config.json",
+      "size_bytes": 933,
+      "sha256": "972b9bde1fb333167b50b30088d333817d740e4e42cc7598ff3e50e030f6fda1",
+      "retrieved_at": "2026-09-30T15:37:45.396614+00:00",
+      "error": null
+    },
+    {
+      "filename": "mergekit_config.yml",
+      "status": "SUCCESS",
+      "category": "merge",
+      "selection_reason": "filename keyword match: 'mergekit'",
+      "source_url": "https://huggingface.co/mergekit-community/ohnoes_now_nsfw/resolve/f56a8bcbaf47fa62d1eb5790c511e5aa8b5832d9/mergekit_config.yml",
+      "size_bytes": 662,
+      "sha256": "4be44926e89455da28e3edb9c7cee5dbfc492b92736a0d874f19687869466a1a",
+      "retrieved_at": "2026-09-30T15:37:45.896189+00:00",
+      "error": null
+    },
+    {
+      "filename": "tokenizer_config.json",
+      "status": "SUCCESS",
+      "category": "tokenizer_config",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/mergekit-community/ohnoes_now_nsfw/resolve/f56a8bcbaf47fa62d1eb5790c511e5aa8b5832d9/tokenizer_config.json",
+      "size_bytes": 55385,
+      "sha256": "40f8f588a3a36a8c0d17995caf083625c92480e747c9cadd3192297c59bea4e5",
+      "retrieved_at": "2026-09-30T15:37:46.412781+00:00",
+      "error": null
+    }
+  ],
+  "failed": [],
+  "skipped": [
+    {
+      "filename": ".gitattributes",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 1570,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "model-00001-of-00004.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 4953586384,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "model-00002-of-00004.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 4999819336,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "model-00003-of-00004.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 4915916144,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "model-00004-of-00004.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 1191234472,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "model.safetensors.index.json",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 22798,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "special_tokens_map.json",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 444,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "tokenizer.json",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 17209920,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    }
+  ],
+  "notes": []
+}

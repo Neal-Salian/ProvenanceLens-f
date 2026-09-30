@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "repository": "Jackrong/Qwopus3.6-35B-A3B-Coder-MTP-GGUF",
+  "requested_revision": null,
+  "resolved_commit_sha": "6a5663090399e07f669c6f036a6ade65062c96db",
+  "collected_at": "2026-09-30T15:37:57.198162+00:00",
+  "status": "SUCCESS",
+  "max_file_bytes": 1048576,
+  "retrieved": [
+    {
+      "filename": "README.md",
+      "status": "SUCCESS",
+      "category": "model_card",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/Jackrong/Qwopus3.6-35B-A3B-Coder-MTP-GGUF/resolve/6a5663090399e07f669c6f036a6ade65062c96db/README.md",
+      "size_bytes": 40288,
+      "sha256": "1f68a562974ab6549e3b0eb10246081088df8c262926d2c4899a7e4bdee36605",
+      "retrieved_at": "2026-09-30T15:37:57.912500+00:00",
+      "error": null
+    }
+  ],
+  "failed": [],
+  "skipped": [
+    {
+      "filename": ".gitattributes",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 2401,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwopus3.6-35B-A3B-Coder-MTP-Q3_K_M.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 17166658720,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwopus3.6-35B-A3B-Coder-MTP-Q4_K_M.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 21713462432,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwopus3.6-35B-A3B-Coder-MTP-Q5_K_M.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 25347531936,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwopus3.6-35B-A3B-Coder-MTP-Q6_K.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 29208730784,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "Qwopus3.6-35B-A3B-Coder-MTP-Q8_0.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 37802149024,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "mmproj-F32.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 1786304544,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    }
+  ],
+  "notes": []
+}

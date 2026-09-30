@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "repository": "webAI-Official/TwIL-LM3",
+  "resolved_commit_sha": "e4f94da572d9857a91ca0dca857cebb0cbe6755a",
+  "declared_lineage": {
+    "base_model": "HuggingFaceTB/SmolLM3-3B",
+    "relation_raw": null,
+    "relation": null,
+    "additional_base_models": []
+  },
+  "declared_evidence": [
+    {
+      "source_type": "declared_metadata",
+      "role": "declared",
+      "extraction_method": "deterministic",
+      "reliability": "not_applicable",
+      "source_name": "README.md",
+      "repository": "webAI-Official/TwIL-LM3",
+      "revision": "e4f94da572d9857a91ca0dca857cebb0cbe6755a",
+      "candidate_parent": "HuggingFaceTB/SmolLM3-3B",
+      "relation": null,
+      "relation_raw": null,
+      "raw_value": "HuggingFaceTB/SmolLM3-3B",
+      "evidence_span": null,
+      "key_path": "base_model",
+      "explicitness": "explicit",
+      "source_url": null,
+      "note": "model-card front matter: subject of the audit, not independent evidence"
+    }
+  ],
+  "independent_evidence": [],
+  "issues": []
+}

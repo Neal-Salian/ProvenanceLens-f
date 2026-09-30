@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "repository": "k-chirkunov/gemma4-e4b-claims-comparison",
+  "resolved_commit_sha": "99f161c623be065e5db8827b1278f83ced8834dc",
+  "declared_lineage": {
+    "base_model": "google/gemma-4-e4b-it",
+    "relation_raw": null,
+    "relation": null,
+    "additional_base_models": []
+  },
+  "declared_evidence": [
+    {
+      "source_type": "declared_metadata",
+      "role": "declared",
+      "extraction_method": "deterministic",
+      "reliability": "not_applicable",
+      "source_name": "README.md",
+      "repository": "k-chirkunov/gemma4-e4b-claims-comparison",
+      "revision": "99f161c623be065e5db8827b1278f83ced8834dc",
+      "candidate_parent": "google/gemma-4-e4b-it",
+      "relation": null,
+      "relation_raw": null,
+      "raw_value": "google/gemma-4-e4b-it",
+      "evidence_span": null,
+      "key_path": "base_model",
+      "explicitness": "explicit",
+      "source_url": null,
+      "note": "model-card front matter: subject of the audit, not independent evidence"
+    }
+  ],
+  "independent_evidence": [],
+  "issues": []
+}

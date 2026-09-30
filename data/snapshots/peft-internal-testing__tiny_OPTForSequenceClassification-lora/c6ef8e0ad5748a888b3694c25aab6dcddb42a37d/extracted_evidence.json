@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "repository": "peft-internal-testing/tiny_OPTForSequenceClassification-lora",
+  "resolved_commit_sha": "c6ef8e0ad5748a888b3694c25aab6dcddb42a37d",
+  "declared_lineage": {
+    "base_model": null,
+    "relation_raw": null,
+    "relation": null,
+    "additional_base_models": []
+  },
+  "declared_evidence": [],
+  "independent_evidence": [
+    {
+      "source_type": "adapter_config",
+      "role": "independent",
+      "extraction_method": "deterministic",
+      "reliability": "very_high",
+      "source_name": "adapter_config.json",
+      "repository": "peft-internal-testing/tiny_OPTForSequenceClassification-lora",
+      "revision": "c6ef8e0ad5748a888b3694c25aab6dcddb42a37d",
+      "candidate_parent": "peft-internal-testing/tiny-random-OPTForCausalLM",
+      "relation": "adapter",
+      "relation_raw": null,
+      "raw_value": "peft-internal-testing/tiny-random-OPTForCausalLM",
+      "evidence_span": "\"base_model_name_or_path\": \"peft-internal-testing/tiny-random-OPTForCausalLM\"",
+      "key_path": "base_model_name_or_path",
+      "explicitness": "explicit",
+      "source_url": null,
+      "note": "adapter_config base model"
+    }
+  ],
+  "issues": []
+}

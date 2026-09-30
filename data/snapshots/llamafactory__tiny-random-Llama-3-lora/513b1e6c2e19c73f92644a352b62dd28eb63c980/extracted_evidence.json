@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "repository": "llamafactory/tiny-random-Llama-3-lora",
+  "resolved_commit_sha": "513b1e6c2e19c73f92644a352b62dd28eb63c980",
+  "declared_lineage": {
+    "base_model": "llamafactory/tiny-random-Llama-3",
+    "relation_raw": null,
+    "relation": null,
+    "additional_base_models": []
+  },
+  "declared_evidence": [
+    {
+      "source_type": "declared_metadata",
+      "role": "declared",
+      "extraction_method": "deterministic",
+      "reliability": "not_applicable",
+      "source_name": "README.md",
+      "repository": "llamafactory/tiny-random-Llama-3-lora",
+      "revision": "513b1e6c2e19c73f92644a352b62dd28eb63c980",
+      "candidate_parent": "llamafactory/tiny-random-Llama-3",
+      "relation": null,
+      "relation_raw": null,
+      "raw_value": "llamafactory/tiny-random-Llama-3",
+      "evidence_span": null,
+      "key_path": "base_model",
+      "explicitness": "explicit",
+      "source_url": null,
+      "note": "model-card front matter: subject of the audit, not independent evidence"
+    }
+  ],
+  "independent_evidence": [
+    {
+      "source_type": "adapter_config",
+      "role": "independent",
+      "extraction_method": "deterministic",
+      "reliability": "very_high",
+      "source_name": "adapter_config.json",
+      "repository": "llamafactory/tiny-random-Llama-3-lora",
+      "revision": "513b1e6c2e19c73f92644a352b62dd28eb63c980",
+      "candidate_parent": "llamafactory/tiny-random-Llama-3",
+      "relation": "adapter",
+      "relation_raw": null,
+      "raw_value": "llamafactory/tiny-random-Llama-3",
+      "evidence_span": "\"base_model_name_or_path\": \"llamafactory/tiny-random-Llama-3\"",
+      "key_path": "base_model_name_or_path",
+      "explicitness": "explicit",
+      "source_url": null,
+      "note": "adapter_config base model"
+    }
+  ],
+  "issues": []
+}
