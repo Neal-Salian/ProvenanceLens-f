@@ -41,10 +41,50 @@ from .schema import (
 
 __all__ = [
     "RELATION_CUES",
+    "LINEAGE_CUES",
+    "INJECTION_PATTERNS",
     "ClaimValidation",
     "span_occurs_in",
+    "looks_like_injection",
+    "states_lineage",
     "validate_claim",
 ]
+
+#: Lexical cues that make a span a *lineage statement* rather than a mention.
+#: An EXPLICIT claim must contain one; otherwise the prose merely names a model
+#: (comparison, acknowledgement, architecture inspiration) and no claim exists.
+LINEAGE_CUES: tuple[str, ...] = (
+    "fine-tun", "finetun", "fine tun", "trained on", "trained from",
+    "trained on top of", "further train", "continued pre-training",
+    "continued pretraining", "pre-trained on", "pretrained on", "sft",
+    "supervised fine", "post-trained on", "post trained on",
+    "adapter", "lora", "peft", "prefix-tuning", "prefix tuning", "ia3",
+    "merge", "merged", "merging", "combines", "combine", "combined from",
+    "combination of", "blend of", "blended from", "model soup", "soup of",
+    "quantized", "quantised", "quantization", "quantisation", "gguf",
+    "awq", "gptq", "int4", "int8", "4-bit", "8-bit",
+    "initialized from", "initialised from", "built from", "derived from",
+    "adapted from", "distilled from", "forked from", "released from",
+)
+
+#: Text patterns that are prompt-injection attempts rather than repository
+#: lineage prose. Deterministic substring screening: a claim whose *span* is an
+#: instruction is rejected even if it happens to mention a model id.
+INJECTION_PATTERNS: tuple[str, ...] = (
+    "ignore previous instructions",
+    "ignore all previous instructions",
+    "ignore the above",
+    "disregard previous",
+    "you are chatgpt",
+    "you are an ai assistant",
+    "system prompt",
+    "new instructions:",
+    "override your instructions",
+    "output model",
+    "as the parent model",
+    "say the base model is",
+    "do not extract",
+)
 
 #: Per-relation lexical cues that must appear in the quoted span for a stated
 #: relation to be accepted. Deliberately narrow: a plausible-but-unstated
@@ -102,6 +142,18 @@ def _relation_is_corroborated(relation: Relation, span: str) -> bool:
     return any(cue in lowered for cue in RELATION_CUES.get(relation, ()))
 
 
+def states_lineage(span: str) -> bool:
+    """True when the span reads as a lineage statement, not a mere mention."""
+    lowered = span.lower()
+    return any(cue in lowered for cue in LINEAGE_CUES)
+
+
+def looks_like_injection(span: str) -> bool:
+    """True when the span is (or contains) an instruction aimed at the model."""
+    lowered = span.lower()
+    return any(pattern in lowered for pattern in INJECTION_PATTERNS)
+
+
 @dataclass(frozen=True)
 class ClaimValidation:
     """Outcome of validating one claim against its source chunk."""
@@ -144,10 +196,22 @@ def validate_claim(
         )
 
     span = claim.evidence_span or ""
+    if looks_like_injection(span):
+        # Fail closed: untrusted text cannot instruct the extractor, and a span
+        # that is an instruction is not a lineage statement.
+        return reject(
+            ProseFailureCode.INJECTION_DETECTED,
+            "quoted span looks like a prompt-injection instruction, not a lineage claim",
+        )
     if not span_occurs_in(span, chunk.text):
         return reject(
             ProseFailureCode.SPAN_NOT_FOUND,
             "quoted evidence span does not occur in the supplied prose",
+        )
+    if claim.claim_status is ClaimStatus.EXPLICIT and not states_lineage(span):
+        return reject(
+            ProseFailureCode.LINEAGE_NOT_STATED,
+            "quoted span names a model but does not state a lineage relationship",
         )
 
     parent = (claim.candidate_parent or "").strip()

@@ -19,6 +19,8 @@ from .chunking import (
 from .extractor import LLMProseExtractor, LLMUnavailable, unavailable_report
 from .prompt import (
     EXTRACTION_INSTRUCTIONS,
+    PROSE_BLOCK_CLOSE,
+    PROSE_BLOCK_OPEN,
     PROSE_EXTRACTION_PROMPT,
     PROSE_EXTRACTION_PROMPT_VERSION,
     prompt_digest,
@@ -41,16 +43,29 @@ from .schema import (
     ProseLineageClaim,
     RationaleCode,
     build_llm_evidence_item,
+    llm_evidence_reliability,
 )
 from .selection import select_provenance_chunks
-from .validation import ClaimValidation, span_occurs_in, validate_claim
+from .validation import (
+    LINEAGE_CUES,
+    INJECTION_PATTERNS,
+    ClaimValidation,
+    looks_like_injection,
+    span_occurs_in,
+    states_lineage,
+    validate_claim,
+)
 
 __all__ = [
     "DEFAULT_LLM_MODEL",
     "DEFAULT_MAX_CHUNKS",
     "DEFAULT_MAX_CHUNK_CHARS",
     "EXTRACTION_INSTRUCTIONS",
+    "INJECTION_PATTERNS",
+    "LINEAGE_CUES",
     "LLM_PROSE_RELIABILITY",
+    "PROSE_BLOCK_CLOSE",
+    "PROSE_BLOCK_OPEN",
     "PROSE_EXTRACTION_PROMPT",
     "PROSE_EXTRACTION_PROMPT_VERSION",
     "ClaimStatus",
@@ -68,6 +83,9 @@ __all__ = [
     "RationaleCode",
     "build_default_chat_model",
     "build_llm_evidence_item",
+    "llm_evidence_reliability",
+    "looks_like_injection",
+    "states_lineage",
     "chunk_prose",
     "llm_availability",
     "prompt_digest",

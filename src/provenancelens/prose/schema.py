@@ -132,6 +132,8 @@ class ProseFailureCode(str, Enum):
     PARENT_NOT_IN_SOURCE = "parent_not_in_source"  # invented parent identifier
     INVALID_MODEL_ID = "invalid_model_id"      # not a model reference at all
     DUPLICATE_CLAIM = "duplicate_claim"        # already accepted from another chunk
+    LINEAGE_NOT_STATED = "lineage_not_stated"  # span contains no lineage statement
+    INJECTION_DETECTED = "injection_detected"  # span is an instruction, not a claim
 
 
 class ProseExtractionStatus(str, Enum):

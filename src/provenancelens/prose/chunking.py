@@ -30,6 +30,8 @@ DEFAULT_MAX_CHUNKS = 6
 _FRONTMATTER_RE = re.compile(r"\A---[ \t]*\r?\n.*?\r?\n---[ \t]*(?:\r?\n|\Z)", re.DOTALL)
 _HEADING_RE = re.compile(r"^(#{1,6})\s+(.*?)\s*#*$")
 _FENCED_CODE_RE = re.compile(r"```.*?```|~~~.*?~~~", re.DOTALL)
+#: Inline code spans (shell commands, flags, paths) are not prose.
+_INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
 _HTML_COMMENT_RE = re.compile(r"<!--.*?-->", re.DOTALL)
 _INDENTED_CODE_RE = re.compile(r"^(?: {4}|\t).*$", re.MULTILINE)
 
@@ -59,9 +61,14 @@ def strip_front_matter(text: str) -> tuple[str, int]:
 
 
 def strip_non_prose(text: str) -> str:
-    """Remove fenced code, HTML comments, and indented code blocks."""
+    """Remove fenced and inline code, HTML comments, and indented code.
+
+    Commands and code are never treated as prose: they cannot become evidence
+    and they are never handed to the model.
+    """
     without_fences = _FENCED_CODE_RE.sub("\n", text)
-    without_comments = _HTML_COMMENT_RE.sub("\n", without_fences)
+    without_inline = _INLINE_CODE_RE.sub(" ", without_fences)
+    without_comments = _HTML_COMMENT_RE.sub("\n", without_inline)
     return _INDENTED_CODE_RE.sub("", without_comments)
 
 
