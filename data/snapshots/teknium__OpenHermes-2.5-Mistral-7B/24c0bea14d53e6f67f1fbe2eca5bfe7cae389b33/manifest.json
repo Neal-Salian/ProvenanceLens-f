@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "repository": "teknium/OpenHermes-2.5-Mistral-7B",
+  "requested_revision": null,
+  "resolved_commit_sha": "24c0bea14d53e6f67f1fbe2eca5bfe7cae389b33",
+  "collected_at": "2026-09-29T16:58:42.795880+00:00",
+  "status": "SUCCESS",
+  "max_file_bytes": 1048576,
+  "retrieved": [
+    {
+      "filename": "README.md",
+      "status": "SUCCESS",
+      "category": "model_card",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B/resolve/24c0bea14d53e6f67f1fbe2eca5bfe7cae389b33/README.md",
+      "size_bytes": 14770,
+      "sha256": "5a4eddcfa114c45c7abffb6336527b999d30fe9fb1efb1978763cde637856f9e",
+      "retrieved_at": "2026-09-29T16:58:43.569470+00:00",
+      "error": null
+    },
+    {
+      "filename": "config.json",
+      "status": "SUCCESS",
+      "category": "core_config",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B/resolve/24c0bea14d53e6f67f1fbe2eca5bfe7cae389b33/config.json",
+      "size_bytes": 624,
+      "sha256": "5fa042e353e385d8896985884d8436431b5a2bb17954855d55d173d9d31fc108",
+      "retrieved_at": "2026-09-29T16:58:43.861187+00:00",
+      "error": null
+    },
+    {
+      "filename": "generation_config.json",
+      "status": "SUCCESS",
+      "category": "generation_config",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B/resolve/24c0bea14d53e6f67f1fbe2eca5bfe7cae389b33/generation_config.json",
+      "size_bytes": 120,
+      "sha256": "bf0f38d563d8151656106888e47c0a8bbb1e87acf9395ee271e46180c2425624",
+      "retrieved_at": "2026-09-29T16:58:44.133428+00:00",
+      "error": null
+    },
+    {
+      "filename": "tokenizer_config.json",
+      "status": "SUCCESS",
+      "category": "tokenizer_config",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/teknium/OpenHermes-2.5-Mistral-7B/resolve/24c0bea14d53e6f67f1fbe2eca5bfe7cae389b33/tokenizer_config.json",
+      "size_bytes": 1598,
+      "sha256": "c587d38800147102ce81daf3f0b68eedb7e7e3b62c74e3c53890fffae50d55f2",
+      "retrieved_at": "2026-09-29T16:58:44.406817+00:00",
+      "error": null
+    }
+  ],
+  "failed": [],
+  "skipped": [
+    {
+      "filename": ".gitattributes",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 1519,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "added_tokens.json",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 51,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "model-00001-of-00002.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 9942998080,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "model-00002-of-00002.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 4540532728,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "model.safetensors.index.json",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 25125,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "pytorch_model-00001-of-00002.bin",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 9943044915,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "pytorch_model-00002-of-00002.bin",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 4540552518,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "pytorch_model.bin.index.json",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 23950,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "special_tokens_map.json",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 101,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "tokenizer.model",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 493443,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "transformers_inference.py",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 1424,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    }
+  ],
+  "notes": []
+}
