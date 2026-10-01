@@ -1,0 +1,10 @@
+models:   
+  - model: FreedomIntelligence/HuatuoGPT-o1-8B+eeeebbb2/3aff0ea7-4262-4abb-97b1-1879f340d32e
+  - model: FreedomIntelligence/HuatuoGPT-o1-8B+surya-narayanan/professional_psychology
+  - model: FreedomIntelligence/HuatuoGPT-o1-8B+Blackroot/Llama-3-LongStory-LORA
+  - model: FreedomIntelligence/HuatuoGPT-o1-8B+ResplendentAI/Llama3_RP_ORPO_LoRA
+  - model: FreedomIntelligence/HuatuoGPT-o1-8B+vincentyandex/lora_llama3_chunked_novel_bs128  
+  - model: FreedomIntelligence/HuatuoGPT-o1-8B+surya-narayanan/human_sexuality 
+merge_method: model_stock
+base_model: FreedomIntelligence/HuatuoGPT-o1-8B+grimjim/Llama-3-Instruct-abliteration-LoRA-8B
+dtype: bfloat16

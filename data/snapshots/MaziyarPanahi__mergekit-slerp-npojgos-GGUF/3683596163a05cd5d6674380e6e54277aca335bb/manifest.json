@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "repository": "MaziyarPanahi/mergekit-slerp-npojgos-GGUF",
+  "requested_revision": null,
+  "resolved_commit_sha": "3683596163a05cd5d6674380e6e54277aca335bb",
+  "collected_at": "2026-09-30T15:37:49.264511+00:00",
+  "status": "SUCCESS",
+  "max_file_bytes": 1048576,
+  "retrieved": [
+    {
+      "filename": "README.md",
+      "status": "SUCCESS",
+      "category": "model_card",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/MaziyarPanahi/mergekit-slerp-npojgos-GGUF/resolve/3683596163a05cd5d6674380e6e54277aca335bb/README.md",
+      "size_bytes": 3333,
+      "sha256": "935271b4c1ce731c287168a8d21ad3a9b2e459f20f6f8bc85d0e978a948352f8",
+      "retrieved_at": "2026-09-30T15:37:50.032129+00:00",
+      "error": null
+    },
+    {
+      "filename": "config.json",
+      "status": "SUCCESS",
+      "category": "core_config",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/MaziyarPanahi/mergekit-slerp-npojgos-GGUF/resolve/3683596163a05cd5d6674380e6e54277aca335bb/config.json",
+      "size_bytes": 31,
+      "sha256": "30cb87afc808145fa471edaa22506b2aed31bb0997e4ef6c5b6abf149ea6c237",
+      "retrieved_at": "2026-09-30T15:37:50.531293+00:00",
+      "error": null
+    }
+  ],
+  "failed": [],
+  "skipped": [
+    {
+      "filename": ".gitattributes",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 2223,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "mergekit-slerp-npojgos.Q2_K.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 2719243136,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "mergekit-slerp-npojgos.Q3_K_L.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 3822025600,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "mergekit-slerp-npojgos.Q3_K_M.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 3518987136,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "mergekit-slerp-npojgos.Q3_K_S.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 3164568448,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "mergekit-slerp-npojgos.Q4_K_M.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 4368440192,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "mergekit-slerp-npojgos.Q4_K_S.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 4140374912,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "mergekit-slerp-npojgos.Q5_K_M.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 5131410304,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "mergekit-slerp-npojgos.Q5_K_S.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 4997716864,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "mergekit-slerp-npojgos.Q6_K.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 5942066048,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "mergekit-slerp-npojgos.Q8_0.gguf",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 7695858560,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    }
+  ],
+  "notes": []
+}

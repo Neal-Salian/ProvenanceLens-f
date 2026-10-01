@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "repository": "qylu4156/strongreject-15k-v1",
+  "resolved_commit_sha": "4bd893d32390d2cace4f067dc2e3ef5294fd78a2",
+  "declared_lineage": {
+    "base_model": "google/gemma-2b",
+    "relation_raw": null,
+    "relation": null,
+    "additional_base_models": []
+  },
+  "declared_evidence": [
+    {
+      "source_type": "declared_metadata",
+      "role": "declared",
+      "extraction_method": "deterministic",
+      "reliability": "not_applicable",
+      "source_name": "README.md",
+      "repository": "qylu4156/strongreject-15k-v1",
+      "revision": "4bd893d32390d2cace4f067dc2e3ef5294fd78a2",
+      "candidate_parent": "google/gemma-2b",
+      "relation": null,
+      "relation_raw": null,
+      "raw_value": "google/gemma-2b",
+      "evidence_span": null,
+      "key_path": "base_model",
+      "explicitness": "explicit",
+      "source_url": null,
+      "note": "model-card front matter: subject of the audit, not independent evidence"
+    }
+  ],
+  "independent_evidence": [
+    {
+      "source_type": "adapter_config",
+      "role": "independent",
+      "extraction_method": "deterministic",
+      "reliability": "very_high",
+      "source_name": "adapter_config.json",
+      "repository": "qylu4156/strongreject-15k-v1",
+      "revision": "4bd893d32390d2cace4f067dc2e3ef5294fd78a2",
+      "candidate_parent": "google/gemma-2b",
+      "relation": "adapter",
+      "relation_raw": null,
+      "raw_value": "google/gemma-2b",
+      "evidence_span": "\"base_model_name_or_path\": \"google/gemma-2b\"",
+      "key_path": "base_model_name_or_path",
+      "explicitness": "explicit",
+      "source_url": null,
+      "note": "adapter_config base model"
+    }
+  ],
+  "issues": []
+}

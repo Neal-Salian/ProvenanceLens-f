@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "repository": "lightx2v/Qwen-Image-Lightning",
+  "resolved_commit_sha": "e74da8d4e71a54b341de86aa9f8d2509165aa513",
+  "declared_lineage": {
+    "base_model": "Qwen/Qwen-Image",
+    "relation_raw": null,
+    "relation": null,
+    "additional_base_models": []
+  },
+  "declared_evidence": [
+    {
+      "source_type": "declared_metadata",
+      "role": "declared",
+      "extraction_method": "deterministic",
+      "reliability": "not_applicable",
+      "source_name": "README.md",
+      "repository": "lightx2v/Qwen-Image-Lightning",
+      "revision": "e74da8d4e71a54b341de86aa9f8d2509165aa513",
+      "candidate_parent": "Qwen/Qwen-Image",
+      "relation": null,
+      "relation_raw": null,
+      "raw_value": "Qwen/Qwen-Image",
+      "evidence_span": null,
+      "key_path": "base_model",
+      "explicitness": "explicit",
+      "source_url": null,
+      "note": "model-card front matter: subject of the audit, not independent evidence"
+    }
+  ],
+  "independent_evidence": [],
+  "issues": []
+}

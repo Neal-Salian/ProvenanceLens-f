@@ -1,0 +1,4590 @@
+{
+ "ablations": {
+  "results": [
+   {
+    "ablation": "full",
+    "action_accuracy": 0.8857142857142857,
+    "action_correct": 62,
+    "attempted_repairs": 12,
+    "coverage": 0.3,
+    "delta_action_accuracy": 0.0,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "baseline for every ablation delta",
+    "macro_f1": 0.89279075,
+    "n_cases": 70,
+    "parent_accuracy": 0.59375,
+    "question": "reference run, no transformation",
+    "relation_accuracy": 0.6774193548387096,
+    "verdict": "reference"
+   },
+   {
+    "ablation": "no_prose",
+    "action_accuracy": 0.8857142857142857,
+    "action_correct": 62,
+    "attempted_repairs": 12,
+    "coverage": 0.3,
+    "delta_action_accuracy": 0.0,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "Prose is a supporting signal, not a deciding one: removing it should not create a false repair.",
+    "macro_f1": 0.89279075,
+    "n_cases": 70,
+    "parent_accuracy": 0.59375,
+    "question": "RQ4: how much of the decision comes from model-card prose?",
+    "relation_accuracy": 0.6774193548387096,
+    "verdict": "no measurable effect on this benchmark"
+   },
+   {
+    "ablation": "no_config",
+    "action_accuracy": 0.8857142857142857,
+    "action_correct": 62,
+    "attempted_repairs": 12,
+    "coverage": 0.3,
+    "delta_action_accuracy": 0.0,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "config.json-style evidence is the main structured signal and should matter more than prose.",
+    "macro_f1": 0.89279075,
+    "n_cases": 70,
+    "parent_accuracy": 0.59375,
+    "question": "RQ4: how much does framework config contribute?",
+    "relation_accuracy": 0.6774193548387096,
+    "verdict": "no measurable effect on this benchmark"
+   },
+   {
+    "ablation": "no_tool_configs",
+    "action_accuracy": 0.6142857142857143,
+    "action_correct": 43,
+    "attempted_repairs": 0,
+    "coverage": 0.0,
+    "delta_action_accuracy": -0.27142857142857135,
+    "delta_false_repairs": 0,
+    "false_repair_rate": null,
+    "false_repairs": 0,
+    "hypothesis": "These files carry the strongest lineage signal; removing them should cost recall on adapter and merge cases.",
+    "macro_f1": 0.761062,
+    "n_cases": 70,
+    "parent_accuracy": 0.0,
+    "question": "RQ4: how much do adapter/merge/training files contribute?",
+    "relation_accuracy": 0.0,
+    "verdict": "component matters (removing it hurts)"
+   },
+   {
+    "ablation": "only_tool_configs",
+    "action_accuracy": 0.8857142857142857,
+    "action_correct": 62,
+    "attempted_repairs": 12,
+    "coverage": 0.3,
+    "delta_action_accuracy": 0.0,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "They are necessary but not sufficient: prose and config resolve cases whose lineage is only documented in the model card.",
+    "macro_f1": 0.89279075,
+    "n_cases": 70,
+    "parent_accuracy": 0.59375,
+    "question": "RQ4: are adapter/merge/training files sufficient alone?",
+    "relation_accuracy": 0.6774193548387096,
+    "verdict": "no measurable effect on this benchmark"
+   },
+   {
+    "ablation": "inflate_duplicates",
+    "action_accuracy": 0.8571428571428571,
+    "action_correct": 60,
+    "attempted_repairs": 14,
+    "coverage": 0.32857142857142857,
+    "delta_action_accuracy": -0.02857142857142858,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "Naive record counting inflates support with repeated mentions and should produce over-confident repair attempts.",
+    "macro_f1": 0.80341875,
+    "n_cases": 70,
+    "parent_accuracy": 0.625,
+    "question": "RQ5: what does per-file deduplication buy?",
+    "relation_accuracy": 0.6774193548387096,
+    "verdict": "component matters (removing it hurts)"
+   },
+   {
+    "ablation": "flatten_reliability",
+    "action_accuracy": 0.6428571428571429,
+    "action_correct": 45,
+    "attempted_repairs": 1,
+    "coverage": 0.02857142857142857,
+    "delta_action_accuracy": -0.24285714285714277,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "Tiered reliability separates tool-generated lineage from model-card claims, so flattening it should cost precision.",
+    "macro_f1": 0.5471469999999999,
+    "n_cases": 70,
+    "parent_accuracy": 0.03125,
+    "question": "RQ6: does tiered reliability matter versus equal tiers?",
+    "relation_accuracy": 0.06451612903225806,
+    "verdict": "component matters (removing it hurts)"
+   },
+   {
+    "ablation": "no_relation_evidence",
+    "action_accuracy": 0.6285714285714286,
+    "action_correct": 44,
+    "attempted_repairs": 0,
+    "coverage": 0.014285714285714285,
+    "delta_action_accuracy": -0.2571428571428571,
+    "delta_false_repairs": 0,
+    "false_repair_rate": null,
+    "false_repairs": 0,
+    "hypothesis": "Relations are rarely provable from artifacts alone; removing them should shift repair actions toward parent-only changes.",
+    "macro_f1": 0.4839285,
+    "n_cases": 70,
+    "parent_accuracy": 0.0,
+    "question": "RQ7: how much does relation evidence matter?",
+    "relation_accuracy": 0.03225806451612903,
+    "verdict": "component matters (removing it hurts)"
+   },
+   {
+    "ablation": "highest_priority_only",
+    "action_accuracy": 0.8571428571428571,
+    "action_correct": 60,
+    "attempted_repairs": 10,
+    "coverage": 0.2714285714285714,
+    "delta_action_accuracy": -0.02857142857142858,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "A single source hierarchy cannot express conflicts, so accuracy should drop relative to conflict-aware fusion.",
+    "macro_f1": 0.8505790000000001,
+    "n_cases": 70,
+    "parent_accuracy": 0.53125,
+    "question": "RQ8: is a fixed source hierarchy sufficient?",
+    "relation_accuracy": 0.6129032258064516,
+    "verdict": "component matters (removing it hurts)"
+   },
+   {
+    "ablation": "only_highest_reliability",
+    "action_accuracy": 0.8571428571428571,
+    "action_correct": 60,
+    "attempted_repairs": 10,
+    "coverage": 0.2714285714285714,
+    "delta_action_accuracy": -0.02857142857142858,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "Taking only the strongest item discards corroboration and should cost precision.",
+    "macro_f1": 0.8505790000000001,
+    "n_cases": 70,
+    "parent_accuracy": 0.53125,
+    "question": "RQ8: does the single best item decide?",
+    "relation_accuracy": 0.6129032258064516,
+    "verdict": "component matters (removing it hurts)"
+   }
+  ],
+  "results_controlled": [
+   {
+    "ablation": "full",
+    "action_accuracy": 1.0,
+    "action_correct": 26,
+    "attempted_repairs": 6,
+    "coverage": 0.4230769230769231,
+    "delta_action_accuracy": 0.0,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "baseline for every ablation delta",
+    "macro_f1": 1.0,
+    "n_cases": 26,
+    "parent_accuracy": 0.7142857142857143,
+    "question": "reference run, no transformation",
+    "relation_accuracy": 0.8461538461538461,
+    "verdict": "reference"
+   },
+   {
+    "ablation": "no_prose",
+    "action_accuracy": 1.0,
+    "action_correct": 26,
+    "attempted_repairs": 6,
+    "coverage": 0.4230769230769231,
+    "delta_action_accuracy": 0.0,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "Prose is a supporting signal, not a deciding one: removing it should not create a false repair.",
+    "macro_f1": 1.0,
+    "n_cases": 26,
+    "parent_accuracy": 0.7142857142857143,
+    "question": "RQ4: how much of the decision comes from model-card prose?",
+    "relation_accuracy": 0.8461538461538461,
+    "verdict": "no measurable effect on this benchmark"
+   },
+   {
+    "ablation": "no_config",
+    "action_accuracy": 1.0,
+    "action_correct": 26,
+    "attempted_repairs": 6,
+    "coverage": 0.4230769230769231,
+    "delta_action_accuracy": 0.0,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "config.json-style evidence is the main structured signal and should matter more than prose.",
+    "macro_f1": 1.0,
+    "n_cases": 26,
+    "parent_accuracy": 0.7142857142857143,
+    "question": "RQ4: how much does framework config contribute?",
+    "relation_accuracy": 0.8461538461538461,
+    "verdict": "no measurable effect on this benchmark"
+   },
+   {
+    "ablation": "no_tool_configs",
+    "action_accuracy": 0.5769230769230769,
+    "action_correct": 15,
+    "attempted_repairs": 0,
+    "coverage": 0.0,
+    "delta_action_accuracy": -0.42307692307692313,
+    "delta_false_repairs": 0,
+    "false_repair_rate": null,
+    "false_repairs": 0,
+    "hypothesis": "These files carry the strongest lineage signal; removing them should cost recall on adapter and merge cases.",
+    "macro_f1": 0.731707,
+    "n_cases": 26,
+    "parent_accuracy": 0.0,
+    "question": "RQ4: how much do adapter/merge/training files contribute?",
+    "relation_accuracy": 0.0,
+    "verdict": "component matters (removing it hurts)"
+   },
+   {
+    "ablation": "only_tool_configs",
+    "action_accuracy": 1.0,
+    "action_correct": 26,
+    "attempted_repairs": 6,
+    "coverage": 0.4230769230769231,
+    "delta_action_accuracy": 0.0,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "They are necessary but not sufficient: prose and config resolve cases whose lineage is only documented in the model card.",
+    "macro_f1": 1.0,
+    "n_cases": 26,
+    "parent_accuracy": 0.7142857142857143,
+    "question": "RQ4: are adapter/merge/training files sufficient alone?",
+    "relation_accuracy": 0.8461538461538461,
+    "verdict": "no measurable effect on this benchmark"
+   },
+   {
+    "ablation": "inflate_duplicates",
+    "action_accuracy": 0.9230769230769231,
+    "action_correct": 24,
+    "attempted_repairs": 8,
+    "coverage": 0.5,
+    "delta_action_accuracy": -0.07692307692307687,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "Naive record counting inflates support with repeated mentions and should produce over-confident repair attempts.",
+    "macro_f1": 0.8988095,
+    "n_cases": 26,
+    "parent_accuracy": 0.7857142857142857,
+    "question": "RQ5: what does per-file deduplication buy?",
+    "relation_accuracy": 0.8461538461538461,
+    "verdict": "component matters (removing it hurts)"
+   },
+   {
+    "ablation": "flatten_reliability",
+    "action_accuracy": 0.6538461538461539,
+    "action_correct": 17,
+    "attempted_repairs": 1,
+    "coverage": 0.07692307692307693,
+    "delta_action_accuracy": -0.34615384615384615,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "Tiered reliability separates tool-generated lineage from model-card claims, so flattening it should cost precision.",
+    "macro_f1": 0.5897436666666667,
+    "n_cases": 26,
+    "parent_accuracy": 0.07142857142857142,
+    "question": "RQ6: does tiered reliability matter versus equal tiers?",
+    "relation_accuracy": 0.15384615384615385,
+    "verdict": "component matters (removing it hurts)"
+   },
+   {
+    "ablation": "no_relation_evidence",
+    "action_accuracy": 0.6153846153846154,
+    "action_correct": 16,
+    "attempted_repairs": 0,
+    "coverage": 0.038461538461538464,
+    "delta_action_accuracy": -0.3846153846153846,
+    "delta_false_repairs": 0,
+    "false_repair_rate": null,
+    "false_repairs": 0,
+    "hypothesis": "Relations are rarely provable from artifacts alone; removing them should shift repair actions toward parent-only changes.",
+    "macro_f1": 0.5416665,
+    "n_cases": 26,
+    "parent_accuracy": 0.0,
+    "question": "RQ7: how much does relation evidence matter?",
+    "relation_accuracy": 0.07692307692307693,
+    "verdict": "component matters (removing it hurts)"
+   },
+   {
+    "ablation": "highest_priority_only",
+    "action_accuracy": 0.9230769230769231,
+    "action_correct": 24,
+    "attempted_repairs": 4,
+    "coverage": 0.34615384615384615,
+    "delta_action_accuracy": -0.07692307692307687,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "A single source hierarchy cannot express conflicts, so accuracy should drop relative to conflict-aware fusion.",
+    "macro_f1": 0.9791666666666666,
+    "n_cases": 26,
+    "parent_accuracy": 0.5714285714285714,
+    "question": "RQ8: is a fixed source hierarchy sufficient?",
+    "relation_accuracy": 0.6923076923076923,
+    "verdict": "component matters (removing it hurts)"
+   },
+   {
+    "ablation": "only_highest_reliability",
+    "action_accuracy": 0.9230769230769231,
+    "action_correct": 24,
+    "attempted_repairs": 4,
+    "coverage": 0.34615384615384615,
+    "delta_action_accuracy": -0.07692307692307687,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "Taking only the strongest item discards corroboration and should cost precision.",
+    "macro_f1": 0.9791666666666666,
+    "n_cases": 26,
+    "parent_accuracy": 0.5714285714285714,
+    "question": "RQ8: does the single best item decide?",
+    "relation_accuracy": 0.6923076923076923,
+    "verdict": "component matters (removing it hurts)"
+   }
+  ],
+  "results_real": [
+   {
+    "ablation": "full",
+    "action_accuracy": 0.8181818181818182,
+    "action_correct": 36,
+    "attempted_repairs": 6,
+    "coverage": 0.22727272727272727,
+    "delta_action_accuracy": 0.0,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "baseline for every ablation delta",
+    "macro_f1": 0.7625446666666668,
+    "n_cases": 44,
+    "parent_accuracy": 0.5,
+    "question": "reference run, no transformation",
+    "relation_accuracy": 0.5555555555555556,
+    "verdict": "reference"
+   },
+   {
+    "ablation": "no_prose",
+    "action_accuracy": 0.8181818181818182,
+    "action_correct": 36,
+    "attempted_repairs": 6,
+    "coverage": 0.22727272727272727,
+    "delta_action_accuracy": 0.0,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "Prose is a supporting signal, not a deciding one: removing it should not create a false repair.",
+    "macro_f1": 0.7625446666666668,
+    "n_cases": 44,
+    "parent_accuracy": 0.5,
+    "question": "RQ4: how much of the decision comes from model-card prose?",
+    "relation_accuracy": 0.5555555555555556,
+    "verdict": "no measurable effect on this benchmark"
+   },
+   {
+    "ablation": "no_config",
+    "action_accuracy": 0.8181818181818182,
+    "action_correct": 36,
+    "attempted_repairs": 6,
+    "coverage": 0.22727272727272727,
+    "delta_action_accuracy": 0.0,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "config.json-style evidence is the main structured signal and should matter more than prose.",
+    "macro_f1": 0.7625446666666668,
+    "n_cases": 44,
+    "parent_accuracy": 0.5,
+    "question": "RQ4: how much does framework config contribute?",
+    "relation_accuracy": 0.5555555555555556,
+    "verdict": "no measurable effect on this benchmark"
+   },
+   {
+    "ablation": "no_tool_configs",
+    "action_accuracy": 0.6363636363636364,
+    "action_correct": 28,
+    "attempted_repairs": 0,
+    "coverage": 0.0,
+    "delta_action_accuracy": -0.18181818181818188,
+    "delta_false_repairs": 0,
+    "false_repair_rate": null,
+    "false_repairs": 0,
+    "hypothesis": "These files carry the strongest lineage signal; removing them should cost recall on adapter and merge cases.",
+    "macro_f1": 0.777778,
+    "n_cases": 44,
+    "parent_accuracy": 0.0,
+    "question": "RQ4: how much do adapter/merge/training files contribute?",
+    "relation_accuracy": 0.0,
+    "verdict": "component matters (removing it hurts)"
+   },
+   {
+    "ablation": "only_tool_configs",
+    "action_accuracy": 0.8181818181818182,
+    "action_correct": 36,
+    "attempted_repairs": 6,
+    "coverage": 0.22727272727272727,
+    "delta_action_accuracy": 0.0,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "They are necessary but not sufficient: prose and config resolve cases whose lineage is only documented in the model card.",
+    "macro_f1": 0.7625446666666668,
+    "n_cases": 44,
+    "parent_accuracy": 0.5,
+    "question": "RQ4: are adapter/merge/training files sufficient alone?",
+    "relation_accuracy": 0.5555555555555556,
+    "verdict": "no measurable effect on this benchmark"
+   },
+   {
+    "ablation": "inflate_duplicates",
+    "action_accuracy": 0.8181818181818182,
+    "action_correct": 36,
+    "attempted_repairs": 6,
+    "coverage": 0.22727272727272727,
+    "delta_action_accuracy": 0.0,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "Naive record counting inflates support with repeated mentions and should produce over-confident repair attempts.",
+    "macro_f1": 0.7625446666666668,
+    "n_cases": 44,
+    "parent_accuracy": 0.5,
+    "question": "RQ5: what does per-file deduplication buy?",
+    "relation_accuracy": 0.5555555555555556,
+    "verdict": "no measurable effect on this benchmark"
+   },
+   {
+    "ablation": "flatten_reliability",
+    "action_accuracy": 0.6363636363636364,
+    "action_correct": 28,
+    "attempted_repairs": 0,
+    "coverage": 0.0,
+    "delta_action_accuracy": -0.18181818181818188,
+    "delta_false_repairs": 0,
+    "false_repair_rate": null,
+    "false_repairs": 0,
+    "hypothesis": "Tiered reliability separates tool-generated lineage from model-card claims, so flattening it should cost precision.",
+    "macro_f1": 0.777778,
+    "n_cases": 44,
+    "parent_accuracy": 0.0,
+    "question": "RQ6: does tiered reliability matter versus equal tiers?",
+    "relation_accuracy": 0.0,
+    "verdict": "component matters (removing it hurts)"
+   },
+   {
+    "ablation": "no_relation_evidence",
+    "action_accuracy": 0.6363636363636364,
+    "action_correct": 28,
+    "attempted_repairs": 0,
+    "coverage": 0.0,
+    "delta_action_accuracy": -0.18181818181818188,
+    "delta_false_repairs": 0,
+    "false_repair_rate": null,
+    "false_repairs": 0,
+    "hypothesis": "Relations are rarely provable from artifacts alone; removing them should shift repair actions toward parent-only changes.",
+    "macro_f1": 0.777778,
+    "n_cases": 44,
+    "parent_accuracy": 0.0,
+    "question": "RQ7: how much does relation evidence matter?",
+    "relation_accuracy": 0.0,
+    "verdict": "component matters (removing it hurts)"
+   },
+   {
+    "ablation": "highest_priority_only",
+    "action_accuracy": 0.8181818181818182,
+    "action_correct": 36,
+    "attempted_repairs": 6,
+    "coverage": 0.22727272727272727,
+    "delta_action_accuracy": 0.0,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "A single source hierarchy cannot express conflicts, so accuracy should drop relative to conflict-aware fusion.",
+    "macro_f1": 0.7625446666666668,
+    "n_cases": 44,
+    "parent_accuracy": 0.5,
+    "question": "RQ8: is a fixed source hierarchy sufficient?",
+    "relation_accuracy": 0.5555555555555556,
+    "verdict": "no measurable effect on this benchmark"
+   },
+   {
+    "ablation": "only_highest_reliability",
+    "action_accuracy": 0.8181818181818182,
+    "action_correct": 36,
+    "attempted_repairs": 6,
+    "coverage": 0.22727272727272727,
+    "delta_action_accuracy": 0.0,
+    "delta_false_repairs": 0,
+    "false_repair_rate": 0.0,
+    "false_repairs": 0,
+    "hypothesis": "Taking only the strongest item discards corroboration and should cost precision.",
+    "macro_f1": 0.7625446666666668,
+    "n_cases": 44,
+    "parent_accuracy": 0.5,
+    "question": "RQ8: does the single best item decide?",
+    "relation_accuracy": 0.5555555555555556,
+    "verdict": "no measurable effect on this benchmark"
+   }
+  ],
+  "suite": [
+   {
+    "hypothesis": "Prose is a supporting signal, not a deciding one: removing it should not create a false repair.",
+    "name": "no_prose",
+    "preserves_independence": true,
+    "question": "RQ4: how much of the decision comes from model-card prose?"
+   },
+   {
+    "hypothesis": "config.json-style evidence is the main structured signal and should matter more than prose.",
+    "name": "no_config",
+    "preserves_independence": true,
+    "question": "RQ4: how much does framework config contribute?"
+   },
+   {
+    "hypothesis": "These files carry the strongest lineage signal; removing them should cost recall on adapter and merge cases.",
+    "name": "no_tool_configs",
+    "preserves_independence": true,
+    "question": "RQ4: how much do adapter/merge/training files contribute?"
+   },
+   {
+    "hypothesis": "They are necessary but not sufficient: prose and config resolve cases whose lineage is only documented in the model card.",
+    "name": "only_tool_configs",
+    "preserves_independence": true,
+    "question": "RQ4: are adapter/merge/training files sufficient alone?"
+   },
+   {
+    "hypothesis": "Naive record counting inflates support with repeated mentions and should produce over-confident repair attempts.",
+    "name": "inflate_duplicates",
+    "preserves_independence": false,
+    "question": "RQ5: what does per-file deduplication buy?"
+   },
+   {
+    "hypothesis": "Tiered reliability separates tool-generated lineage from model-card claims, so flattening it should cost precision.",
+    "name": "flatten_reliability",
+    "preserves_independence": true,
+    "question": "RQ6: does tiered reliability matter versus equal tiers?"
+   },
+   {
+    "hypothesis": "Relations are rarely provable from artifacts alone; removing them should shift repair actions toward parent-only changes.",
+    "name": "no_relation_evidence",
+    "preserves_independence": true,
+    "question": "RQ7: how much does relation evidence matter?"
+   },
+   {
+    "hypothesis": "A single source hierarchy cannot express conflicts, so accuracy should drop relative to conflict-aware fusion.",
+    "name": "highest_priority_only",
+    "preserves_independence": true,
+    "question": "RQ8: is a fixed source hierarchy sufficient?"
+   },
+   {
+    "hypothesis": "Taking only the strongest item discards corroboration and should cost precision.",
+    "name": "only_highest_reliability",
+    "preserves_independence": true,
+    "question": "RQ8: does the single best item decide?"
+   }
+  ]
+ },
+ "action_confusion": {
+  "ABSTAIN": {
+   "ABSTAIN": 42,
+   "KEEP": 1
+  },
+  "ADD": {
+   "ABSTAIN": 6,
+   "ADD": 10
+  },
+  "KEEP": {
+   "ABSTAIN": 1,
+   "KEEP": 8
+  },
+  "REPLACE": {
+   "REPLACE": 2
+  }
+ },
+ "benchmark": {
+  "benchmark_version": "1.0",
+  "by_expected_action": {
+   "ABSTAIN": 43,
+   "ADD": 16,
+   "KEEP": 9,
+   "REPLACE": 2
+  },
+  "by_label_provenance": {
+   "manual_adjudication": 44,
+   "synthetic_construction": 26
+  },
+  "by_metadata_state": {
+   "incomplete": 6,
+   "incorrect": 2,
+   "missing": 16,
+   "undetermined": 38,
+   "valid": 8
+  },
+  "by_track": {
+   "controlled": 26,
+   "real": 44
+  },
+  "n_cases": 70,
+  "non_known_parent_truth": 38
+ },
+ "comparisons": [
+  {
+   "abstention_rate": 0.7,
+   "action_accuracy": 0.8857142857142857,
+   "action_correct": 62,
+   "attempted_repairs": 12,
+   "coverage": 0.3,
+   "false_repairs": 0,
+   "macro_f1": 0.89279075,
+   "n_cases": 70,
+   "parent_exact_match": 0.59375,
+   "relation_accuracy": 0.6774193548387096,
+   "system": "provenancelens"
+  },
+  {
+   "abstention_rate": 1.0,
+   "action_accuracy": 0.6142857142857143,
+   "action_correct": 43,
+   "attempted_repairs": 0,
+   "coverage": 0.0,
+   "false_repairs": 0,
+   "macro_f1": 0.761062,
+   "n_cases": 70,
+   "parent_exact_match": 0.0,
+   "relation_accuracy": 0.0,
+   "system": "config_only"
+  },
+  {
+   "abstention_rate": 1.0,
+   "action_accuracy": 0.6142857142857143,
+   "action_correct": 43,
+   "attempted_repairs": 0,
+   "coverage": 0.0,
+   "false_repairs": 0,
+   "macro_f1": 0.761062,
+   "n_cases": 70,
+   "parent_exact_match": 0.0,
+   "relation_accuracy": 0.0,
+   "system": "prose_only"
+  },
+  {
+   "abstention_rate": 0.07142857142857142,
+   "action_accuracy": 0.37142857142857144,
+   "action_correct": 26,
+   "attempted_repairs": 23,
+   "coverage": 0.9285714285714286,
+   "false_repairs": 1,
+   "macro_f1": 0.4792075,
+   "n_cases": 70,
+   "parent_exact_match": 0.9375,
+   "relation_accuracy": 0.7741935483870968,
+   "system": "rule_priority"
+  },
+  {
+   "abstention_rate": 0.17142857142857143,
+   "action_accuracy": 0.35714285714285715,
+   "action_correct": 25,
+   "attempted_repairs": 21,
+   "coverage": 0.8285714285714286,
+   "false_repairs": 0,
+   "macro_f1": 0.4702975,
+   "n_cases": 70,
+   "parent_exact_match": 0.90625,
+   "relation_accuracy": 0.5161290322580645,
+   "system": "majority_count"
+  },
+  {
+   "abstention_rate": 0.34285714285714286,
+   "action_accuracy": 0.32857142857142857,
+   "action_correct": 23,
+   "attempted_repairs": 0,
+   "coverage": 0.6571428571428571,
+   "false_repairs": 0,
+   "macro_f1": 0.3725915,
+   "n_cases": 70,
+   "parent_exact_match": 0.5625,
+   "relation_accuracy": 0.1935483870967742,
+   "system": "always_keep"
+  },
+  {
+   "abstention_rate": 0.34285714285714286,
+   "action_accuracy": 0.32857142857142857,
+   "action_correct": 23,
+   "attempted_repairs": 0,
+   "coverage": 0.6571428571428571,
+   "false_repairs": 0,
+   "macro_f1": 0.3725915,
+   "n_cases": 70,
+   "parent_exact_match": 0.5625,
+   "relation_accuracy": 0.1935483870967742,
+   "system": "declared_metadata"
+  }
+ ],
+ "evidence_usage": {
+  "decisive": {
+   "adapter_config": {
+    "definition": "independent evidence items of this source whose candidate parent is in the adjudicated parent set",
+    "n_items": 18
+   },
+   "config": {
+    "definition": "independent evidence items of this source whose candidate parent is in the adjudicated parent set",
+    "n_items": 4
+   },
+   "merge_config": {
+    "definition": "independent evidence items of this source whose candidate parent is in the adjudicated parent set",
+    "n_items": 9
+   },
+   "readme": {
+    "definition": "independent evidence items of this source whose candidate parent is in the adjudicated parent set",
+    "n_items": 5
+   },
+   "training_config": {
+    "definition": "independent evidence items of this source whose candidate parent is in the adjudicated parent set",
+    "n_items": 5
+   }
+  },
+  "declared_only": {
+   "no_independent_evidence": 32
+  },
+  "definition": "presence is frequency; decisiveness is attribution. Declared metadata is the audit subject and is never independent evidence, so it appears in neither column. A decisive item is an independent evidence item whose candidate parent is in the adjudicated parent set. Whether such an item changes the final decision is a different question, answered by the ablation table rather than by these counts.",
+  "n_cases": 70,
+  "presence": {
+   "adapter_config": {
+    "definition": "cases whose independent evidence includes this source",
+    "n_cases": 18,
+    "share": 0.2571428571428571
+   },
+   "config": {
+    "definition": "cases whose independent evidence includes this source",
+    "n_cases": 5,
+    "share": 0.07142857142857142
+   },
+   "merge_config": {
+    "definition": "cases whose independent evidence includes this source",
+    "n_cases": 4,
+    "share": 0.05714285714285714
+   },
+   "readme": {
+    "definition": "cases whose independent evidence includes this source",
+    "n_cases": 10,
+    "share": 0.14285714285714285
+   },
+   "training_config": {
+    "definition": "cases whose independent evidence includes this source",
+    "n_cases": 8,
+    "share": 0.11428571428571428
+   }
+  }
+ },
+ "extraction_available": false,
+ "failure_analysis": {
+  "definition": "each case is assigned to exactly one category; a failure is any case whose category is not 'correct'",
+  "failures": [
+   {
+    "case_id": "REAL-Qwen/Qwen2.5-VL-7B-Instruct-AWQ",
+    "category": "insufficient_support",
+    "conflicts": [],
+    "expected_action": "ADD",
+    "false_repair": false,
+    "predicted_action": "ABSTAIN",
+    "reasoning_summary": "ABSTAIN: the observed evidence matches the declared parent but the existing metadata cannot be safely accepted (support 0.30 < 0.55; no parent-identifying independent evidence; neither declared nor independent evidence establishes a relation). The declared metadata is left untouched.",
+    "repair_attempted": false,
+    "support_score": 0.3,
+    "track": "real",
+    "truth_metadata_state": "incomplete",
+    "truth_parents_status": "known"
+   },
+   {
+    "case_id": "REAL-Qwen/Qwen2.5-14B-Instruct-AWQ",
+    "category": "unverifiable_lineage",
+    "conflicts": [],
+    "expected_action": "ADD",
+    "false_repair": false,
+    "predicted_action": "ABSTAIN",
+    "reasoning_summary": "ABSTAIN: no independent evidence identifying a direct parent was extracted (declared lineage: Qwen/Qwen2.5-14B-Instruct). Declared metadata is the subject of the audit and can never support itself; lack of evidence is reported as ABSTAIN, never guessed.",
+    "repair_attempted": false,
+    "support_score": 0.0,
+    "track": "real",
+    "truth_metadata_state": "incomplete",
+    "truth_parents_status": "known"
+   },
+   {
+    "case_id": "REAL-Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "category": "unverifiable_lineage",
+    "conflicts": [],
+    "expected_action": "ADD",
+    "false_repair": false,
+    "predicted_action": "ABSTAIN",
+    "reasoning_summary": "ABSTAIN: no independent evidence identifying a direct parent was extracted (declared lineage: Qwen/Qwen2.5-7B-Instruct). Declared metadata is the subject of the audit and can never support itself; lack of evidence is reported as ABSTAIN, never guessed.",
+    "repair_attempted": false,
+    "support_score": 0.0,
+    "track": "real",
+    "truth_metadata_state": "incomplete",
+    "truth_parents_status": "known"
+   },
+   {
+    "case_id": "REAL-Qwen/Qwen3-14B-AWQ",
+    "category": "unverifiable_lineage",
+    "conflicts": [],
+    "expected_action": "ADD",
+    "false_repair": false,
+    "predicted_action": "ABSTAIN",
+    "reasoning_summary": "ABSTAIN: no independent evidence identifying a direct parent was extracted (declared lineage: Qwen/Qwen3-14B). Declared metadata is the subject of the audit and can never support itself; lack of evidence is reported as ABSTAIN, never guessed.",
+    "repair_attempted": false,
+    "support_score": 0.0,
+    "track": "real",
+    "truth_metadata_state": "incomplete",
+    "truth_parents_status": "known"
+   },
+   {
+    "case_id": "REAL-Qwen/Qwen3-8B-AWQ",
+    "category": "unverifiable_lineage",
+    "conflicts": [],
+    "expected_action": "ADD",
+    "false_repair": false,
+    "predicted_action": "ABSTAIN",
+    "reasoning_summary": "ABSTAIN: no independent evidence identifying a direct parent was extracted (declared lineage: Qwen/Qwen3-8B). Declared metadata is the subject of the audit and can never support itself; lack of evidence is reported as ABSTAIN, never guessed.",
+    "repair_attempted": false,
+    "support_score": 0.0,
+    "track": "real",
+    "truth_metadata_state": "incomplete",
+    "truth_parents_status": "known"
+   },
+   {
+    "case_id": "REAL-cdiamond/Qwen3.8-27B-iMatrix-NVFP4-MTP-GGUF",
+    "category": "unverifiable_lineage",
+    "conflicts": [],
+    "expected_action": "KEEP",
+    "false_repair": false,
+    "predicted_action": "ABSTAIN",
+    "reasoning_summary": "ABSTAIN: no independent evidence identifying a direct parent was extracted (declared lineage: Qwen/Qwen3.8-27B). Declared metadata is the subject of the audit and can never support itself; lack of evidence is reported as ABSTAIN, never guessed.",
+    "repair_attempted": false,
+    "support_score": 0.0,
+    "track": "real",
+    "truth_metadata_state": "valid",
+    "truth_parents_status": "known"
+   },
+   {
+    "case_id": "REAL-webAI-Official/TwIL-LM3",
+    "category": "unverifiable_lineage",
+    "conflicts": [],
+    "expected_action": "ADD",
+    "false_repair": false,
+    "predicted_action": "ABSTAIN",
+    "reasoning_summary": "ABSTAIN: no independent evidence identifying a direct parent was extracted (declared lineage: HuggingFaceTB/SmolLM3-3B). Declared metadata is the subject of the audit and can never support itself; lack of evidence is reported as ABSTAIN, never guessed.",
+    "repair_attempted": false,
+    "support_score": 0.0,
+    "track": "real",
+    "truth_metadata_state": "incomplete",
+    "truth_parents_status": "known"
+   }
+  ],
+  "n_failures": 7,
+  "taxonomy": [
+   {
+    "category": "correct",
+    "description": "the decision matched the adjudicated label",
+    "n_cases": 63,
+    "n_controlled": 26,
+    "n_real": 37
+   },
+   {
+    "category": "unverifiable_lineage",
+    "description": "no independent evidence exists, so abstention is the only safe action",
+    "n_cases": 6,
+    "n_controlled": 0,
+    "n_real": 6
+   },
+   {
+    "category": "insufficient_support",
+    "description": "evidence exists but its support score is below the policy threshold",
+    "n_cases": 1,
+    "n_controlled": 0,
+    "n_real": 1
+   },
+   {
+    "category": "relation_not_provable",
+    "description": "the parent is identifiable but no artifact establishes the relation",
+    "n_cases": 0,
+    "n_controlled": 0,
+    "n_real": 0
+   },
+   {
+    "category": "prose_only_lineage",
+    "description": "lineage is documented only in model-card prose without a canonical id",
+    "n_cases": 0,
+    "n_controlled": 0,
+    "n_real": 0
+   },
+   {
+    "category": "declared_metadata_contradicted",
+    "description": "the declared metadata contradicts what independent evidence shows",
+    "n_cases": 0,
+    "n_controlled": 0,
+    "n_real": 0
+   },
+   {
+    "category": "multi_parent_conflict",
+    "description": "several parents are supported and the policy cannot choose among them",
+    "n_cases": 0,
+    "n_controlled": 0,
+    "n_real": 0
+   },
+   {
+    "category": "false_repair",
+    "description": "an attempted repair contradicted knowable truth",
+    "n_cases": 0,
+    "n_controlled": 0,
+    "n_real": 0
+   },
+   {
+    "category": "incorrect_non_repair",
+    "description": "a KEEP or abstention decision was wrong for another reason",
+    "n_cases": 0,
+    "n_controlled": 0,
+    "n_real": 0
+   }
+  ],
+  "total": 70
+ },
+ "report_digest": "9e85c22f7e3ec98f7c1bf274347081c5883466d40791161f5e497e638a5fa65b",
+ "selective_risk_curve": [
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 12,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.415443172388,
+    "low": 0.205366052576,
+    "numerator": 21,
+    "value": 0.3
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 12,
+    "high": 0.242494006655,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 21,
+    "high": 1.0,
+    "low": 0.845360981075,
+    "numerator": 21,
+    "value": 1.0
+   },
+   "threshold": 0.0
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 12,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.415443172388,
+    "low": 0.205366052576,
+    "numerator": 21,
+    "value": 0.3
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 12,
+    "high": 0.242494006655,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 21,
+    "high": 1.0,
+    "low": 0.845360981075,
+    "numerator": 21,
+    "value": 1.0
+   },
+   "threshold": 0.05
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 12,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.415443172388,
+    "low": 0.205366052576,
+    "numerator": 21,
+    "value": 0.3
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 12,
+    "high": 0.242494006655,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 21,
+    "high": 1.0,
+    "low": 0.845360981075,
+    "numerator": 21,
+    "value": 1.0
+   },
+   "threshold": 0.1
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 12,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.415443172388,
+    "low": 0.205366052576,
+    "numerator": 21,
+    "value": 0.3
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 12,
+    "high": 0.242494006655,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 21,
+    "high": 1.0,
+    "low": 0.845360981075,
+    "numerator": 21,
+    "value": 1.0
+   },
+   "threshold": 0.15
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 12,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.415443172388,
+    "low": 0.205366052576,
+    "numerator": 21,
+    "value": 0.3
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 12,
+    "high": 0.242494006655,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 21,
+    "high": 1.0,
+    "low": 0.845360981075,
+    "numerator": 21,
+    "value": 1.0
+   },
+   "threshold": 0.2
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 12,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.415443172388,
+    "low": 0.205366052576,
+    "numerator": 21,
+    "value": 0.3
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 12,
+    "high": 0.242494006655,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 21,
+    "high": 1.0,
+    "low": 0.845360981075,
+    "numerator": 21,
+    "value": 1.0
+   },
+   "threshold": 0.25
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 12,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.415443172388,
+    "low": 0.205366052576,
+    "numerator": 21,
+    "value": 0.3
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 12,
+    "high": 0.242494006655,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 21,
+    "high": 1.0,
+    "low": 0.845360981075,
+    "numerator": 21,
+    "value": 1.0
+   },
+   "threshold": 0.3
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 12,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.415443172388,
+    "low": 0.205366052576,
+    "numerator": 21,
+    "value": 0.3
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 12,
+    "high": 0.242494006655,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 21,
+    "high": 1.0,
+    "low": 0.845360981075,
+    "numerator": 21,
+    "value": 1.0
+   },
+   "threshold": 0.35
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 12,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.415443172388,
+    "low": 0.205366052576,
+    "numerator": 21,
+    "value": 0.3
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 12,
+    "high": 0.242494006655,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 21,
+    "high": 1.0,
+    "low": 0.845360981075,
+    "numerator": 21,
+    "value": 1.0
+   },
+   "threshold": 0.4
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 12,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.415443172388,
+    "low": 0.205366052576,
+    "numerator": 21,
+    "value": 0.3
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 12,
+    "high": 0.242494006655,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 21,
+    "high": 1.0,
+    "low": 0.845360981075,
+    "numerator": 21,
+    "value": 1.0
+   },
+   "threshold": 0.45
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 12,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.415443172388,
+    "low": 0.205366052576,
+    "numerator": 21,
+    "value": 0.3
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 12,
+    "high": 0.242494006655,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 21,
+    "high": 1.0,
+    "low": 0.845360981075,
+    "numerator": 21,
+    "value": 1.0
+   },
+   "threshold": 0.5
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 12,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.415443172388,
+    "low": 0.205366052576,
+    "numerator": 21,
+    "value": 0.3
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 12,
+    "high": 0.242494006655,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 21,
+    "high": 1.0,
+    "low": 0.845360981075,
+    "numerator": 21,
+    "value": 1.0
+   },
+   "threshold": 0.55
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 11,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.33950331594,
+    "low": 0.145880632226,
+    "numerator": 16,
+    "value": 0.228571428571
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 11,
+    "high": 0.258832966968,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 16,
+    "high": 1.0,
+    "low": 0.806392319466,
+    "numerator": 16,
+    "value": 1.0
+   },
+   "threshold": 0.6
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 11,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.33950331594,
+    "low": 0.145880632226,
+    "numerator": 16,
+    "value": 0.228571428571
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 11,
+    "high": 0.258832966968,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 16,
+    "high": 1.0,
+    "low": 0.806392319466,
+    "numerator": 16,
+    "value": 1.0
+   },
+   "threshold": 0.65
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 11,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.33950331594,
+    "low": 0.145880632226,
+    "numerator": 16,
+    "value": 0.228571428571
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 11,
+    "high": 0.258832966968,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 16,
+    "high": 1.0,
+    "low": 0.806392319466,
+    "numerator": 16,
+    "value": 1.0
+   },
+   "threshold": 0.7
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 11,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.323911862635,
+    "low": 0.134387030171,
+    "numerator": 15,
+    "value": 0.214285714286
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 11,
+    "high": 0.258832966968,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 15,
+    "high": 1.0,
+    "low": 0.796116698964,
+    "numerator": 15,
+    "value": 1.0
+   },
+   "threshold": 0.75
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 2,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.098322561184,
+    "low": 0.007870611945,
+    "numerator": 2,
+    "value": 0.028571428571
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 2,
+    "high": 0.657619772493,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 2,
+    "high": 1.0,
+    "low": 0.342380227507,
+    "numerator": 2,
+    "value": 1.0
+   },
+   "threshold": 0.8
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 2,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.098322561184,
+    "low": 0.007870611945,
+    "numerator": 2,
+    "value": 0.028571428571
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 2,
+    "high": 0.657619772493,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 2,
+    "high": 1.0,
+    "low": 0.342380227507,
+    "numerator": 2,
+    "value": 1.0
+   },
+   "threshold": 0.85
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 2,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.098322561184,
+    "low": 0.007870611945,
+    "numerator": 2,
+    "value": 0.028571428571
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 2,
+    "high": 0.657619772493,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 2,
+    "high": 1.0,
+    "low": 0.342380227507,
+    "numerator": 2,
+    "value": 1.0
+   },
+   "threshold": 0.9
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 2,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.098322561184,
+    "low": 0.007870611945,
+    "numerator": 2,
+    "value": 0.028571428571
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 2,
+    "high": 0.657619772493,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 2,
+    "high": 1.0,
+    "low": 0.342380227507,
+    "numerator": 2,
+    "value": 1.0
+   },
+   "threshold": 0.95
+  },
+  {
+   "abstention_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.794633947424,
+    "low": 0.584556827612,
+    "numerator": 49,
+    "value": 0.7
+   },
+   "abstentions": 49,
+   "attempted_repairs": 2,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 70,
+    "high": 0.098322561184,
+    "low": 0.007870611945,
+    "numerator": 2,
+    "value": 0.028571428571
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 2,
+    "high": 0.657619772493,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "selective_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 2,
+    "high": 1.0,
+    "low": 0.342380227507,
+    "numerator": 2,
+    "value": 1.0
+   },
+   "threshold": 1.0
+  }
+ ],
+ "stratified_results": [
+  {
+   "action_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 26,
+    "high": 1.0,
+    "low": 0.871271078141,
+    "numerator": 26,
+    "value": 1.0
+   },
+   "attempted_repairs": 6,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 26,
+    "high": 0.610513862534,
+    "low": 0.255444433137,
+    "numerator": 11,
+    "value": 0.423076923077
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 6,
+    "high": 0.390334287902,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "n_cases": 26,
+   "stratum": "controlled"
+  },
+  {
+   "action_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 8,
+    "high": 1.0,
+    "low": 0.675592435116,
+    "numerator": 8,
+    "value": 1.0
+   },
+   "attempted_repairs": 0,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 8,
+    "high": 0.324407564884,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 0,
+    "high": null,
+    "low": null,
+    "numerator": 0,
+    "value": null
+   },
+   "false_repairs": 0,
+   "n_cases": 8,
+   "stratum": "instruction_finetunes"
+  },
+  {
+   "action_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 6,
+    "high": 0.969946630252,
+    "low": 0.436497177814,
+    "numerator": 5,
+    "value": 0.833333333333
+   },
+   "attempted_repairs": 0,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 6,
+    "high": 0.390334287902,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 0,
+    "high": null,
+    "low": null,
+    "numerator": 0,
+    "value": null
+   },
+   "false_repairs": 0,
+   "n_cases": 6,
+   "stratum": "lora_adapters"
+  },
+  {
+   "action_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 8,
+    "high": 1.0,
+    "low": 0.675592435116,
+    "numerator": 8,
+    "value": 1.0
+   },
+   "attempted_repairs": 0,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 8,
+    "high": 0.324407564884,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 0,
+    "high": null,
+    "low": null,
+    "numerator": 0,
+    "value": null
+   },
+   "false_repairs": 0,
+   "n_cases": 8,
+   "stratum": "mergekit_merges"
+  },
+  {
+   "action_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 8,
+    "high": 1.0,
+    "low": 0.675592435116,
+    "numerator": 8,
+    "value": 1.0
+   },
+   "attempted_repairs": 5,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 8,
+    "high": 1.0,
+    "low": 0.675592435116,
+    "numerator": 8,
+    "value": 1.0
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 5,
+    "high": 0.434482464783,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "n_cases": 8,
+   "stratum": "peft_adapters"
+  },
+  {
+   "action_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 3,
+    "high": 1.0,
+    "low": 0.438502968245,
+    "numerator": 3,
+    "value": 1.0
+   },
+   "attempted_repairs": 1,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 3,
+    "high": 0.93850805528,
+    "low": 0.207659600802,
+    "numerator": 2,
+    "value": 0.666666666667
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 1,
+    "high": 0.793450685623,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repairs": 0,
+   "n_cases": 3,
+   "stratum": "pre_phase_g"
+  },
+  {
+   "action_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 5,
+    "high": 0.434482464783,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "attempted_repairs": 0,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 5,
+    "high": 0.434482464783,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 0,
+    "high": null,
+    "low": null,
+    "numerator": 0,
+    "value": null
+   },
+   "false_repairs": 0,
+   "n_cases": 5,
+   "stratum": "quantized_awq"
+  },
+  {
+   "action_accuracy": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 6,
+    "high": 0.969946630252,
+    "low": 0.436497177814,
+    "numerator": 5,
+    "value": 0.833333333333
+   },
+   "attempted_repairs": 0,
+   "coverage": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 6,
+    "high": 0.390334287902,
+    "low": 0.0,
+    "numerator": 0,
+    "value": 0.0
+   },
+   "false_repair_rate": {
+    "definition": "Wilson 95% score interval for a binomial proportion",
+    "denominator": 0,
+    "high": null,
+    "low": null,
+    "numerator": 0,
+    "value": null
+   },
+   "false_repairs": 0,
+   "n_cases": 6,
+   "stratum": "quantized_gguf"
+  }
+ ],
+ "systems": {
+  "always_keep": {
+   "headline": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.444990642612,
+      "low": 0.229988693072,
+      "numerator": 23,
+      "value": 0.328571428571
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 70,
+     "metric": "action_accuracy",
+     "numerator": 23,
+     "value": 0.32857142857142857
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 32,
+      "high": 0.71834668885,
+      "low": 0.393255911369,
+      "numerator": 18,
+      "value": 0.5625
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 32,
+     "metric": "parent_exact_match",
+     "numerator": 18,
+     "value": 0.5625
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 31,
+      "high": 0.362802578118,
+      "low": 0.091870083616,
+      "numerator": 6,
+      "value": 0.193548387097
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 31,
+     "metric": "relation_accuracy",
+     "numerator": 6,
+     "value": 0.1935483870967742
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.757540111977,
+      "low": 0.540395496979,
+      "numerator": 46,
+      "value": 0.657142857143
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 70,
+     "metric": "coverage",
+     "numerator": 46,
+     "value": 0.6571428571428571
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.05202306241,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 70,
+     "metric": "repair_attempt_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 0,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 0,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.459604503021,
+      "low": 0.242459888023,
+      "numerator": 24,
+      "value": 0.342857142857
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 70,
+     "metric": "abstention_rate",
+     "numerator": 24,
+     "value": 0.34285714285714286
+    }
+   ],
+   "headline_controlled": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.744555566863,
+      "low": 0.389486137466,
+      "numerator": 15,
+      "value": 0.576923076923
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 26,
+     "metric": "action_accuracy",
+     "numerator": 15,
+     "value": 0.5769230769230769
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 14,
+      "high": 0.674093554203,
+      "low": 0.213807989045,
+      "numerator": 6,
+      "value": 0.428571428571
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 14,
+     "metric": "parent_exact_match",
+     "numerator": 6,
+     "value": 0.42857142857142855
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 13,
+      "high": 0.644771084873,
+      "low": 0.177097077978,
+      "numerator": 5,
+      "value": 0.384615384615
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 13,
+     "metric": "relation_accuracy",
+     "numerator": 5,
+     "value": 0.38461538461538464
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.645420612531,
+      "low": 0.287558535304,
+      "numerator": 12,
+      "value": 0.461538461538
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 26,
+     "metric": "coverage",
+     "numerator": 12,
+     "value": 0.46153846153846156
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.128728921859,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 26,
+     "metric": "repair_attempt_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 0,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 0,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.712441464696,
+      "low": 0.354579387469,
+      "numerator": 14,
+      "value": 0.538461538462
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 26,
+     "metric": "abstention_rate",
+     "numerator": 14,
+     "value": 0.5384615384615384
+    }
+   ],
+   "headline_real": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.319605508872,
+      "low": 0.095128057156,
+      "numerator": 8,
+      "value": 0.181818181818
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 44,
+     "metric": "action_accuracy",
+     "numerator": 8,
+     "value": 0.18181818181818182
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 18,
+      "high": 0.837212252492,
+      "low": 0.437494672959,
+      "numerator": 12,
+      "value": 0.666666666667
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 18,
+     "metric": "parent_exact_match",
+     "numerator": 12,
+     "value": 0.6666666666666666
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 18,
+      "high": 0.257573007819,
+      "low": 0.009875190978,
+      "numerator": 1,
+      "value": 0.055555555556
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 18,
+     "metric": "relation_accuracy",
+     "numerator": 1,
+     "value": 0.05555555555555555
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.871580524051,
+      "low": 0.630076419354,
+      "numerator": 34,
+      "value": 0.772727272727
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 44,
+     "metric": "coverage",
+     "numerator": 34,
+     "value": 0.7727272727272727
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.080295603758,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 44,
+     "metric": "repair_attempt_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 0,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 0,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.369923580646,
+      "low": 0.128419475949,
+      "numerator": 10,
+      "value": 0.227272727273
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 44,
+     "metric": "abstention_rate",
+     "numerator": 10,
+     "value": 0.22727272727272727
+    }
+   ]
+  },
+  "config_only": {
+   "headline": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.719523086985,
+      "low": 0.497157355893,
+      "numerator": 43,
+      "value": 0.614285714286
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 70,
+     "metric": "action_accuracy",
+     "numerator": 43,
+     "value": 0.6142857142857143
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 32,
+      "high": 0.107179198255,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 32,
+     "metric": "parent_exact_match",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 31,
+      "high": 0.11025539546,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 31,
+     "metric": "relation_accuracy",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.05202306241,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 70,
+     "metric": "coverage",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.05202306241,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 70,
+     "metric": "repair_attempt_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 0,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 0,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 1.0,
+      "low": 0.94797693759,
+      "numerator": 70,
+      "value": 1.0
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 70,
+     "metric": "abstention_rate",
+     "numerator": 70,
+     "value": 1.0
+    }
+   ],
+   "headline_controlled": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.744555566863,
+      "low": 0.389486137466,
+      "numerator": 15,
+      "value": 0.576923076923
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 26,
+     "metric": "action_accuracy",
+     "numerator": 15,
+     "value": 0.5769230769230769
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 14,
+      "high": 0.215310802738,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 14,
+     "metric": "parent_exact_match",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 13,
+      "high": 0.228095372354,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 13,
+     "metric": "relation_accuracy",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.128728921859,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 26,
+     "metric": "coverage",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.128728921859,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 26,
+     "metric": "repair_attempt_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 0,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 0,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 1.0,
+      "low": 0.871271078141,
+      "numerator": 26,
+      "value": 1.0
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 26,
+     "metric": "abstention_rate",
+     "numerator": 26,
+     "value": 1.0
+    }
+   ],
+   "headline_real": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.762164702912,
+      "low": 0.48866376879,
+      "numerator": 28,
+      "value": 0.636363636364
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 44,
+     "metric": "action_accuracy",
+     "numerator": 28,
+     "value": 0.6363636363636364
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 18,
+      "high": 0.175879223647,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 18,
+     "metric": "parent_exact_match",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 18,
+      "high": 0.175879223647,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 18,
+     "metric": "relation_accuracy",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.080295603758,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 44,
+     "metric": "coverage",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.080295603758,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 44,
+     "metric": "repair_attempt_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 0,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 0,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 1.0,
+      "low": 0.919704396242,
+      "numerator": 44,
+      "value": 1.0
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 44,
+     "metric": "abstention_rate",
+     "numerator": 44,
+     "value": 1.0
+    }
+   ]
+  },
+  "declared_metadata": {
+   "headline": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.444990642612,
+      "low": 0.229988693072,
+      "numerator": 23,
+      "value": 0.328571428571
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 70,
+     "metric": "action_accuracy",
+     "numerator": 23,
+     "value": 0.32857142857142857
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 32,
+      "high": 0.71834668885,
+      "low": 0.393255911369,
+      "numerator": 18,
+      "value": 0.5625
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 32,
+     "metric": "parent_exact_match",
+     "numerator": 18,
+     "value": 0.5625
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 31,
+      "high": 0.362802578118,
+      "low": 0.091870083616,
+      "numerator": 6,
+      "value": 0.193548387097
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 31,
+     "metric": "relation_accuracy",
+     "numerator": 6,
+     "value": 0.1935483870967742
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.757540111977,
+      "low": 0.540395496979,
+      "numerator": 46,
+      "value": 0.657142857143
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 70,
+     "metric": "coverage",
+     "numerator": 46,
+     "value": 0.6571428571428571
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.05202306241,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 70,
+     "metric": "repair_attempt_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 0,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 0,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.459604503021,
+      "low": 0.242459888023,
+      "numerator": 24,
+      "value": 0.342857142857
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 70,
+     "metric": "abstention_rate",
+     "numerator": 24,
+     "value": 0.34285714285714286
+    }
+   ],
+   "headline_controlled": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.744555566863,
+      "low": 0.389486137466,
+      "numerator": 15,
+      "value": 0.576923076923
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 26,
+     "metric": "action_accuracy",
+     "numerator": 15,
+     "value": 0.5769230769230769
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 14,
+      "high": 0.674093554203,
+      "low": 0.213807989045,
+      "numerator": 6,
+      "value": 0.428571428571
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 14,
+     "metric": "parent_exact_match",
+     "numerator": 6,
+     "value": 0.42857142857142855
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 13,
+      "high": 0.644771084873,
+      "low": 0.177097077978,
+      "numerator": 5,
+      "value": 0.384615384615
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 13,
+     "metric": "relation_accuracy",
+     "numerator": 5,
+     "value": 0.38461538461538464
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.645420612531,
+      "low": 0.287558535304,
+      "numerator": 12,
+      "value": 0.461538461538
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 26,
+     "metric": "coverage",
+     "numerator": 12,
+     "value": 0.46153846153846156
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.128728921859,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 26,
+     "metric": "repair_attempt_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 0,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 0,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.712441464696,
+      "low": 0.354579387469,
+      "numerator": 14,
+      "value": 0.538461538462
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 26,
+     "metric": "abstention_rate",
+     "numerator": 14,
+     "value": 0.5384615384615384
+    }
+   ],
+   "headline_real": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.319605508872,
+      "low": 0.095128057156,
+      "numerator": 8,
+      "value": 0.181818181818
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 44,
+     "metric": "action_accuracy",
+     "numerator": 8,
+     "value": 0.18181818181818182
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 18,
+      "high": 0.837212252492,
+      "low": 0.437494672959,
+      "numerator": 12,
+      "value": 0.666666666667
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 18,
+     "metric": "parent_exact_match",
+     "numerator": 12,
+     "value": 0.6666666666666666
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 18,
+      "high": 0.257573007819,
+      "low": 0.009875190978,
+      "numerator": 1,
+      "value": 0.055555555556
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 18,
+     "metric": "relation_accuracy",
+     "numerator": 1,
+     "value": 0.05555555555555555
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.871580524051,
+      "low": 0.630076419354,
+      "numerator": 34,
+      "value": 0.772727272727
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 44,
+     "metric": "coverage",
+     "numerator": 34,
+     "value": 0.7727272727272727
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.080295603758,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 44,
+     "metric": "repair_attempt_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 0,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 0,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.369923580646,
+      "low": 0.128419475949,
+      "numerator": 10,
+      "value": 0.227272727273
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 44,
+     "metric": "abstention_rate",
+     "numerator": 10,
+     "value": 0.22727272727272727
+    }
+   ]
+  },
+  "majority_count": {
+   "headline": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.474116053687,
+      "low": 0.255033392716,
+      "numerator": 25,
+      "value": 0.357142857143
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 70,
+     "metric": "action_accuracy",
+     "numerator": 25,
+     "value": 0.35714285714285715
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 32,
+      "high": 0.967598448702,
+      "low": 0.757818452716,
+      "numerator": 29,
+      "value": 0.90625
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 32,
+     "metric": "parent_exact_match",
+     "numerator": 29,
+     "value": 0.90625
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 31,
+      "high": 0.680297484376,
+      "low": 0.34840395448,
+      "numerator": 16,
+      "value": 0.516129032258
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 31,
+     "metric": "relation_accuracy",
+     "numerator": 16,
+     "value": 0.5161290322580645
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.899122753595,
+      "low": 0.723833519679,
+      "numerator": 58,
+      "value": 0.828571428571
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 70,
+     "metric": "coverage",
+     "numerator": 58,
+     "value": 0.8285714285714286
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.415443172388,
+      "low": 0.205366052576,
+      "numerator": 21,
+      "value": 0.3
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 70,
+     "metric": "repair_attempt_rate",
+     "numerator": 21,
+     "value": 0.3
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 21,
+      "high": 0.154639018925,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 21,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 21,
+      "high": 0.591213462249,
+      "low": 0.207510113686,
+      "numerator": 8,
+      "value": 0.380952380952
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 21,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 8,
+     "value": 0.38095238095238093
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.276166480321,
+      "low": 0.100877246405,
+      "numerator": 12,
+      "value": 0.171428571429
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 70,
+     "metric": "abstention_rate",
+     "numerator": 12,
+     "value": 0.17142857142857143
+    }
+   ],
+   "headline_controlled": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.537794288112,
+      "low": 0.194122303229,
+      "numerator": 9,
+      "value": 0.346153846154
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 26,
+     "metric": "action_accuracy",
+     "numerator": 9,
+     "value": 0.34615384615384615
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 14,
+      "high": 0.924286132873,
+      "low": 0.524107694134,
+      "numerator": 11,
+      "value": 0.785714285714
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 14,
+     "metric": "parent_exact_match",
+     "numerator": 11,
+     "value": 0.7857142857142857
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 13,
+      "high": 0.873192963443,
+      "low": 0.423693431805,
+      "numerator": 9,
+      "value": 0.692307692308
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 13,
+     "metric": "relation_accuracy",
+     "numerator": 9,
+     "value": 0.6923076923076923
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.889661505942,
+      "low": 0.579484459211,
+      "numerator": 20,
+      "value": 0.769230769231
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 26,
+     "metric": "coverage",
+     "numerator": 20,
+     "value": 0.7692307692307693
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.744555566863,
+      "low": 0.389486137466,
+      "numerator": 15,
+      "value": 0.576923076923
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 26,
+     "metric": "repair_attempt_rate",
+     "numerator": 15,
+     "value": 0.5769230769230769
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 15,
+      "high": 0.203883301036,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 15,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 15,
+      "high": 0.751904646343,
+      "low": 0.301169800255,
+      "numerator": 8,
+      "value": 0.533333333333
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 15,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 8,
+     "value": 0.5333333333333333
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.420515540789,
+      "low": 0.110338494058,
+      "numerator": 6,
+      "value": 0.230769230769
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 26,
+     "metric": "abstention_rate",
+     "numerator": 6,
+     "value": 0.23076923076923078
+    }
+   ],
+   "headline_real": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.51133623121,
+      "low": 0.237835297088,
+      "numerator": 16,
+      "value": 0.363636363636
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 44,
+     "metric": "action_accuracy",
+     "numerator": 16,
+     "value": 0.36363636363636365
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 18,
+      "high": 1.0,
+      "low": 0.824120776353,
+      "numerator": 18,
+      "value": 1.0
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 18,
+     "metric": "parent_exact_match",
+     "numerator": 18,
+     "value": 1.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 18,
+      "high": 0.613809583978,
+      "low": 0.203052465722,
+      "numerator": 7,
+      "value": 0.388888888889
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 18,
+     "metric": "relation_accuracy",
+     "numerator": 7,
+     "value": 0.3888888888888889
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.935970455024,
+      "low": 0.732905469515,
+      "numerator": 38,
+      "value": 0.863636363636
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 44,
+     "metric": "coverage",
+     "numerator": 38,
+     "value": 0.8636363636363636
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.267094530485,
+      "low": 0.064029544976,
+      "numerator": 6,
+      "value": 0.136363636364
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 44,
+     "metric": "repair_attempt_rate",
+     "numerator": 6,
+     "value": 0.13636363636363635
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 6,
+      "high": 0.390334287902,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 6,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 6,
+      "high": 0.390334287902,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 6,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.267094530485,
+      "low": 0.064029544976,
+      "numerator": 6,
+      "value": 0.136363636364
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 44,
+     "metric": "abstention_rate",
+     "numerator": 6,
+     "value": 0.13636363636363635
+    }
+   ]
+  },
+  "prose_only": {
+   "headline": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.719523086985,
+      "low": 0.497157355893,
+      "numerator": 43,
+      "value": 0.614285714286
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 70,
+     "metric": "action_accuracy",
+     "numerator": 43,
+     "value": 0.6142857142857143
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 32,
+      "high": 0.107179198255,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 32,
+     "metric": "parent_exact_match",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 31,
+      "high": 0.11025539546,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 31,
+     "metric": "relation_accuracy",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.05202306241,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 70,
+     "metric": "coverage",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.05202306241,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 70,
+     "metric": "repair_attempt_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 0,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 0,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 1.0,
+      "low": 0.94797693759,
+      "numerator": 70,
+      "value": 1.0
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 70,
+     "metric": "abstention_rate",
+     "numerator": 70,
+     "value": 1.0
+    }
+   ],
+   "headline_controlled": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.744555566863,
+      "low": 0.389486137466,
+      "numerator": 15,
+      "value": 0.576923076923
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 26,
+     "metric": "action_accuracy",
+     "numerator": 15,
+     "value": 0.5769230769230769
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 14,
+      "high": 0.215310802738,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 14,
+     "metric": "parent_exact_match",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 13,
+      "high": 0.228095372354,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 13,
+     "metric": "relation_accuracy",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.128728921859,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 26,
+     "metric": "coverage",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.128728921859,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 26,
+     "metric": "repair_attempt_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 0,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 0,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 1.0,
+      "low": 0.871271078141,
+      "numerator": 26,
+      "value": 1.0
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 26,
+     "metric": "abstention_rate",
+     "numerator": 26,
+     "value": 1.0
+    }
+   ],
+   "headline_real": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.762164702912,
+      "low": 0.48866376879,
+      "numerator": 28,
+      "value": 0.636363636364
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 44,
+     "metric": "action_accuracy",
+     "numerator": 28,
+     "value": 0.6363636363636364
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 18,
+      "high": 0.175879223647,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 18,
+     "metric": "parent_exact_match",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 18,
+      "high": 0.175879223647,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 18,
+     "metric": "relation_accuracy",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.080295603758,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 44,
+     "metric": "coverage",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.080295603758,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 44,
+     "metric": "repair_attempt_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 0,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 0,
+      "high": null,
+      "low": null,
+      "numerator": 0,
+      "value": null
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 0,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": null
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 1.0,
+      "low": 0.919704396242,
+      "numerator": 44,
+      "value": 1.0
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 44,
+     "metric": "abstention_rate",
+     "numerator": 44,
+     "value": 1.0
+    }
+   ]
+  },
+  "provenancelens": {
+   "headline": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.940938710534,
+      "low": 0.790357784178,
+      "numerator": 62,
+      "value": 0.885714285714
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 70,
+     "metric": "action_accuracy",
+     "numerator": 62,
+     "value": 0.8857142857142857
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 32,
+      "high": 0.744803651573,
+      "low": 0.422600248754,
+      "numerator": 19,
+      "value": 0.59375
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 32,
+     "metric": "parent_exact_match",
+     "numerator": 19,
+     "value": 0.59375
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 31,
+      "high": 0.814305734336,
+      "low": 0.501410093081,
+      "numerator": 21,
+      "value": 0.677419354839
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 31,
+     "metric": "relation_accuracy",
+     "numerator": 21,
+     "value": 0.6774193548387096
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.415443172388,
+      "low": 0.205366052576,
+      "numerator": 21,
+      "value": 0.3
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 70,
+     "metric": "coverage",
+     "numerator": 21,
+     "value": 0.3
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.276166480321,
+      "low": 0.100877246405,
+      "numerator": 12,
+      "value": 0.171428571429
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 70,
+     "metric": "repair_attempt_rate",
+     "numerator": 12,
+     "value": 0.17142857142857143
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 12,
+      "high": 0.242494006655,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 12,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 12,
+      "high": 0.242494006655,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 12,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.794633947424,
+      "low": 0.584556827612,
+      "numerator": 49,
+      "value": 0.7
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 70,
+     "metric": "abstention_rate",
+     "numerator": 49,
+     "value": 0.7
+    }
+   ],
+   "headline_controlled": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 1.0,
+      "low": 0.871271078141,
+      "numerator": 26,
+      "value": 1.0
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 26,
+     "metric": "action_accuracy",
+     "numerator": 26,
+     "value": 1.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 14,
+      "high": 0.882786213554,
+      "low": 0.453509156701,
+      "numerator": 10,
+      "value": 0.714285714286
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 14,
+     "metric": "parent_exact_match",
+     "numerator": 10,
+     "value": 0.7142857142857143
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 13,
+      "high": 0.956741821642,
+      "low": 0.577653689805,
+      "numerator": 11,
+      "value": 0.846153846154
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 13,
+     "metric": "relation_accuracy",
+     "numerator": 11,
+     "value": 0.8461538461538461
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.610513862534,
+      "low": 0.255444433137,
+      "numerator": 11,
+      "value": 0.423076923077
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 26,
+     "metric": "coverage",
+     "numerator": 11,
+     "value": 0.4230769230769231
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.420515540789,
+      "low": 0.110338494058,
+      "numerator": 6,
+      "value": 0.230769230769
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 26,
+     "metric": "repair_attempt_rate",
+     "numerator": 6,
+     "value": 0.23076923076923078
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 6,
+      "high": 0.390334287902,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 6,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 6,
+      "high": 0.390334287902,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 6,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.744555566863,
+      "low": 0.389486137466,
+      "numerator": 15,
+      "value": 0.576923076923
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 26,
+     "metric": "abstention_rate",
+     "numerator": 15,
+     "value": 0.5769230769230769
+    }
+   ],
+   "headline_real": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.904871942844,
+      "low": 0.680394491128,
+      "numerator": 36,
+      "value": 0.818181818182
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 44,
+     "metric": "action_accuracy",
+     "numerator": 36,
+     "value": 0.8181818181818182
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 18,
+      "high": 0.709689784948,
+      "low": 0.290310215052,
+      "numerator": 9,
+      "value": 0.5
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 18,
+     "metric": "parent_exact_match",
+     "numerator": 9,
+     "value": 0.5
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 18,
+      "high": 0.75440481873,
+      "low": 0.33716415642,
+      "numerator": 10,
+      "value": 0.555555555556
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 18,
+     "metric": "relation_accuracy",
+     "numerator": 10,
+     "value": 0.5555555555555556
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.369923580646,
+      "low": 0.128419475949,
+      "numerator": 10,
+      "value": 0.227272727273
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 44,
+     "metric": "coverage",
+     "numerator": 10,
+     "value": 0.22727272727272727
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.267094530485,
+      "low": 0.064029544976,
+      "numerator": 6,
+      "value": 0.136363636364
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 44,
+     "metric": "repair_attempt_rate",
+     "numerator": 6,
+     "value": 0.13636363636363635
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 6,
+      "high": 0.390334287902,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 6,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 6,
+      "high": 0.390334287902,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 6,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.871580524051,
+      "low": 0.630076419354,
+      "numerator": 34,
+      "value": 0.772727272727
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 44,
+     "metric": "abstention_rate",
+     "numerator": 34,
+     "value": 0.7727272727272727
+    }
+   ]
+  },
+  "rule_priority": {
+   "headline": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.488527988416,
+      "low": 0.267706513347,
+      "numerator": 26,
+      "value": 0.371428571429
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 70,
+     "metric": "action_accuracy",
+     "numerator": 26,
+     "value": 0.37142857142857144
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 32,
+      "high": 0.982689432968,
+      "low": 0.798528768558,
+      "numerator": 30,
+      "value": 0.9375
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 32,
+     "metric": "parent_exact_match",
+     "numerator": 30,
+     "value": 0.9375
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 31,
+      "high": 0.886048644387,
+      "low": 0.601875816167,
+      "numerator": 24,
+      "value": 0.774193548387
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 31,
+     "metric": "relation_accuracy",
+     "numerator": 24,
+     "value": 0.7741935483870968
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.969105782962,
+      "low": 0.843445877829,
+      "numerator": 65,
+      "value": 0.928571428571
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 70,
+     "metric": "coverage",
+     "numerator": 65,
+     "value": 0.9285714285714286
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.444990642612,
+      "low": 0.229988693072,
+      "numerator": 23,
+      "value": 0.328571428571
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 70,
+     "metric": "repair_attempt_rate",
+     "numerator": 23,
+     "value": 0.32857142857142857
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 23,
+      "high": 0.209911550703,
+      "low": 0.007716666143,
+      "numerator": 1,
+      "value": 0.04347826087
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 23,
+     "metric": "false_repair_rate",
+     "numerator": 1,
+     "value": 0.043478260869565216
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 23,
+      "high": 0.592144776086,
+      "low": 0.221576227925,
+      "numerator": 9,
+      "value": 0.391304347826
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 23,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 9,
+     "value": 0.391304347826087
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 70,
+      "high": 0.156554122171,
+      "low": 0.030894217038,
+      "numerator": 5,
+      "value": 0.071428571429
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 70,
+     "metric": "abstention_rate",
+     "numerator": 5,
+     "value": 0.07142857142857142
+    }
+   ],
+   "headline_controlled": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.645420612531,
+      "low": 0.287558535304,
+      "numerator": 12,
+      "value": 0.461538461538
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 26,
+     "metric": "action_accuracy",
+     "numerator": 12,
+     "value": 0.46153846153846156
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 14,
+      "high": 0.959906078729,
+      "low": 0.60058620503,
+      "numerator": 12,
+      "value": 0.857142857143
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 14,
+     "metric": "parent_exact_match",
+     "numerator": 12,
+     "value": 0.8571428571428571
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 13,
+      "high": 1.0,
+      "low": 0.771904627646,
+      "numerator": 13,
+      "value": 1.0
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 13,
+     "metric": "relation_accuracy",
+     "numerator": 13,
+     "value": 1.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.993178015006,
+      "low": 0.81107221097,
+      "numerator": 25,
+      "value": 0.961538461538
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 26,
+     "metric": "coverage",
+     "numerator": 25,
+     "value": 0.9615384615384616
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.805877696771,
+      "low": 0.462205711888,
+      "numerator": 17,
+      "value": 0.653846153846
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 26,
+     "metric": "repair_attempt_rate",
+     "numerator": 17,
+     "value": 0.6538461538461539
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 17,
+      "high": 0.269820306376,
+      "low": 0.010460400985,
+      "numerator": 1,
+      "value": 0.058823529412
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 17,
+     "metric": "false_repair_rate",
+     "numerator": 1,
+     "value": 0.058823529411764705
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 17,
+      "high": 0.738348935576,
+      "low": 0.3096323506,
+      "numerator": 9,
+      "value": 0.529411764706
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 17,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 9,
+     "value": 0.5294117647058824
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 26,
+      "high": 0.18892778903,
+      "low": 0.006821984994,
+      "numerator": 1,
+      "value": 0.038461538462
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 26,
+     "metric": "abstention_rate",
+     "numerator": 1,
+     "value": 0.038461538461538464
+    }
+   ],
+   "headline_real": [
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.465568960622,
+      "low": 0.199993077109,
+      "numerator": 14,
+      "value": 0.318181818182
+     },
+     "definition": "action correct / scored cases",
+     "denominator": 44,
+     "metric": "action_accuracy",
+     "numerator": 14,
+     "value": 0.3181818181818182
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 18,
+      "high": 1.0,
+      "low": 0.824120776353,
+      "numerator": 18,
+      "value": 1.0
+     },
+     "definition": "exact parent-set match over cases with KNOWN parent truth (multi-parent compared as a set)",
+     "denominator": 18,
+     "metric": "parent_exact_match",
+     "numerator": 18,
+     "value": 1.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 18,
+      "high": 0.796947534278,
+      "low": 0.386190416022,
+      "numerator": 11,
+      "value": 0.611111111111
+     },
+     "definition": "relation correct / scored cases",
+     "denominator": 18,
+     "metric": "relation_accuracy",
+     "numerator": 11,
+     "value": 0.6111111111111112
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.964077806773,
+      "low": 0.788407608334,
+      "numerator": 40,
+      "value": 0.909090909091
+     },
+     "definition": "non-ABSTAIN predictions / scored cases (abstention is never counted as correct)",
+     "denominator": 44,
+     "metric": "coverage",
+     "numerator": 40,
+     "value": 0.9090909090909091
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.267094530485,
+      "low": 0.064029544976,
+      "numerator": 6,
+      "value": 0.136363636364
+     },
+     "definition": "attempted repairs (ADD or REPLACE) / scored cases",
+     "denominator": 44,
+     "metric": "repair_attempt_rate",
+     "numerator": 6,
+     "value": 0.13636363636363635
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 6,
+      "high": 0.390334287902,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "incorrect attempted repairs / attempted repairs (the false repair rate)",
+     "denominator": 6,
+     "metric": "false_repair_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 6,
+      "high": 0.390334287902,
+      "low": 0.0,
+      "numerator": 0,
+      "value": 0.0
+     },
+     "definition": "attempted repairs whose correctness cannot be verified / attempted repairs",
+     "denominator": 6,
+     "metric": "unverifiable_repair_rate",
+     "numerator": 0,
+     "value": 0.0
+    },
+    {
+     "ci95": {
+      "definition": "Wilson 95% score interval for a binomial proportion",
+      "denominator": 44,
+      "high": 0.211592391666,
+      "low": 0.035922193227,
+      "numerator": 4,
+      "value": 0.090909090909
+     },
+     "definition": "ABSTAIN predictions / scored cases",
+     "denominator": 44,
+     "metric": "abstention_rate",
+     "numerator": 4,
+     "value": 0.09090909090909091
+    }
+   ]
+  }
+ }
+}

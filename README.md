@@ -1,40 +1,321 @@
 # 🔍 ProvenanceLens
 
-**Evidence-grounded model provenance and metadata repair system**
+**Evidence-calibrated repair of direct model-lineage metadata in open model repositories.**
 
-ProvenanceLens is a system designed to detect, evaluate, and repair missing or incorrect model metadata using evidence from model repositories and configuration sources.
+ProvenanceLens audits the lineage metadata a model repository declares about itself
+— `base_model` and `base_model_relation` — and decides whether that declaration
+should be kept, completed, replaced, or left alone. It gathers evidence from the
+repository's own artifacts, resolves identifiers conservatively, detects conflicts,
+and refuses to recommend a change it cannot support. It never writes to an
+external repository: every repair is a recommendation for a human to accept.
 
-Instead of blindly modifying metadata, ProvenanceLens collects available evidence, checks for conflicts, assigns confidence, and makes one of four decisions:
+Four outcomes, and the fourth is the point:
 
-* **KEEP** — existing metadata is sufficiently supported
-* **ADD** — metadata is missing but supported by evidence
-* **REPLACE** — existing metadata conflicts with stronger evidence
-* **ABSTAIN** — evidence is insufficient or conflicting, so no unsupported change is made
-
-The system is designed around **traceable, evidence-based decisions** rather than guessing.
+| decision | meaning |
+| --- | --- |
+| **KEEP** | the declared lineage is supported; change nothing |
+| **ADD** | nothing direct is declared, but evidence supports a specific parent and relation |
+| **REPLACE** | the declaration is contradicted by decisive evidence |
+| **ABSTAIN** | evidence is insufficient, unresolvable or conflicting — no change is recommended |
 
 ---
 
-## 🎯 Problem
+## 🎯 The Problem
 
-Model repositories often contain metadata describing a model's:
+Open model repositories declare *direct* lineage: the model they were derived
+from, and how. Those declarations are frequently:
 
-* Base model
-* Fine-tuning relationships
-* Quantization
-* Architecture
-* Training information
-* Intended usage
+* **missing** — adapters and quantized derivatives often omit `base_model` entirely;
+* **incomplete** — a parent is declared but `base_model_relation` is empty;
+* **ambiguous** — a merge lists several composed inputs, and "the parents" is a
+  semantic question;
+* **wrong** — a name that does not match what the artifacts say.
 
-This information can be incomplete, inconsistent, or distributed across multiple sources.
+Downstream tools consume these fields. A plausible-looking but wrong parent is
+worse than an empty one, because the fabrication looks well-formed and propagates
+silently.
 
-ProvenanceLens attempts to identify these inconsistencies and determine whether metadata should be preserved, added, replaced, or left unchanged.
+ProvenanceLens does not try to infer a model's true training history. It audits
+an author's own declaration against the evidence in that author's repository.
+
+## 🔄 What ProvenanceLens Does
+
+```text
+Hugging Face repository
+        │  collect: text files only, weights excluded, size-capped
+        ▼
+Frozen evidence bundle ── repository + commit sha + SHA-256 per file
+        │
+        ├──► structured parsers (front matter, adapter, merge, training, config)
+        │
+        └──► model-card prose ──► optional local LLM ──► grounding validation
+                    (rejected claims are discarded, never downgraded)
+        │
+        ▼
+   EvidenceItems  — split into declared (the audit subject) and independent
+        │           (evidence about it; declared metadata can never support itself)
+        ▼
+   identifier resolution ──► candidate aggregation ──► evidence fusion
+        │                     (per parent + relation)     (reliability × independence,
+        │                                                 capped per file)
+        ▼
+   conflict detection ──► decision policy
+        │
+        ▼
+   KEEP / ADD / REPLACE / ABSTAIN  +  SuggestedPatch (a recommendation only)
+```
+
+Full detail, including which parts are deterministic and which are optional:
+**[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)**.
+
+## 🛑 Why Abstention Matters
+
+A false repair is worse than a missing one. When ProvenanceLens guesses a parent
+wrong, it writes a claim that looks authoritative into a field other tools trust;
+nothing in the metadata reveals that it was guessed. Abstention is cheap and
+visible.
+
+So the objective is deliberately asymmetric: **minimise false repairs first,
+maximise coverage second.** `support_score` reports how strong the evidence is,
+and it is explicitly *not* a probability — it is a capped sum of documented
+per-artifact contributions. Consequently the project reports **no** ECE, Brier
+score or reliability diagram, and no metric treats the score as a calibrated
+confidence. See [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) §12.
+
+## 🔗 Supported Relations
+
+| relation | meaning |
+| --- | --- |
+| `finetune` | weights fine-tuned from the parent |
+| `adapter` | a LoRA/adapter trained on top of the parent |
+| `merge` | weights produced by merging models |
+| `quantized` | a numerically reduced derivative of the parent |
+
+Anything else — distillation, transitive ancestry, dataset lineage — is out of
+scope and untested.
+
+## 🔍 Evidence Sources
+
+| source | treated as | may assert a relation? |
+| --- | --- | --- |
+| `adapter_config.json` | tool-generated, `very_high` | `adapter` |
+| merge configuration | tool-generated, `high` | `merge` |
+| training configuration | tool-generated, `medium_high` | no — a field names a model, it does not assert a relationship |
+| `config.json` / `generation_config.json` | author/tool written, `medium` | no |
+| README prose (explicit phrases) | author written, `medium` | only from an explicit statement |
+| README front matter `base_model` | **declared — the audit subject** | never, as evidence for itself |
+
+Quoted mentions do not add up: contributions are capped per source file, so a
+claim repeated in ten files is not ten independent confirmations.
+
+## 🚀 Quick Start
+
+Python 3.10+ and nothing else. No network, no model hub account, no Ollama, no GPU.
+
+```bash
+git clone https://github.com/Rusheel86/ProvenanceLens.git
+cd ProvenanceLens
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+
+python -m pytest -q                  # 563 passed, 7 skipped
+python -m provenancelens.demo        # see the system work, offline
+```
+
+A 5–10 minute guided path, including every command in this README:
+**[`docs/QUICKSTART.md`](docs/QUICKSTART.md)**.
+
+## 🔎 Running an Audit
+
+```bash
+python -m provenancelens.cli audit peft-internal-testing/tiny-OPTForCausalLM-lora
+python -m provenancelens.demo                    # six curated cases, labelled REAL/CONTROLLED
+python -m provenancelens.demo --list
+```
+
+The audit reads a **frozen** snapshot: repository, pinned revision, declared
+lineage, strongest evidence with file and key path, conflicts, support score,
+decision, proposed patch, and — when abstaining — which condition stopped the
+repair. Works for all 44 frozen repositories.
+
+## 📊 Running LineageRepairBench
+
+```bash
+python -m provenancelens.evaluation validate      # self-check: 70 cases, 0 errors
+python -m provenancelens.evaluation run           # the system + 6 baselines
+python -m provenancelens.evaluation extraction    # prose-extraction quality
+python -m provenancelens.cli benchmark validate   # same thing, shorter
+```
+
+## 🔬 Reproducing the Research (Phase G)
+
+```bash
+python -m provenancelens.evaluation.phase_g_cli run --output /tmp/study   # full study, ~2 s
+python -m provenancelens.evaluation.phase_g_cli verify-canonical          # check committed results
+python -m provenancelens.evaluation.phase_g_cli publish                   # regenerate results/phase_g
+```
+
+Nine ablations, a failure taxonomy, an evidence-contribution analysis, a
+risk–coverage sweep, eleven tables and seven figures. Two runs produce
+**byte-identical** artifacts. Details: [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md).
+
+## 📈 Current Evaluation
+
+Measured on the 70-case LineageRepairBench (26 CONTROLLED + 44 REAL). Every
+number below is generated from `results/phase_g/results.json`; denominators and
+95% intervals are in [`results/phase_g/RESULTS.md`](results/phase_g/RESULTS.md).
+
+| metric | combined | real track |
+| --- | --- | --- |
+| action accuracy | 62/70 = 0.886 | 36/44 = 0.818 |
+| coverage (non-abstaining) | 21/70 = 0.300 | 10/44 = 0.227 |
+| repair attempts | 12 | 6 |
+| **false repairs** | **0/12** | **0/6** |
+| unverifiable repairs | 0/12 | 0/6 |
+| abstention rate | 49/70 = 0.700 | 34/44 = 0.773 |
+
+* All **7** errors were **abstentions** — no incorrect affirmative repair and no
+  incorrect `KEEP` was observed.
+* Baselines: `config_only` / `prose_only` abstain everywhere (0.614);
+  `rule_priority` repairs most often (23 attempts, coverage 0.929) and is the only
+  baseline with a false repair.
+* Ablations: removing tool-generated lineage fields takes repairs from 12 to 0;
+  removing relation evidence collapses coverage to 0.014; flattening reliability
+  tiers takes coverage to 0.029. **Model-card prose and framework config changed
+  no decision at all** on this benchmark — a reported negative result.
+* Weakest stratum: `quantized_awq`, **0/5** — for every AWQ derivative the
+  relation is documented only in the model card, with no structured artifact
+  stating it, so the system abstains.
+* Optional local LLM (`llama3.2:3b`): 20 claims extracted, **0 accepted**, 0
+  false repairs. The bottleneck was grounding — on one case the model produced
+  the correct parent but quoted a span that did not contain it.
+
+Stated conservatively: this documents how *this* system behaved on *these* 70
+self-adjudicated cases. It is not a state-of-the-art claim, and **0/12 does not
+mean false repairs are impossible.** Supported and unsupported claims are listed
+separately in [`docs/CLAIMS.md`](docs/CLAIMS.md).
+
+## 📁 Repository Structure
+
+```text
+src/provenancelens/
+├── collectors/     Phase C  safe Hugging Face collection (the only networked component)
+├── snapshots/      Phase C  immutable, hash-verified frozen evidence
+├── parsers/        Phase C  deterministic extraction into EvidenceItems
+├── resolution/     Phase D  conservative identifier resolution
+├── reasoning/      Phase D  candidates, fusion, conflicts, decision policy
+├── prose/          Phase E  chunking, validation, optional local-LLM extraction
+├── llm_runtime.py  Phase E  local model availability (never downloads)
+├── reporting/      Phase D  human-readable and JSON audit rendering
+├── evaluation/     Phase F/G  LineageRepairBench, metrics, ablations, study
+├── demo.py         Phase H  offline demonstration
+└── cli.py          Phase H  audit / demo / benchmark / study
+
+data/
+├── snapshots/                  44 frozen repositories at pinned commits (~1.2 MB)
+└── acquisition/real_selection.json   how the real track was sampled
+
+results/phase_g/                the committed, regenerable research evidence
+docs/                           architecture, methodology, limitations, claims, …
+```
+
+## 🧪 Testing
+
+```bash
+python -m pytest -q          # 563 passed, 7 skipped
+```
+
+Skips are opt-in live tests only: `PROVENANCELENS_LLM_TESTS=1` for a local Ollama
+model, `PROVENANCELENS_NETWORK_TESTS=1` for live collection. The suite also
+asserts the notebook hash, the benchmark composition, that documented numbers
+match a fresh run, that the canonical results verify, and that no production
+package changed during finalisation.
+
+## 🧠 Optional Local LLM
+
+Prose extraction has a deterministic path that needs nothing installed, and an
+optional local-LLM path:
+
+```bash
+pip install -e ".[llm]"
+ollama serve                       # you start the runtime
+python -m provenancelens.evaluation.phase_g_cli llm-compare --model llama3.2:3b
+```
+
+ProvenanceLens **never downloads a model** and never starts a runtime for you; if
+the model is absent, the command explains what to install and changes nothing.
+The experiment is opt-in, is excluded from the deterministic study and from the
+report digest, and its claims must pass grounding validation before becoming
+evidence. No paid inference API is a dependency of anything.
+
+## ⚠️ Limitations
+
+The short version — the full treatment, with numbers, is
+[`docs/LIMITATIONS.md`](docs/LIMITATIONS.md):
+
+* 70 self-authored cases; 44 real repositories, one adjudicator, no inter-rater
+  agreement. **38 of 70 truths are not knowable** by adjudication.
+* Selection is stratified for evidence diversity, **not** a census of Hugging Face.
+* CONTROLLED labels encode the policy, so 26/26 is a specification check, not
+  evidence of generality.
+* `support_score` is not a probability; probability calibration stays **deferred**.
+* `quantized_awq` is a measured weakness (0/5) and was deliberately **not**
+  "fixed" during finalisation, because tuning it on these cases would be fitting
+  the benchmark.
+* Prose and framework config changed no decision here; on this benchmark the
+  system is an artifact-evidence system, not a documentation-reading one.
+* The duplicate-inflation hypothesis was **not confirmed** and is reported as such.
+* **Zero observed false repairs is not a guarantee** — 0/12 has a 95% interval
+  reaching 0.242.
+* One hosting ecosystem, four relations, one snapshot per repository.
+
+Threats to validity are analysed in
+[`docs/THREATS_TO_VALIDITY.md`](docs/THREATS_TO_VALIDITY.md).
+
+## 🔁 Reproducibility
+
+44 repositories frozen at pinned commits with SHA-256 per file; `load_snapshot`
+verifies them before parsing. The study imports with the network stack absent,
+contains no stochastic component, and produces byte-identical artifacts across
+runs and across environments (a minimal install and a full install give the same
+metrics). Canonical results live in `results/phase_g/` with a manifest of 30 file
+digests and all 44 revisions, and `study verify-canonical` re-checks them.
+
+Procedure, dependency groups and the offline acceptance checklist:
+[`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md).
+
+## 📚 Research Documentation
+
+| document | what it answers |
+| --- | --- |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | how the system is built, component by component |
+| [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md) | definitions: lineage, evidence hierarchy, independence, policy, metrics, benchmark design |
+| [`results/phase_g/RESULTS.md`](results/phase_g/RESULTS.md) | the measured results, generated from `results.json` |
+| [`docs/CLAIMS.md`](docs/CLAIMS.md) | which claims are supported and which are not |
+| [`docs/LIMITATIONS.md`](docs/LIMITATIONS.md) | measured limitations, including the negative results |
+| [`docs/THREATS_TO_VALIDITY.md`](docs/THREATS_TO_VALIDITY.md) | internal, external, construct and conclusion threats |
+| [`docs/QUICKSTART.md`](docs/QUICKSTART.md) | the 5–10 minute reviewer path |
+| [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) | exact reproduction procedure |
+| [`docs/PAPER_NOTES.md`](docs/PAPER_NOTES.md) | organised summary for a write-up, with conservative novelty wording |
+| [`FINAL_PROJECT_STATUS.md`](FINAL_PROJECT_STATUS.md) | phases A–H, final state, readiness |
+| [`CHANGELOG.md`](CHANGELOG.md) | milestone history |
+
+---
+
+# 🧱 Implementation reference
+
+The rest of this document is the per-phase implementation record. It is kept
+here for depth; a new reader can stop at the line above.
 
 ---
 
 ## 🏗️ Architecture
 
-The system separates deterministic processing from LLM-based prose extraction.
+The system separates deterministic processing from optional LLM-based prose
+extraction. Full component-by-component detail, with a Mermaid data-flow diagram
+and the code-reading order, is in **[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)**.
+
+The phases below describe how that architecture was built.
 
 ### Pipeline
 
@@ -71,23 +352,27 @@ Every decision is based on available evidence and confidence. When the system ca
 
 ## ⚙️ Current Implementation
 
-The Phase 2 prototype currently includes:
+| Component                            | Phase | Status |
+| ------------------------------------ | ----- | ------ |
+| Structured package, schemas, parsers | B     | ✅ Working |
+| Hugging Face collection (safety-first)| C     | ✅ Working |
+| Frozen, hash-verified evidence       | C     | ✅ Working |
+| Deterministic extraction + regression| C     | ✅ Working |
+| Conservative entity resolution       | D     | ✅ Working |
+| Evidence independence + fusion       | D     | ✅ Working |
+| Structured conflict detection        | D     | ✅ Working |
+| KEEP / ADD / REPLACE / ABSTAIN       | D     | ✅ Working |
+| LangChain + optional local Ollama prose extraction | E | ✅ Working |
+| Grounding / hallucination rejection  | E     | ✅ Working |
+| LineageRepairBench (CONTROLLED + REAL)| F     | ✅ Working |
+| Metrics, baselines, selective sweep, calibration guardrails | F | ✅ Working |
+| Experimental study: ablations, analyses, tables, figures | G | ✅ Working |
+| Documentation, demo, reproducibility, release readiness | H | ✅ Working |
+| Legacy Phase-2 notebook              | A     | 🟡 Preserved unmodified, superseded |
 
-| Component                          | Status     |
-| ---------------------------------- | ---------- |
-| Evidence input                     | ✅ Working  |
-| Deterministic JSON/config parsing  | ✅ Working  |
-| Model-card relationship extraction | ✅ Working  |
-| Hugging Face collection (Phase 3)  | ✅ Working  |
-| Frozen evidence snapshots          | ✅ Working  |
-| Conservative entity resolution     | ✅ Working  |
-| Source-aware evidence fusion        | ✅ Working  |
-| Structured conflict detection       | ✅ Working  |
-| KEEP / ADD / REPLACE / ABSTAIN     | ✅ Working  |
-| LangChain workflow (Phase 2 legacy)| 🟡 Partial |
-| LLM prose extraction (Phase E)     | ✅ Working  |
-
-The current implementation uses frozen evidence bundles for reproducible testing and a rule-based prose extractor.
+The implementation uses frozen evidence bundles for reproducible testing, a
+deterministic prose extractor that always runs, and an optional local LLM that can
+only add validated evidence.
 
 ---
 
@@ -344,6 +629,255 @@ Documented in the test suite and reproducible offline. In the live run with `lla
 
 ---
 
+## 📊 Phase F Evaluation: LineageRepairBench
+
+Phases B–E build the system; **Phase F measures it**. `LineageRepairBench` is a small, frozen, self-validating benchmark plus a reproducible, offline evaluation runner. It is not a new decision layer: the production engine is used unchanged.
+
+```bash
+python -m provenancelens.evaluation validate            # self-check + summary
+python -m provenancelens.evaluation run --track controlled
+python -m provenancelens.evaluation run --track real
+python -m provenancelens.evaluation extraction           # prose-extraction quality
+python -m provenancelens.evaluation all --output artifacts/evaluation
+```
+
+No network, no LLM, no paid API: the normal run re-uses the frozen snapshots and canned model answers. Generated artifacts go to `artifacts/evaluation/` (git-ignored) and are reproducible from the CLI.
+
+### Two tracks, never mixed
+
+| Track | Cases | Labels |
+| --- | --- | --- |
+| `CONTROLLED` | 26 | synthetic evidence bundles, labelled **by construction** |
+| `REAL` | 3 | frozen real repository snapshots, **manually adjudicated** |
+
+**How REAL ground truth was determined.** Never from ProvenanceLens output. Each label rests on the frozen artifact itself plus the published provenance of the model, and every case records an adjudication (adjudicator, files read, excerpt, rationale):
+
+* `peft-internal-testing/tiny-OPTForCausalLM-lora` — `adapter_config.json` (written by PEFT at save time) records `base_model_name_or_path = hf-internal-testing/tiny-random-OPTForCausalLM` with `peft_type: LORA`. Parent **known**, relation **adapter**, declared metadata **missing** → expected `ADD`.
+* `teknium/OpenHermes-2.5-Mistral-7B` — the front matter and `config.json` both name `mistralai/Mistral-7B-v0.1`, but **no artifact states the relation** (the card only says "a state of the art Mistral Fine-tune, a continuation of OpenHermes 2 model", with no canonical id). Metadata state is **undetermined**, not incorrect: no repair is expected (`KEEP` or `ABSTAIN`).
+* `mergekit-community/Qwen3-1.5B-Instruct` — `mergekit_config.yml` lists two sources under `models:` plus a top-level `base_model:`; whether that key is an additional merged source or the residual base is an algorithm-semantics question the evidence does not settle. Parent set **ambiguous** (two admissible readings recorded), relation **merge** → no repair expected.
+
+### Benchmark validation
+
+The benchmark validates itself before any metric is computed and fails loudly on: duplicate case ids, invalid relation labels, `REPLACE` without adjudicated-incorrect metadata, `ADD` without missing metadata, `KEEP` on known-wrong metadata, repairs demanded on ambiguous truth, ambiguous truth without recorded alternatives, inconsistent declared state vs. labels, invalid expected parents, and REAL cases without manual adjudication. The validator never imports the decision engine, so it cannot manufacture a label from the system's own output.
+
+Running the benchmark early caught a real defect in the fixtures: six cases claimed `VALID`/`INCORRECT` metadata while declaring none, so the engine saw "nothing declared" and answered `ADD`. Both the fixtures and a new validation rule were fixed; production behaviour was not touched.
+
+### Metrics (denominators always explicit)
+
+* **Parent identification** — exact-set match over cases with `KNOWN` parent truth; multi-parent truth compared order-insensitively.
+* **Relation classification** — accuracy plus macro precision/recall/F1 over `finetune|adapter|merge|quantized|none` (`none` = "no relation established", a real outcome, not folded into a relation).
+* **Action prediction** — accuracy plus macro precision/recall/F1 for `KEEP/ADD/REPLACE/ABSTAIN`; ambiguous cases accept any action in their `acceptable_actions`.
+* **Repair safety** — abstention is never counted as correct.
+
+> **False Repair Rate** = *incorrect attempted repairs* / *total attempted repairs*, where an attempted repair is an `ADD` or `REPLACE` whose proposed lineage contradicts **known** adjudicated truth. Attempts on non-knowable truth are reported separately as `unverifiable_repairs` — neither credited nor blamed. Zero denominators yield `null`, never `0.0`.
+
+### Selective prediction
+
+```
+coverage           = non-ABSTAIN predictions / scored predictions
+selective accuracy = correct predictions among non-ABSTAIN predictions
+abstention rate    = ABSTAIN predictions / scored predictions
+```
+
+`python -m provenancelens.evaluation run` sweeps the raw `support_score` over 0.00–1.00 plus every observed value and reports, per operating point: threshold, coverage, selective accuracy, attempted repairs, false repairs and false-repair rate (`selective_metrics.csv`). This is a *threshold sweep*, not a calibration curve.
+
+### Baselines
+
+| Baseline | Behaviour |
+| --- | --- |
+| `declared_metadata` | trusts the declaration, never infers |
+| `config_only` | production engine restricted to framework config evidence |
+| `prose_only` | production engine restricted to model-card prose evidence |
+| `majority_count` | picks the parent with the most evidence records; **ties abstain** |
+| `rule_priority` | fixed source hierarchy (adapter > merge > training > config > prose), no fusion or conflict logic |
+| `always_keep` | trivial reference, never the main comparator |
+| `llm_full_context` | optional interface only — needs live local inference, so never a required dependency |
+
+None is deliberately weakened, and each is scored with the same fields as the full system.
+
+### Extraction quality, measured separately
+
+11 labelled prose fixtures run through the real prompt/chain/parser/validation path (only inference is stubbed), yielding claim precision/recall/F1 and rejection counts by reason. Extraction errors are **not** attributed to downstream decisions: a rejected claim costs recall but is correct fail-closed behaviour, and an abstention does not imply the extractor was wrong.
+
+### Measured results (this repository, this benchmark version)
+
+Numbers below come from the committed benchmark; re-running the CLI reproduces them exactly. Per-track metrics are in `metrics.json`; `false_repair_rate` denominators are shown because several systems attempt few or no repairs.
+
+| System | Action acc. | Parent acc. | Relation acc. | Coverage | Attempts | False repairs | False repair rate | Abstention |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `provenancelens` | 1.000 (29/29) | 0.688 (11/16) | 0.800 (12/15) | 0.414 | 7 | 0 | 0.000 (7 attempts) | 0.586 |
+| `rule_priority` | 0.448 (13/29) | 0.875 (14/16) | 1.000 (15/15) | 0.966 | 20 | 1 | 0.050 (20 attempts) | 0.034 |
+| `majority_count` | 0.345 (10/29) | 0.812 (13/16) | 0.667 (10/15) | 0.793 | 18 | 0 | 0.000 (18 attempts) | 0.207 |
+| `config_only` | 0.586 (17/29) | 0.000 (0/16) | 0.000 (0/15) | 0.000 | 0 | 0 | n/a (0 attempts) | 1.000 |
+| `prose_only` | 0.586 (17/29) | 0.000 (0/16) | 0.000 (0/15) | 0.000 | 0 | 0 | n/a (0 attempts) | 1.000 |
+| `declared_metadata` | 0.586 (17/29) | 0.375 (6/16) | 0.333 (5/15) | 0.414 | 0 | 0 | n/a (0 attempts) | 0.586 |
+| `always_keep` | 0.586 (17/29) | 0.375 (6/16) | 0.333 (5/15) | 0.414 | 0 | 0 | n/a (0 attempts) | 0.586 |
+
+Per track for the full system:
+
+| Track | Cases | Action acc. | Parent acc. | Attempts | False repairs |
+| --- | --- | --- | --- | --- | --- |
+| `controlled` | 26 | 1.000 (26/26) | 0.714 (10/14) | 6 | 0 |
+| `real` | 3 | 1.000 (3/3) | 0.500 (1/2) | 1 | 0 |
+
+Selective accuracy when answering: parent 11/11, relation 12/12. Action macro-F1 1.000.
+
+Prose extraction over the labelled fixtures: precision 1.000 (6/6), recall 1.000 (6/6), rejection reasons matched 5/5.
+
+What the numbers say (and do not say):
+
+* **Repair safety vs coverage is the whole story.** ProvenanceLens attempts 7 repairs and none is wrong, but answers only 41.4 % of cases. `rule_priority` answers 96.6 %, scores *higher* on parent (0.875) and relation (1.000) accuracy, and still records a false repair — plus 10 of its 20 attempts are on truth that is not knowable (e.g. acting on a bare `Mistral 7B` reference), so its repairs cannot even be verified.
+* **All strict parent/relation misses of the full system are abstentions**, not wrong answers: when it answers, parent accuracy is 11/11 and relation accuracy 12/12.
+* **Action accuracy 1.000 on CONTROLLED is a specification check.** Those labels encode the documented policy; it confirms the implementation still matches its specification and says nothing about generality.
+* `config_only` and `prose_only` abstain everywhere: honest, and also useless alone — neither evidence subset can certify lineage.
+* `declared_metadata` / `always_keep` never repair, so their parent accuracy (0.375) is simply the share of cases where the declaration happens to be right.
+
+
+### Benchmark limitations
+
+* The CONTROLLED track is a **specification check**, not evidence of generality: its labels encode the documented policy, so a perfect score there means "the implementation still matches its specification" and nothing more.
+* The REAL track had **three** adjudicated cases at this point — far too few for statistically meaningful claims, which is why denominators are printed for every metric. Phase G expands it to 44 and adds Wilson intervals.
+* Two of the three real cases are deliberately ambiguous/undetermined, so `parent_accuracy` there is dominated by cases where no answer was expected.
+* **Superseded by Phase G:** the real track now has 44 adjudicated repositories (24 with genuinely unknowable truth), so the small-sample caveats above are measured per metric with Wilson intervals rather than asserted. See [Phase G](#-phase-g-experimental-study).
+* Labels reflect what the stored evidence supports, not external truth about these models; the OpenHermes case would change if a training manifest were added to the snapshot.
+* No calibration is reported (see below), and no baseline was tuned against the benchmark after labels were fixed.
+
+### `support_score` is not a probability
+
+The raw support score is a heuristic evidence strength (a capped sum of documented per-artifact contributions). Phase F therefore **does not** report ECE, Brier score, or reliability diagrams for it: doing so would present a non-probability as a calibrated one. Instead the evaluation package provides a `CalibratedScore` schema and mathematically standard ECE/Brier implementations that **refuse** uncalibrated inputs, plus a status object explaining which conditions are missing (a fitted mapping on a held-out split, ≥ 50 cases, a disjoint evaluation split). With 70 cases (Phase G) and no held-out split, probability calibration is deliberately **deferred** rather than faked.
+
+### No research claims
+
+ProvenanceLens makes no claim of state of the art, novelty, or empirical superiority: the benchmark is small, self-authored, and mostly synthetic. What it does show, on its own terms, is the intended trade-off — high repair safety at limited coverage — against simpler strategies that repair more often and less safely.
+
+---
+
+## 🔬 Phase G Experimental Study
+
+Phase G turned the benchmark into a **study**: it expanded the real track from 3 to
+**44 adjudicated repositories**, ran nine component ablations, and answered the
+failure and evidence questions directly. Everything is offline, deterministic and
+evaluation-only — the production engine is used unchanged, and a test asserts that
+no production package has changed since the Phase F merge.
+
+```bash
+python -m provenancelens.evaluation phase-g run          # full study + all artifacts
+python -m provenancelens.evaluation phase-g summary      # headline table only
+python -m provenancelens.evaluation phase-g ablate       # ablation suite
+python -m provenancelens.evaluation phase-g failures     # failure taxonomy
+python -m provenancelens.evaluation phase-g verify       # re-run twice, compare digests
+python -m provenancelens.evaluation phase-g publish      # regenerate results/phase_g
+```
+
+**Where the numbers live.** `artifacts/phase_g/` is git-ignored scratch output.
+The **canonical, committed evidence** is `results/phase_g/`: `results.json` (the
+machine-readable source of truth), `RESULTS.md` (rendered from it, never typed by
+hand), eleven tables, seven figures and a manifest with 30 file digests plus all
+44 pinned revisions. `python -m provenancelens.evaluation.phase_g_cli
+verify-canonical` re-checks it, and the test suite fails if a documented number
+disagrees with a fresh run. Two runs on one commit produce **byte-identical**
+artifacts.
+
+The tables in this README section are a convenience copy; when they and
+`results/phase_g/RESULTS.md` ever disagree, the latter is correct.
+
+### The real track: 44 adjudicated repositories
+
+Selection is a frozen, documented plan (`evaluation/acquisition.py`): six strata with fixed quotas — PEFT adapters 8, mergekit merges 8, LoRA adapters 6, GGUF 6, AWQ 5, instruction finetunes 8 — candidates ordered by (downloads desc, id asc), exclusions recorded rather than silently dropped, and the three pre-Phase-G repositories left untouched. 41 new repositories were frozen; every one is kept, including the ambiguous and unknowable ones, because dropping them would be outcome-dependent sampling. `data/acquisition/real_selection.json` is the audit trail, and the analysis reads its strata from there rather than deriving strata from results.
+
+Ground truth lives in `evaluation/adjudication/real_cases.yaml`, written for human review with a stated precedence:
+
+1. **tool-generated lineage field** in a frozen artifact (the strongest evidence);
+2. **card statement with a canonical repository id**, quoted in the record;
+3. **declared metadata**, which is the *audit subject* and therefore never truth;
+4. otherwise the truth is `ambiguous` or `unknown`, and no repair is expected.
+
+Name or family resemblance was never used to infer lineage. The distribution is deliberately honest: 4 KEEP, 12 ADD, 28 no-repair-expectation; 18 knowable / 2 ambiguous / 24 unknown parent truth.
+
+Two schema changes came out of adjudication rather than from the metrics:
+
+* `MetadataState.INCOMPLETE` — the parent is declared but the relation is not (6 cases). Real and common; the Phase F vocabulary could not express it, and its validator now forbids labelling it `missing`.
+* `ADD` is the safe repair for `missing` **and** `incomplete`, and validation rejects a label that contradicts what the repository actually declares.
+
+### Headline results (n = 70: 26 controlled + 44 real)
+
+| metric | all | real only | 95% CI (real) |
+| --- | --- | --- | --- |
+| action accuracy | 62/70 = 0.886 | 36/44 = 0.818 | [0.680, 0.905] |
+| parent exact match | 19/32 = 0.594 | 9/18 = 0.500 | [0.290, 0.710] |
+| relation accuracy | 21/31 = 0.677 | 10/18 = 0.556 | [0.337, 0.754] |
+| coverage | 21/70 = 0.300 | 10/44 = 0.227 | [0.128, 0.370] |
+| repair attempt rate | 12/70 = 0.171 | 6/44 = 0.136 | [0.064, 0.267] |
+| **false repair rate** | **0/12 = 0.000** | **0/6 = 0.000** | [0.000, 0.390] |
+| unverifiable repairs | 0/12 | 0/6 | — |
+| abstention rate | 49/70 = 0.700 | 34/44 = 0.773 | [0.630, 0.872] |
+
+Every headline number carries a Wilson 95% interval, because several denominators are small enough that a bare point estimate would be misleading. The false-repair denominator is exactly the Phase F definition (incorrect attempted repairs ÷ attempted repairs), and unverifiable attempts are reported separately rather than folded into either bucket.
+
+**All 8 errors are abstentions.** Not one repair was attempted incorrectly, and not one non-abstention was wrong on the real track. Every mismatch is a case where the system declined to act and a repair would have been admissible — the price of the safety policy, paid in coverage.
+
+### Where it fails
+
+| category | cases |
+| --- | --- |
+| correct | 63 |
+| unverifiable lineage (abstained; no independent evidence exists) | 6 |
+| insufficient support (abstained; evidence below the policy threshold) | 1 |
+
+Per-stratum action accuracy shows exactly where: `quantized_awq` is **0/5** — for every AWQ derivative the parent is declared, the card states the relation, and no structured artifact states it either, so the engine abstains. `peft_adapters` is 8/8 with 5 accepted repairs. Coverage is 0 for every real stratum except PEFT adapters.
+
+### Ablations (evidence transforms, engine unmodified)
+
+Each row runs the *same* engine on filtered, flattened, inflated or stripped evidence, so a delta is attributable to the ablated component alone.
+
+| ablation | action accuracy | Δ | coverage | attempted repairs | false repairs |
+| --- | --- | --- | --- | --- | --- |
+| full | 0.886 | — | 0.300 | 12 | 0 |
+| `no_prose` | 0.886 | +0.000 | 0.300 | 12 | 0 |
+| `no_config` | 0.886 | +0.000 | 0.300 | 12 | 0 |
+| `only_tool_configs` | 0.886 | +0.000 | 0.300 | 12 | 0 |
+| `inflate_duplicates` | 0.857 | −0.029 | 0.329 | 14 | 0 |
+| `highest_priority_only` | 0.857 | −0.029 | 0.271 | 10 | 0 |
+| `only_highest_reliability` | 0.857 | −0.029 | 0.271 | 10 | 0 |
+| `flatten_reliability` | 0.643 | −0.243 | 0.029 | 1 | 0 |
+| `no_relation_evidence` | 0.629 | −0.257 | 0.014 | 0 | 0 |
+| `no_tool_configs` | 0.614 | −0.271 | 0.000 | 0 | 0 |
+
+Four findings, one of them negative and reported as measured:
+
+1. **Tool-generated lineage is the only admissible repair trigger.** Removing adapter/merge/training configs stops *every* repair (12 → 0) and costs 27 points of accuracy.
+2. **Relation evidence is the primary safety mechanism.** Strip relations and coverage collapses from 0.300 to 0.014: the engine almost never proposes a parent whose relation it cannot evidence.
+3. **Reliability tiering carries the tool/prose distinction.** Flattening tiers collapses coverage to 0.029; precision and macro-F1 drop hardest (−0.35 F1).
+4. **Prose and framework config changed nothing on this benchmark** (`no_prose`, `no_config`, `only_tool_configs` are all exactly neutral). Negative result, stated as such: on 70 cases no decision was changed by prose. The pre-registered hypothesis for `inflate_duplicates` (naive counting creates over-confident repairs) was **not** confirmed: duplication raised coverage slightly and still produced zero false repairs at this sample size.
+
+### Evidence usage: frequency is not attribution
+
+| source | cases with it | decisive items |
+| --- | --- | --- |
+| adapter_config | 18 | 18 |
+| training_config | 8 | 5 |
+| readme | 10 | 5 |
+| merge_config | 4 | 9 |
+| config | 5 | 4 |
+
+32 of 70 cases have **no independent evidence at all** — only declared metadata, which the engine refuses to treat as evidence about itself. Presence and decisiveness are reported separately precisely because a source can be common but irrelevant, or rare but decisive.
+
+### Risk–coverage
+
+Relaxing the support threshold from 0.7 to 0.0 moves coverage 0.229 → 0.300 with selective accuracy 16/16 → 21/21 and still **zero** false repairs. The risk-coverage curve is deliberately boring: the system never buys accuracy with risk inside the observed range, and where it loses accuracy (the 8 abstentions) it loses it by declining to act.
+
+### Optional local-LLM comparator (opt-in, never part of the default run)
+
+`python -m provenancelens.evaluation phase-g llm-compare --model llama3.2:3b` runs one small experiment: the Phase E local extractor reads the model cards of the six cases where documented lineage exists but structured evidence does not. It refuses to run unless the model is **already installed locally** (it never pulls a model, never starts a runtime for you), claims pass the Phase E validator before becoming evidence, and the result is written to a separate artifact with its own caveat, never into the deterministic digest.
+
+Measured with `llama3.2:3b` on those six cards: **20 claims reported, 0 accepted, 0 repairs attempted, 0 false repairs.** Rejection codes: `span_not_found` ×15, `malformed_output` ×15, `lineage_not_stated` ×4, `parent_not_in_source` ×1. The interesting part is *why* it failed: on `webAI-Official/TwIL-LM3` the model produced the correct parent `HuggingFaceTB/SmolLM3-3B` but quoted a span that did not contain it, and the validator rejected it. The bottleneck is grounding and format compliance, not knowledge. The safety property held — a 3B model's misreadings became zero evidence rather than wrong lineage, at the cost of zero recovered coverage.
+
+### What Phase G does not claim
+
+No superiority, novelty or state-of-the-art claim. The real track is self-adjudicated by the authors, so it documents the trade-off and the failure modes of *this* system on *these* repositories; it is not an independent evaluation, and 24 of 44 truths are genuinely unknowable rather than resolved. `support_score` remains a non-probability, so no ECE, Brier score or reliability diagram is reported anywhere in this section.
+
+---
+
 ## 🧠 Decision Logic
 
 ProvenanceLens uses four possible outcomes.
@@ -392,6 +926,10 @@ Phase 3 additionally covers: collector selection/limits/statuses (mocked), snaps
 
 Phase D additionally covers: entity resolution, all controlled decision cases, false-repair safety invariants, determinism properties, and offline reasoning over the three frozen real repositories.
 
+Phase G additionally covers: study determinism (byte-identical artifacts, report digest, CLI verify), offline execution with the network stack blocked, `INCOMPLETE` metadata-state validation rules, acquisition-stratum integrity, single-assignment failure taxonomy, evidence presence versus decisiveness, Wilson intervals, ablation deltas and verdicts, and manifest digests — plus the real guarantee that no production package changed since the Phase F merge.
+
+Phase F additionally covers: benchmark schema and self-validation, controlled and real tracks, metric semantics (strict vs coverage-conditioned, false-repair accounting, zero denominators, all-abstain and no-abstain systems), selective threshold sweeps, calibration guardrails, every baseline, runner determinism, CLI reproducibility in a clean subprocess, and frozen-snapshot integrity.
+
 Phase E additionally covers: the prose claim schema and prompt contract, the real LangChain chain with a canned model (explicit/ambiguous/no-claim claims, multi-source merges, hallucinated spans, guessed parents/versions/relations, prompt injection, malformed and fenced output), chunking and section selection, the LangChain tools, Phase D integration and decision stability, and guarded imports without LangChain.
 
 ---
@@ -434,28 +972,38 @@ and execute the cells sequentially.
 ```text
 ProvenanceLens/
 │
-├── ProvenanceLens_Phase2 (1).ipynb   # historical Phase 2 notebook (frozen)
-├── README.md
-├── CURRENT_STATE.md
+├── ProvenanceLens_Phase2 (1).ipynb   # historical Phase 2 notebook (byte-identical, superseded)
+├── README.md                         # this file
+├── CURRENT_STATE.md                  # Phase A audit (historical)
+├── FINAL_PROJECT_STATUS.md           # phases A–H, final state, readiness
+├── CHANGELOG.md                      # milestone history
 ├── pyproject.toml
 │
 ├── data/
-│   └── snapshots/                    # frozen evidence snapshots (created on demand)
+│   ├── snapshots/                    # 44 frozen repositories at pinned commits (~1.2 MB)
+│   └── acquisition/real_selection.json   # how the real track was sampled
+│
+├── docs/                             # architecture, methodology, limitations, claims, …
+│
+├── results/phase_g/                  # the committed, regenerable research evidence
 │
 ├── src/provenancelens/
-│   ├── collectors/                   # Hugging Face repository collection
+│   ├── collectors/                   # Hugging Face repository collection (network)
 │   ├── snapshots/                    # snapshot store (save/load/verify)
 │   ├── parsers/                      # deterministic extraction
 │   ├── prose/                        # Phase E: prompt, chunking, validation, extractor
 │   ├── llm_runtime.py                # local model config + read-only availability probe
 │   ├── tools.py                      # read-only LangChain snapshot tools
+│   ├── evaluation/                   # Phases F/G: LineageRepairBench, ablations, study, CLI
 │   ├── resolution/                   # conservative model-id resolution
 │   ├── reasoning/                    # Phase D candidates/fusion/conflicts/decision
 │   │   └── legacy.py                 # Phase 2 engine (regression baseline, untouched)
 │   ├── pipeline.py                   # snapshot -> evidence -> AuditDecision
 │   ├── schemas/                      # evidence, lineage, collection, snapshot, audit models
 │   ├── langchain_integration/        # Phase 2 workflow (guarded imports)
-│   └── reporting/
+│   ├── reporting/                    # human-readable and JSON audit rendering
+│   ├── demo.py                       # Phase H: offline demonstration
+│   └── cli.py                        # Phase H: audit / demo / benchmark / study
 │
 └── tests/                            # pytest suite (offline)
 ```
@@ -531,24 +1079,46 @@ When evidence is missing or conflicting, ProvenanceLens chooses `ABSTAIN`.
 * Entity resolution never searches the hub, so bare model names without an organization conservatively abstain.
 * Prose extraction has two paths: deterministic rules plus an optional local LLM; a small local model still produces paraphrased or misread claims, so validation rejects them and coverage is conservative rather than high.
 * Suggested patches are recommendations only; the tool never writes to external repositories.
-* Evaluation so far is three frozen real repositories plus controlled cases — a prototype-scale evaluation, not a research result.
+* Evaluation (Phases F/G) is a self-authored benchmark: 26 controlled cases and 44 manually adjudicated real repositories. Ground truth was adjudicated by the same authors, so it documents the trade-off and the failure modes of *this* system on *these* repositories; it is not an independent evaluation and supports no superiority claims.
+* Coverage is genuinely low on the real track (0.227) and every error is an abstention. Quantized derivatives whose relation is documented only in prose (`quantized_awq`, 0/5) are the clearest gap: recovering them safely needs evidence the repositories do not contain in structured form.
+* Prose and framework-config evidence changed no decision on this benchmark (`no_prose` and `no_config` are exactly neutral at n=70). The system is currently an artifact-evidence system, not a documentation-reading one.
+* A 3B local model reading the same model cards produced 20 claims and 0 accepted ones: the Phase E validator rejects ungrounded spans, so local LLM extraction is safe but contributes no coverage at that model size.
 
 ---
 
-## 🔮 Phase 3 Roadmap
+## 🔮 Status and Future Work
 
-Progress:
+Phases A–H are complete; the evaluated system is frozen. See
+[`FINAL_PROJECT_STATUS.md`](FINAL_PROJECT_STATUS.md) and
+[`CHANGELOG.md`](CHANGELOG.md).
 
-* ✅ Connect selected public Hugging Face repositories (lightweight collector)
-* ✅ Store frozen evidence snapshots (repo + commit identity, read-only)
-* ✅ Entity resolution, evidence fusion, conflicts, and KEEP/ADD/REPLACE/ABSTAIN (Phase D)
-* 🟡 Expand evaluation with additional test cases
-* 🟡 Manually adjudicate real-repository outcomes (decisions are heuristic, not ground truth)
-* ⬜ Include poor/failed retrieval cases at scale
-* ⬜ Preserve explicit evidence citations end-to-end
-* ✅ Open-weight LLM prose extraction, local-first and fail-closed (Phase E)
-* ⬜ Manually adjudicated evaluation of extraction and decisions (Phase F)
-* ⬜ Keep using `ABSTAIN` whenever a repair cannot be safely supported
+Delivered:
+
+* ✅ Structured package with schemas, parsers and regression tests (Phase B)
+* ✅ Safe Hugging Face collection with frozen, hash-verified, offline-reproducible
+  snapshots (Phase C)
+* ✅ Conservative resolution, evidence independence, fusion, conflict detection and
+  KEEP/ADD/REPLACE/ABSTAIN (Phase D)
+* ✅ Optional local open-weight prose extraction, fail-closed, never downloading a
+  model (Phase E)
+* ✅ LineageRepairBench with CONTROLLED and REAL tracks, baselines, selective
+  evaluation and calibration guardrails (Phase F)
+* ✅ Experimental study: 44 adjudicated real repositories, nine ablations,
+  risk-coverage, failure and evidence analysis (Phase G)
+* ✅ Documentation, offline demo, reproducible canonical results, release
+  readiness (Phase H)
+
+Next, driven by the measured limitations rather than by the score:
+
+* ⬜ Structured quantization statements, to address the `quantized_awq` 0/5 gap
+* ⬜ A larger real track with multiple adjudicators and reported agreement
+* ⬜ Span-verified / constrained generation for grounded local extraction
+* ⬜ A held-out split, so a probability mapping can finally be justified
+* ⬜ Additional hosting ecosystems and relation classes (distillation, transitive)
+* ⬜ Poor/failed retrieval cases at scale
+* ⬜ End-to-end evidence citations surfaced in the audit report
+* ⬜ Keep abstaining whenever a repair cannot be safely supported — the most
+  important item on this list
 
 ---
 

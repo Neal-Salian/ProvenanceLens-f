@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "repository": "peft-internal-testing/tiny_OPTForQuestionAnswering-lora",
+  "resolved_commit_sha": "bf74d712a3b7ca2086fec457602106e432033787",
+  "declared_lineage": {
+    "base_model": null,
+    "relation_raw": null,
+    "relation": null,
+    "additional_base_models": []
+  },
+  "declared_evidence": [],
+  "independent_evidence": [
+    {
+      "source_type": "adapter_config",
+      "role": "independent",
+      "extraction_method": "deterministic",
+      "reliability": "very_high",
+      "source_name": "adapter_config.json",
+      "repository": "peft-internal-testing/tiny_OPTForQuestionAnswering-lora",
+      "revision": "bf74d712a3b7ca2086fec457602106e432033787",
+      "candidate_parent": "hf-internal-testing/tiny-random-OPTForCausalLM",
+      "relation": "adapter",
+      "relation_raw": null,
+      "raw_value": "hf-internal-testing/tiny-random-OPTForCausalLM",
+      "evidence_span": "\"base_model_name_or_path\": \"hf-internal-testing/tiny-random-OPTForCausalLM\"",
+      "key_path": "base_model_name_or_path",
+      "explicitness": "explicit",
+      "source_url": null,
+      "note": "adapter_config base model"
+    }
+  ],
+  "issues": []
+}

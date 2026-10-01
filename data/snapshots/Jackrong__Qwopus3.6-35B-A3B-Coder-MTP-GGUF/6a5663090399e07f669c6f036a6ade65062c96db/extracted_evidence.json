@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "repository": "Jackrong/Qwopus3.6-35B-A3B-Coder-MTP-GGUF",
+  "resolved_commit_sha": "6a5663090399e07f669c6f036a6ade65062c96db",
+  "declared_lineage": {
+    "base_model": "Jackrong/Qwopus3.6-35B-A3B-v1",
+    "relation_raw": null,
+    "relation": null,
+    "additional_base_models": [
+      "unsloth/Qwen3.6-35B-A3B"
+    ]
+  },
+  "declared_evidence": [
+    {
+      "source_type": "declared_metadata",
+      "role": "declared",
+      "extraction_method": "deterministic",
+      "reliability": "not_applicable",
+      "source_name": "README.md",
+      "repository": "Jackrong/Qwopus3.6-35B-A3B-Coder-MTP-GGUF",
+      "revision": "6a5663090399e07f669c6f036a6ade65062c96db",
+      "candidate_parent": "Jackrong/Qwopus3.6-35B-A3B-v1",
+      "relation": null,
+      "relation_raw": null,
+      "raw_value": "Jackrong/Qwopus3.6-35B-A3B-v1",
+      "evidence_span": null,
+      "key_path": "base_model",
+      "explicitness": "explicit",
+      "source_url": null,
+      "note": "model-card front matter: subject of the audit, not independent evidence"
+    },
+    {
+      "source_type": "declared_metadata",
+      "role": "declared",
+      "extraction_method": "deterministic",
+      "reliability": "not_applicable",
+      "source_name": "README.md",
+      "repository": "Jackrong/Qwopus3.6-35B-A3B-Coder-MTP-GGUF",
+      "revision": "6a5663090399e07f669c6f036a6ade65062c96db",
+      "candidate_parent": "unsloth/Qwen3.6-35B-A3B",
+      "relation": null,
+      "relation_raw": null,
+      "raw_value": "unsloth/Qwen3.6-35B-A3B",
+      "evidence_span": null,
+      "key_path": "base_model",
+      "explicitness": "explicit",
+      "source_url": null,
+      "note": "model-card front matter: subject of the audit, not independent evidence"
+    }
+  ],
+  "independent_evidence": [],
+  "issues": []
+}

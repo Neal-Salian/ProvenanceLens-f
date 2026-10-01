@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "repository": "McGill-NLP/LLM2Vec-Meta-Llama-3-8B-Instruct-mntp-supervised",
+  "requested_revision": null,
+  "resolved_commit_sha": "baa8ebf04a1c2500e61288e7dad65e8ae42601a7",
+  "collected_at": "2026-09-30T15:37:35.631895+00:00",
+  "status": "SUCCESS",
+  "max_file_bytes": 1048576,
+  "retrieved": [
+    {
+      "filename": "README.md",
+      "status": "SUCCESS",
+      "category": "model_card",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/McGill-NLP/LLM2Vec-Meta-Llama-3-8B-Instruct-mntp-supervised/resolve/baa8ebf04a1c2500e61288e7dad65e8ae42601a7/README.md",
+      "size_bytes": 62702,
+      "sha256": "e821992eb2485dcbab0f8903ae3819d806db6f587dfd179adafe31ef28fdda1d",
+      "retrieved_at": "2026-09-30T15:37:36.184691+00:00",
+      "error": null
+    },
+    {
+      "filename": "adapter_config.json",
+      "status": "SUCCESS",
+      "category": "adapter",
+      "selection_reason": "high-priority provenance file",
+      "source_url": "https://huggingface.co/McGill-NLP/LLM2Vec-Meta-Llama-3-8B-Instruct-mntp-supervised/resolve/baa8ebf04a1c2500e61288e7dad65e8ae42601a7/adapter_config.json",
+      "size_bytes": 794,
+      "sha256": "2a1265e4a7829c16dad38a5175ec8ac41ea1e851654da5044ace2437615a58ba",
+      "retrieved_at": "2026-09-30T15:37:36.449062+00:00",
+      "error": null
+    }
+  ],
+  "failed": [],
+  "skipped": [
+    {
+      "filename": ".gitattributes",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "not provenance-relevant",
+      "source_url": null,
+      "size_bytes": 1519,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    },
+    {
+      "filename": "adapter_model.safetensors",
+      "status": "SKIPPED",
+      "category": "other",
+      "selection_reason": "excluded model/binary artifact",
+      "source_url": null,
+      "size_bytes": 167829552,
+      "sha256": null,
+      "retrieved_at": null,
+      "error": null
+    }
+  ],
+  "notes": []
+}

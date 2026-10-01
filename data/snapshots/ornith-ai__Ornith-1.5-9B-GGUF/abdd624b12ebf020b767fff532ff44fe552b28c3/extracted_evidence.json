@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "repository": "ornith-ai/Ornith-1.5-9B-GGUF",
+  "resolved_commit_sha": "abdd624b12ebf020b767fff532ff44fe552b28c3",
+  "declared_lineage": {
+    "base_model": null,
+    "relation_raw": null,
+    "relation": null,
+    "additional_base_models": []
+  },
+  "declared_evidence": [],
+  "independent_evidence": [],
+  "issues": []
+}
